@@ -69,28 +69,36 @@ socket.on("playerScannedCase", (data) => {
 
   console.log("QR scanné :", data);
 
-  const qr = data.qr || data.qrValue || "";
+  const qr = data.qr || "";
   const parts = qr.split("/");
 
   const caseNumber = Number(parts[1]);
-  const category = parts[2] || "action";
+  const category = parts[2] || "boire";
 
   const action = getRandomAction(category);
 
+  // ON MET À JOUR LE STATE
   state = {
     ...state,
+
     playerName: data.playerName,
     currentPlayer: data.playerName,
+
     caseNumber: caseNumber,
+
     category: action.category,
     title: action.title,
     text: action.text,
+
     powerLevel: action.powerLevel,
     isLegendary: action.isLegendary || false,
+
     totalActions: (state.totalActions || 0) + 1
   };
 
-  io.emit("tvPlayerScanned", state);
+  // ON ENVOIE EXACTEMENT LE MÊME STATE QUE LA TV SOLO
+  io.emit("stateUpdated", state);
+
 });
 
   socket.on("disconnect", () => {

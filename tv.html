@@ -597,23 +597,26 @@ socket.on("playersUpdated", (players) => {
   });
 });
 
-socket.on("tvPlayerScanned", (data) => {
+socket.on("stateUpdated", (data) => {
 
-  console.log("Carte reçue TV :", data);
+  console.log("STATE TV =", data);
 
   showTvCard({
-    playerName: data.playerName || "Joueur",
-    caseNumber: data.caseNumber || "?",
-    category: data.category || "boire",
-    title: data.title || "Action",
-    text: data.text || "Action inconnue",
-    powerLevel: data.powerLevel || 1
+    playerName: data.playerName,
+    currentPlayer: data.currentPlayer,
+    caseNumber: data.caseNumber,
+    category: data.category,
+    title: data.title,
+    text: data.text,
+    powerLevel: data.powerLevel,
+    isLegendary: data.isLegendary
   });
 
   speakOnTv({
-    narration: `${data.playerName || "Un joueur"} a scanné la case ${data.caseNumber || "?"}`,
-    title: data.title || "",
-    text: data.text || ""
+    narration:
+      `${data.playerName} a scanné une case`,
+    title: data.title,
+    text: data.text
   });
 });
 
