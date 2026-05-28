@@ -63,9 +63,10 @@ io.on("connection", (socket) => {
   });
 
 socket.on("playerScannedCase", (data) => {
+
   console.log("QR scanné :", data);
 
-  io.emit("playerScanReceived", data);
+  io.emit("tvPlayerScanned", data);
 });
 
   socket.on("disconnect", () => {

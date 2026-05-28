@@ -157,11 +157,17 @@ function openScanner() {
   });
 
   document.getElementById("scanResult").textContent =
-    `✅ QR scanné : ${decodedText}`;
+  `✅ QR scanné : ${decodedText}`;
 
-  html5QrCode.stop();
-  reader.style.display = "none";
+socket.emit("playerScannedCase", {
+  playerName: localStorage.getItem("bibiperoPlayer"),
+  qr: decodedText
+});
+
+html5QrCode.stop();
+reader.style.display = "none";
 }
+
   );
 }
   </script>

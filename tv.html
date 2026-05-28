@@ -576,13 +576,10 @@
     let currentState = {};
     let lastCardId = "";
     let attractTimer;
+
     const socket = io();
-
-    socket.on("playersUpdated", (players) => {
-
-socket.on("playerScanReceived", (data) => {
-  alert(`${data.playerName} a scanné : ${data.qrValue}`);
-});
+    
+socket.on("playersUpdated", (players) => {
 
   const list =
     document.getElementById("connectedPlayers");
@@ -591,12 +588,46 @@ socket.on("playerScanReceived", (data) => {
 
   players.forEach(p => {
 
-    const li =gg
+    const li =
       document.createElement("li");
 
     li.textContent = p.name;
 
     list.appendChild(li);
+  });
+});
+
+socket.on("tvPlayerScanned", (data) => {
+
+  const player =
+    data.playerName || "Joueur";
+
+  const qr =
+    data.qr || "";
+
+  const parts =
+    qr.split("/");
+
+  const caseNumber =
+    parts[1] || "?";
+
+  const category =
+    parts[2] || "action";
+
+  showTvCard({
+    playerName: player,
+    currentPlayer: player,
+    caseNumber: caseNumber,
+    category: category,
+    title: `Case ${caseNumber}`,
+    text: `${player} vient de scanner une case.`,
+    totalActions: 0,
+    players: []
+  });
+
+  speakOnTv({
+    narration:
+      `${player} vient de scanner la case ${caseNumber}`
   });
 });
 
