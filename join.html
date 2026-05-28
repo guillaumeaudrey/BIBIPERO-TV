@@ -86,13 +86,20 @@
   color: white;
 }
 
+.active-turn {
+  box-shadow: 0 0 25px #4caf50;
+  border: 3px solid #4caf50;
+}
 
+.inactive-turn {
+  opacity: 0.6;
+}
   </style>
 </head>
 
 <body>
 
-  <div class="card">
+  <div class="card" id="mainCard">
 
     <h1>🍻 Rejoindre BIBIPERO</h1>
 
@@ -135,10 +142,28 @@
    let currentPlayer = "";
 
    socket.on("stateUpdated", (data) => {
+
   currentPlayer = data.currentPlayer || "";
 
   document.getElementById("turnInfo").textContent =
     `🎮 Tour de : ${currentPlayer}`;
+
+  const myName =
+    localStorage.getItem("bibiperoPlayer");
+
+  const card =
+    document.getElementById("mainCard");
+
+  if (myName === currentPlayer) {
+
+    card.classList.remove("inactive-turn");
+    card.classList.add("active-turn");
+
+  } else {
+
+    card.classList.remove("active-turn");
+    card.classList.add("inactive-turn");
+  }
 });
 
 socket.on("notYourTurn", (data) => {
