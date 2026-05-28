@@ -603,16 +603,17 @@ socket.on("tvPlayerScanned", (data) => {
     playerName: data.playerName || "Joueur",
     currentPlayer: data.playerName || "Joueur",
     caseNumber: data.caseNumber || "?",
-    category: data.category || "action",
+    category: data.category || "boire",
     title: data.title || "Action",
     text: data.text || "Action inconnue",
-    powerLevel: data.powerLevel || 1
+    powerLevel: data.powerLevel || 1,
+    isLegendary: data.isLegendary || false
   });
 
   speakOnTv({
-    narration: `${data.playerName || "Un joueur"} a scanné la case ${data.caseNumber}`,
-    title: data.title,
-    text: data.text
+    narration: `${data.playerName || "Un joueur"} a scanné la case ${data.caseNumber || "?"}`,
+    title: data.title || "",
+    text: data.text || ""
   });
 });
 
