@@ -370,6 +370,7 @@ function getRandomAction(category) {
   const action =
     list[Math.floor(Math.random() * list.length)];
 
+    
   lastAction = action;
 
   return action;

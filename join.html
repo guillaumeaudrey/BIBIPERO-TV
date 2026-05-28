@@ -103,6 +103,11 @@
 
 <div id="scanResult"></div>
 <div id="reader"></div>
+
+<button id="nextBtn" class="scan-btn" onclick="nextPlayer()">
+  ▶ Joueur suivant
+</button>
+
   </div>
 
   <script>
@@ -166,6 +171,14 @@ reader.style.display = "none";
 
   );
 }
+
+function nextPlayer() {
+  socket.emit("nextPlayer");
+
+  document.getElementById("scanResult").textContent =
+    "▶ Tour passé au joueur suivant";
+}
+
   </script>
 
 </body>

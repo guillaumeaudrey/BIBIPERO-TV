@@ -46,8 +46,9 @@ server.listen(PORT, "0.0.0.0", () => {
 });
 
 let connectedPlayers = [];
+let currentPlayerIndex = 0;
 
-const actionsByCase = require("./actionsByCase");
+
 
 io.on("connection", (socket) => {
 
@@ -55,50 +56,104 @@ io.on("connection", (socket) => {
 
   socket.on("joinPlayer", (playerName) => {
 
+  const alreadyExists =
+    connectedPlayers.some(p => p.name === playerName);
+
+  if (!alreadyExists) {
     connectedPlayers.push({
       id: socket.id,
-      name: playerName
+      name: playerName,
+      position: 0,
+      totalActions: 0,
+      totalDrinks: 0
     });
+  }
 
-    io.emit("playersUpdated", connectedPlayers);
+  state.players = connectedPlayers;
+  state.currentPlayer =
+    connectedPlayers[currentPlayerIndex]?.name || playerName;
 
-    console.log(playerName + " a rejoint la partie");
-  });
+  io.emit("playersUpdated", connectedPlayers);
+  io.emit("stateUpdated", state);
+
+  console.log(playerName + " a rejoint la partie");
+});
 
 socket.on("playerScannedCase", (data) => {
 
   console.log("QR scanné :", data);
 
-  const qr = data.qr || "";
+  const qr = data.qr || data.qrValue || "";
   const parts = qr.split("/");
 
   const caseNumber = Number(parts[1]);
   const category = parts[2] || "boire";
 
+  const player =
+    connectedPlayers.find(p => p.name === data.playerName);
+
+  if (!player) {
+    console.log("Joueur inconnu :", data.playerName);
+    return;
+  }
+
+  const currentPlayer =
+    connectedPlayers[currentPlayerIndex];
+
+  if (
+    currentPlayer &&
+    currentPlayer.name !== player.name
+  ) {
+    socket.emit("notYourTurn", {
+      currentPlayer: currentPlayer.name
+    });
+    return;
+  }
+
   const action = getRandomAction(category);
 
-  // ON MET À JOUR LE STATE
+  player.position = caseNumber;
+  player.totalActions += 1;
+
+  if (
+    action.category === "boire" ||
+    action.category === "malus" ||
+    action.category === "final-boire"
+  ) {
+    player.totalDrinks += 1;
+  }
+
   state = {
     ...state,
-
-    playerName: data.playerName,
-    currentPlayer: data.playerName,
-
+    playerName: player.name,
+    currentPlayer: player.name,
     caseNumber: caseNumber,
-
     category: action.category,
     title: action.title,
     text: action.text,
-
     powerLevel: action.powerLevel,
     isLegendary: action.isLegendary || false,
-
-    totalActions: (state.totalActions || 0) + 1
+    totalActions: (state.totalActions || 0) + 1,
+    players: connectedPlayers
   };
 
-  // ON ENVOIE EXACTEMENT LE MÊME STATE QUE LA TV SOLO
   io.emit("stateUpdated", state);
 
+});
+
+socket.on("nextPlayer", () => {
+
+  if (connectedPlayers.length === 0) return;
+
+  currentPlayerIndex =
+    (currentPlayerIndex + 1) % connectedPlayers.length;
+
+  state.currentPlayer =
+    connectedPlayers[currentPlayerIndex].name;
+
+  io.emit("stateUpdated", state);
+
+  console.log("Tour suivant :", state.currentPlayer);
 });
 
   socket.on("disconnect", () => {
