@@ -46,6 +46,22 @@ server.listen(PORT, "0.0.0.0", () => {
 
 let connectedPlayers = [];
 
+const actionsByCase = {
+  23: {
+    category: "malus",
+    title: "Malus Surprise",
+    text: "Bois 2 gorgées.",
+    powerLevel: 2
+  },
+
+  4: {
+    category: "boire",
+    title: "Santé Patron",
+    text: "Bois avec le proprio du jeu.",
+    powerLevel: 1
+  }
+};
+
 io.on("connection", (socket) => {
 
   console.log("Joueur connecté :", socket.id);
@@ -66,7 +82,25 @@ socket.on("playerScannedCase", (data) => {
 
   console.log("QR scanné :", data);
 
-  io.emit("tvPlayerScanned", data);
+  const parts = data.qr.split("/");
+  const caseNumber = Number(parts[1]);
+
+  const action =
+    actionsByCase[caseNumber] || {
+      category: parts[2] || "action",
+      title: `Case ${caseNumber}`,
+      text: `${data.playerName} vient de scanner une case.`,
+      powerLevel: 1
+    };
+
+  io.emit("tvPlayerScanned", {
+    playerName: data.playerName,
+    caseNumber: caseNumber,
+    category: action.category,
+    title: action.title,
+    text: action.text,
+    powerLevel: action.powerLevel
+  });
 });
 
   socket.on("disconnect", () => {

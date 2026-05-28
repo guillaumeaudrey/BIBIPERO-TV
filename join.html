@@ -151,11 +151,7 @@ function openScanner() {
   const playerName =
     localStorage.getItem("bibiperoPlayer");
 
-  socket.emit("playerScannedCase", {
-    playerName: playerName,
-    qrValue: decodedText
-  });
-
+  
   document.getElementById("scanResult").textContent =
   `✅ QR scanné : ${decodedText}`;
 

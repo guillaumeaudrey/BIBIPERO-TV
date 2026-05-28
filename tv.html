@@ -578,7 +578,7 @@
     let attractTimer;
 
     const socket = io();
-    
+
 socket.on("playersUpdated", (players) => {
 
   const list =
@@ -599,35 +599,20 @@ socket.on("playersUpdated", (players) => {
 
 socket.on("tvPlayerScanned", (data) => {
 
-  const player =
-    data.playerName || "Joueur";
-
-  const qr =
-    data.qr || "";
-
-  const parts =
-    qr.split("/");
-
-  const caseNumber =
-    parts[1] || "?";
-
-  const category =
-    parts[2] || "action";
-
   showTvCard({
-    playerName: player,
-    currentPlayer: player,
-    caseNumber: caseNumber,
-    category: category,
-    title: `Case ${caseNumber}`,
-    text: `${player} vient de scanner une case.`,
-    totalActions: 0,
-    players: []
+    playerName: data.playerName || "Joueur",
+    currentPlayer: data.playerName || "Joueur",
+    caseNumber: data.caseNumber || "?",
+    category: data.category || "action",
+    title: data.title || "Action",
+    text: data.text || "Action inconnue",
+    powerLevel: data.powerLevel || 1
   });
 
   speakOnTv({
-    narration:
-      `${player} vient de scanner la case ${caseNumber}`
+    narration: `${data.playerName || "Un joueur"} a scanné la case ${data.caseNumber}`,
+    title: data.title,
+    text: data.text
   });
 });
 
