@@ -912,7 +912,7 @@ function speakOnTv(data) {
   speechSynthesis.cancel();
 
   const text =
-    `Tour de ${data.playerName || "joueur"}. ${data.title || ""}. ${data.text || ""}`;
+  `${data.narration || ""}. ${data.title || ""}. ${data.text || ""}`;
 
   const utterance =
     new SpeechSynthesisUtterance(text);
