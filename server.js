@@ -77,15 +77,20 @@ socket.on("playerScannedCase", (data) => {
 
   const action = getRandomAction(category);
 
-  io.emit("tvPlayerScanned", {
+  state = {
+    ...state,
     playerName: data.playerName,
+    currentPlayer: data.playerName,
     caseNumber: caseNumber,
     category: action.category,
     title: action.title,
     text: action.text,
     powerLevel: action.powerLevel,
-    isLegendary: action.isLegendary || false
-  });
+    isLegendary: action.isLegendary || false,
+    totalActions: (state.totalActions || 0) + 1
+  };
+
+  io.emit("tvPlayerScanned", state);
 });
 
   socket.on("disconnect", () => {
