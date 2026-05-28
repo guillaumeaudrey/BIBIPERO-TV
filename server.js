@@ -192,21 +192,19 @@ socket.on("resetGame", () => {
 
   state = {
     playerName: "",
-    currentPlayer:
-      connectedPlayers[0]?.name || "En attente",
-
+    currentPlayer: connectedPlayers[0]?.name || "En attente",
     caseNumber: 0,
     category: "",
     title: "",
     text: "",
-
+    powerLevel: 0,
+    isLegendary: false,
     totalActions: 0,
     isLastRound: false,
-
     players: connectedPlayers
   };
 
   io.emit("stateUpdated", state);
 
-  console.log("Nouvelle partie");
+  console.log("Nouvelle partie lancée");
 });

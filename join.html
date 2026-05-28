@@ -97,6 +97,10 @@
 
     <div id="success"></div>
 
+    <div id="turnInfo" style="margin-top:15px; font-size:18px; color:#ffb300;">
+  En attente du tour...
+</div>
+
     <button id="scanBtn" class="scan-btn" onclick="openScanner()">
   📷 Scanner une case
 </button>
@@ -108,11 +112,24 @@
   ▶ Joueur suivant
 </button>
 
+<button id="resetBtn" class="scan-btn" onclick="resetGame()">
+  🔄 Nouvelle partie
+</button>
+
   </div>
 
   <script>
 
     const socket = io();
+ 
+   let currentPlayer = "";
+
+   socket.on("stateUpdated", (data) => {
+  currentPlayer = data.currentPlayer || "";
+
+  document.getElementById("turnInfo").textContent =
+    `🎮 Tour de : ${currentPlayer}`;
+});
 
     function joinGame() {
 
@@ -134,6 +151,14 @@
     let html5QrCode;
 
 function openScanner() {
+
+const myName = localStorage.getItem("bibiperoPlayer");
+
+if (currentPlayer && myName !== currentPlayer) {
+  document.getElementById("scanResult").textContent =
+    `⛔ Ce n'est pas ton tour. C'est le tour de ${currentPlayer}`;
+  return;
+}
 
   const reader =
     document.getElementById("reader");
@@ -177,6 +202,13 @@ function nextPlayer() {
 
   document.getElementById("scanResult").textContent =
     "▶ Tour passé au joueur suivant";
+}
+
+function resetGame() {
+  socket.emit("resetGame");
+
+  document.getElementById("scanResult").textContent =
+    "🔄 Nouvelle partie lancée";
 }
 
   </script>
