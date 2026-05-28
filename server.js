@@ -62,6 +62,12 @@ io.on("connection", (socket) => {
     console.log(playerName + " a rejoint la partie");
   });
 
+socket.on("playerScannedCase", (data) => {
+  console.log("QR scanné :", data);
+
+  io.emit("playerScanReceived", data);
+});
+
   socket.on("disconnect", () => {
 
     connectedPlayers =

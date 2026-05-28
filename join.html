@@ -148,12 +148,20 @@ function openScanner() {
     },
     (decodedText) => {
 
-      document.getElementById("scanResult").textContent =
-        `✅ QR détecté : ${decodedText}`;
+  const playerName =
+    localStorage.getItem("bibiperoPlayer");
 
-      html5QrCode.stop();
-      reader.style.display = "none";
-    }
+  socket.emit("playerScannedCase", {
+    playerName: playerName,
+    qrValue: decodedText
+  });
+
+  document.getElementById("scanResult").textContent =
+    `✅ QR scanné : ${decodedText}`;
+
+  html5QrCode.stop();
+  reader.style.display = "none";
+}
   );
 }
   </script>
