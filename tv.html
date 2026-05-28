@@ -599,15 +599,15 @@ socket.on("playersUpdated", (players) => {
 
 socket.on("tvPlayerScanned", (data) => {
 
+  console.log("Carte reçue TV :", data);
+
   showTvCard({
     playerName: data.playerName || "Joueur",
-    currentPlayer: data.playerName || "Joueur",
     caseNumber: data.caseNumber || "?",
     category: data.category || "boire",
     title: data.title || "Action",
     text: data.text || "Action inconnue",
-    powerLevel: data.powerLevel || 1,
-    isLegendary: data.isLegendary || false
+    powerLevel: data.powerLevel || 1
   });
 
   speakOnTv({
