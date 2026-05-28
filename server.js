@@ -1,5 +1,16 @@
+const http = require("http");
+const { Server } = require("socket.io");
+
 const express = require("express");
 const app = express();
+
+const server = http.createServer(app);
+
+const io = new Server(server, {
+  cors: {
+    origin: "*"
+  }
+});
 
 app.use(express.json());
 app.use(express.static(__dirname));
@@ -29,7 +40,37 @@ app.post("/state", (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, "0.0.0.0", () => {
+server.listen(PORT, "0.0.0.0", () => {
   console.log(`BIBIPERO TV lancé sur le port ${PORT}`);
 });
 
+let connectedPlayers = [];
+
+io.on("connection", (socket) => {
+
+  console.log("Joueur connecté :", socket.id);
+
+  socket.on("joinPlayer", (playerName) => {
+
+    connectedPlayers.push({
+      id: socket.id,
+      name: playerName
+    });
+
+    io.emit("playersUpdated", connectedPlayers);
+
+    console.log(playerName + " a rejoint la partie");
+  });
+
+  socket.on("disconnect", () => {
+
+    connectedPlayers =
+      connectedPlayers.filter(
+        p => p.id !== socket.id
+      );
+
+    io.emit("playersUpdated", connectedPlayers);
+
+    console.log("Joueur déconnecté");
+  });
+});

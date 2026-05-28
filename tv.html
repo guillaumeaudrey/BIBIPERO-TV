@@ -534,6 +534,11 @@
   <aside class="side">
 
     <section class="panel">
+  <h2>👥 Joueurs connectés</h2>
+  <ul id="connectedPlayers" class="ranking"></ul>
+</section>
+
+    <section class="panel">
       <h2>🏆 Classement</h2>
       <ul id="ranking" class="ranking"></ul>
     </section>
@@ -565,11 +570,32 @@
       Scanne • Joue • Bois • Gagne
     </footer>
   </div>
+  <script src="/socket.io/socket.io.js"></script>
   <script>
 
     let currentState = {};
     let lastCardId = "";
     let attractTimer;
+    const socket = io();
+
+    socket.on("playersUpdated", (players) => {
+
+  const list =
+    document.getElementById("connectedPlayers");
+
+  list.innerHTML = "";
+
+  players.forEach(p => {
+
+    const li =
+      document.createElement("li");
+
+    li.textContent = p.name;
+
+    list.appendChild(li);
+  });
+});
+
    const casePositions = {
   1: { x: 88, y: 86 },
   2: { x: 74, y: 86 },

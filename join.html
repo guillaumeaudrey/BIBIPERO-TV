@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <title>BIBIPERO - Rejoindre</title>
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  <script src="/socket.io/socket.io.js"></script>
+
+  <style>
+
+    body {
+      margin: 0;
+      background: #111;
+      color: white;
+      font-family: Arial;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .card {
+      width: 90%;
+      max-width: 400px;
+      background: #1d1d1d;
+      border-radius: 30px;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 0 30px rgba(255,180,0,0.3);
+    }
+
+    h1 {
+      color: #ffb300;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px;
+      border-radius: 15px;
+      border: none;
+      font-size: 20px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      border-radius: 15px;
+      border: none;
+      background: #ffb300;
+      color: black;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    #success {
+      margin-top: 20px;
+      color: #4cff88;
+      font-size: 18px;
+    }
+    .scan-btn {
+  margin-top: 20px;
+  background: #4caf50;
+}
+
+#reader {
+  display: none;
+  width: 100%;
+  margin-top: 20px;
+  background: #000;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+
+  </style>
+</head>
+
+<body>
+
+  <div class="card">
+
+    <h1>🍻 Rejoindre BIBIPERO</h1>
+
+    <input
+      id="playerName"
+      placeholder="Ton prénom"
+    />
+
+    <button onclick="joinGame()">
+      Rejoindre
+    </button>
+
+    <div id="success"></div>
+
+    <button id="scanBtn" class="scan-btn" onclick="openScanner()">
+  📷 Scanner une case
+</button>
+
+<div id="scanResult"></div>
+<div id="reader"></div>
+  </div>
+
+  <script>
+
+    const socket = io();
+
+    function joinGame() {
+
+      const playerName =
+        document.getElementById("playerName").value;
+
+      if (!playerName) return;
+
+      socket.emit("joinPlayer", playerName);
+
+      localStorage.setItem(
+        "bibiperoPlayer",
+        playerName
+      );
+
+      document.getElementById("success").textContent =
+        `✅ ${playerName} a rejoint la partie`;
+    }
+    let html5QrCode;
+
+function openScanner() {
+
+  const reader =
+    document.getElementById("reader");
+
+  reader.style.display = "block";
+
+  document.getElementById("scanResult").textContent =
+    "📷 Scanner ouvert";
+
+  html5QrCode = new Html5Qrcode("reader");
+
+  html5QrCode.start(
+    { facingMode: "environment" },
+    {
+      fps: 10,
+      qrbox: 250
+    },
+    (decodedText) => {
+
+      document.getElementById("scanResult").textContent =
+        `✅ QR détecté : ${decodedText}`;
+
+      html5QrCode.stop();
+      reader.style.display = "none";
+    }
+  );
+}
+  </script>
+
+</body>
+</html>
