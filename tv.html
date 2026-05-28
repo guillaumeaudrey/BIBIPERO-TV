@@ -601,25 +601,22 @@ socket.on("stateUpdated", (data) => {
 
   console.log("STATE TV =", data);
 
-  showTvCard({
-    playerName: data.playerName,
-    currentPlayer: data.currentPlayer,
-    caseNumber: data.caseNumber,
-    category: data.category,
-    title: data.title,
-    text: data.text,
-    powerLevel: data.powerLevel,
-    isLegendary: data.isLegendary
-  });
+  currentState = data;
+  updatePawns(data.players || []);
 
-  speakOnTv({
-    narration:
-      `${data.playerName} a scanné une case`,
-    title: data.title,
-    text: data.text
-  });
+  document.getElementById("currentPlayer").textContent =
+    data.currentPlayer || "-";
+
+  document.getElementById("turnBanner").textContent =
+    `🎮 Tour de ${data.currentPlayer || "joueur"}`;
+
+  if (data.title && data.text) {
+    showTvCard(data);
+    speakOnTv(data);
+  } else {
+    closeTvCard();
+  }
 });
-
    const casePositions = {
   1: { x: 88, y: 86 },
   2: { x: 74, y: 86 },
@@ -991,6 +988,14 @@ function speakOnTv(data) {
   utterance.volume = 1;
 
   speechSynthesis.speak(utterance);
+}
+
+function closeTvCard() {
+  const overlay = document.getElementById("tvCardOverlay");
+
+  if (overlay) {
+    overlay.classList.add("hidden");
+  }
 }
 
 document.body.addEventListener("click", () => {

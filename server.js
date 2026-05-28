@@ -128,6 +128,7 @@ socket.on("playerScannedCase", (data) => {
     playerName: player.name,
     currentPlayer: player.name,
     caseNumber: caseNumber,
+
     category: action.category,
     title: action.title,
     text: action.text,
@@ -148,8 +149,18 @@ socket.on("nextPlayer", () => {
   currentPlayerIndex =
     (currentPlayerIndex + 1) % connectedPlayers.length;
 
-  state.currentPlayer =
-    connectedPlayers[currentPlayerIndex].name;
+  state = {
+    ...state,
+    playerName: "",
+    currentPlayer: connectedPlayers[currentPlayerIndex].name,
+    caseNumber: 0,
+    category: "",
+    title: "",
+    text: "",
+    powerLevel: 0,
+    isLegendary: false,
+    players: connectedPlayers
+  };
 
   io.emit("stateUpdated", state);
 
@@ -167,4 +178,35 @@ socket.on("nextPlayer", () => {
 
     console.log("Joueur déconnecté");
   });
+});
+
+socket.on("resetGame", () => {
+
+  connectedPlayers.forEach(p => {
+    p.position = 0;
+    p.totalActions = 0;
+    p.totalDrinks = 0;
+  });
+
+  currentPlayerIndex = 0;
+
+  state = {
+    playerName: "",
+    currentPlayer:
+      connectedPlayers[0]?.name || "En attente",
+
+    caseNumber: 0,
+    category: "",
+    title: "",
+    text: "",
+
+    totalActions: 0,
+    isLastRound: false,
+
+    players: connectedPlayers
+  };
+
+  io.emit("stateUpdated", state);
+
+  console.log("Nouvelle partie");
 });
