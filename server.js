@@ -1,5 +1,6 @@
 const http = require("http");
 const { Server } = require("socket.io");
+const { getRandomAction } = require("./ActionService");
 
 const express = require("express");
 const app = express();
@@ -46,21 +47,7 @@ server.listen(PORT, "0.0.0.0", () => {
 
 let connectedPlayers = [];
 
-const actionsByCase = {
-  23: {
-    category: "malus",
-    title: "Malus Surprise",
-    text: "Bois 2 gorgées.",
-    powerLevel: 2
-  },
-
-  4: {
-    category: "boire",
-    title: "Santé Patron",
-    text: "Bois avec le proprio du jeu.",
-    powerLevel: 1
-  }
-};
+const actionsByCase = require("./actionsByCase");
 
 io.on("connection", (socket) => {
 
@@ -82,16 +69,13 @@ socket.on("playerScannedCase", (data) => {
 
   console.log("QR scanné :", data);
 
-  const parts = data.qr.split("/");
-  const caseNumber = Number(parts[1]);
+  const qr = data.qr || data.qrValue || "";
+  const parts = qr.split("/");
 
-  const action =
-    actionsByCase[caseNumber] || {
-      category: parts[2] || "action",
-      title: `Case ${caseNumber}`,
-      text: `${data.playerName} vient de scanner une case.`,
-      powerLevel: 1
-    };
+  const caseNumber = Number(parts[1]);
+  const category = parts[2] || "action";
+
+  const action = getRandomAction(category);
 
   io.emit("tvPlayerScanned", {
     playerName: data.playerName,
@@ -99,7 +83,8 @@ socket.on("playerScannedCase", (data) => {
     category: action.category,
     title: action.title,
     text: action.text,
-    powerLevel: action.powerLevel
+    powerLevel: action.powerLevel,
+    isLegendary: action.isLegendary || false
   });
 });
 
