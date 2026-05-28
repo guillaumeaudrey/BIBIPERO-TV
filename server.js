@@ -15,7 +15,9 @@ let state = {
   isLastRound: false,
   players: []
 };
-
+app.get("/", (req, res) => {
+  res.redirect("/tv.html");
+});
 app.get("/state", (req, res) => {
   res.json(state);
 });
