@@ -25,6 +25,7 @@ let state = {
   text: "En attente d’un scan...",
   totalActions: 0,
   isLastRound: false,
+  gameStarted: false,
   players: []
 };
 app.get("/", (req, res) => {
@@ -60,13 +61,17 @@ io.on("connection", (socket) => {
     connectedPlayers.some(p => p.name === playerName);
 
   if (!alreadyExists) {
-    connectedPlayers.push({
-      id: socket.id,
-      name: playerName,
-      position: 0,
-      totalActions: 0,
-      totalDrinks: 0
-    });
+    const isMaster =
+  connectedPlayers.length === 0;
+
+connectedPlayers.push({
+  id: socket.id,
+  name: playerName,
+  position: 0,
+  totalActions: 0,
+  totalDrinks: 0,
+  isMaster: isMaster
+});
   }
 
   state.players = connectedPlayers;
@@ -82,6 +87,13 @@ io.on("connection", (socket) => {
 socket.on("playerScannedCase", (data) => {
 
   console.log("QR scanné :", data);
+
+  if (!state.gameStarted) {
+  socket.emit("scanError", {
+    message: "La partie n’a pas encore démarré"
+  });
+  return;
+}
 
   const qr = data.qr || data.qrValue || "";
   const parts = qr.split("/");
@@ -139,6 +151,7 @@ socket.on("playerScannedCase", (data) => {
   };
 
   io.emit("stateUpdated", state);
+io.emit("playersUpdated", connectedPlayers);
 
 });
 
@@ -163,22 +176,11 @@ socket.on("nextPlayer", () => {
   };
 
   io.emit("stateUpdated", state);
+  io.emit("playersUpdated", connectedPlayers);
 
   console.log("Tour suivant :", state.currentPlayer);
 });
 
-  socket.on("disconnect", () => {
-
-    connectedPlayers =
-      connectedPlayers.filter(
-        p => p.id !== socket.id
-      );
-
-    io.emit("playersUpdated", connectedPlayers);
-
-    console.log("Joueur déconnecté");
-  });
-});
 
 socket.on("resetGame", () => {
 
@@ -201,10 +203,84 @@ socket.on("resetGame", () => {
     isLegendary: false,
     totalActions: 0,
     isLastRound: false,
+    gameStarted: false,
     players: connectedPlayers
   };
 
   io.emit("stateUpdated", state);
 
   console.log("Nouvelle partie lancée");
+});
+
+socket.on("startGame", () => {
+
+  const player =
+    connectedPlayers.find(
+      p => p.id === socket.id
+    );
+
+  if (!player || !player.isMaster) {
+    socket.emit("masterOnly");
+    return;
+  }
+
+  if (connectedPlayers.length < 2) {
+  socket.emit("startError", {
+    message: "Il faut au moins 2 joueurs pour démarrer"
+  });
+  return;
+}
+
+  currentPlayerIndex = 0;
+
+  state = {
+    playerName: "",
+    currentPlayer:
+      connectedPlayers[0].name,
+
+    caseNumber: 0,
+    category: "",
+    title: "",
+    text: "",
+
+    powerLevel: 0,
+    isLegendary: false,
+
+    totalActions: 0,
+    isLastRound: false,
+    gameStarted: false,
+    players: connectedPlayers
+  };
+
+  io.emit("stateUpdated", state);
+  io.emit("playersUpdated", connectedPlayers);
+
+  console.log(
+    "Partie démarrée :",
+    state.currentPlayer
+  );
+});
+
+
+socket.on("disconnect", () => {
+
+  connectedPlayers =
+    connectedPlayers.filter(
+      p => p.id !== socket.id
+    );
+
+  if (currentPlayerIndex >= connectedPlayers.length) {
+    currentPlayerIndex = 0;
+  }
+
+  state.players = connectedPlayers;
+  state.currentPlayer =
+    connectedPlayers[currentPlayerIndex]?.name || "En attente";
+
+  io.emit("playersUpdated", connectedPlayers);
+  io.emit("stateUpdated", state);
+
+  console.log("Joueur déconnecté");
+});
+
 });

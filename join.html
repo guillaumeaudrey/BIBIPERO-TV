@@ -94,6 +94,39 @@
 .inactive-turn {
   opacity: 0.6;
 }
+
+.players-box {
+  margin-top: 20px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 18px;
+  padding: 15px;
+  text-align: left;
+}
+
+.players-box h2 {
+  color: #ffb300;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+#playersList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#playersList li {
+  padding: 8px 10px;
+  border-radius: 10px;
+  margin-bottom: 6px;
+  background: rgba(255,255,255,0.08);
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
   </style>
 </head>
 
@@ -117,6 +150,10 @@
     <div id="turnInfo" style="margin-top:15px; font-size:18px; color:#ffb300;">
   En attente du tour...
 </div>
+<div class="players-box">
+  <h2>👥 Joueurs</h2>
+  <ul id="playersList"></ul>
+</div>
 
     <button id="scanBtn" class="scan-btn" onclick="openScanner()">
   📷 Scanner ma case
@@ -129,9 +166,17 @@
   ✅ Fin de mon tour
 </button>
 
-<button id="resetBtn" class="reset-btn" onclick="resetGame()">
-  🔄 Nouvelle partie
-</button>
+<div id="masterControls">
+
+  <button id="startBtn" class="scan-btn" onclick="startGame()">
+    ▶ Démarrer la partie
+  </button>
+
+  <button id="resetBtn" class="reset-btn" onclick="resetGame()">
+    🔄 Nouvelle partie
+  </button>
+
+</div>
 
   </div>
 
@@ -140,13 +185,28 @@
     const socket = io();
  
    let currentPlayer = "";
+   let isMaster = false;
+   let gameStarted = false;
 
    socket.on("stateUpdated", (data) => {
 
   currentPlayer = data.currentPlayer || "";
 
+  gameStarted = data.gameStarted || false;
+
+document.getElementById("scanBtn").disabled = !gameStarted;
+document.getElementById("nextBtn").disabled = !gameStarted;
+
+if (!gameStarted) {
+
+  document.getElementById("turnInfo").textContent =
+    "⏳ En attente du démarrage de la partie";
+
+} else {
+
   document.getElementById("turnInfo").textContent =
     `🎮 Tour de : ${currentPlayer}`;
+}
 
   const myName =
     localStorage.getItem("bibiperoPlayer");
@@ -169,6 +229,11 @@
 socket.on("notYourTurn", (data) => {
   document.getElementById("scanResult").textContent =
     `⛔ Ce n'est pas ton tour. C'est le tour de ${data.currentPlayer}`;
+});
+
+socket.on("masterOnly", () => {
+  document.getElementById("scanResult").textContent =
+    "⛔ Seul le joueur maître peut faire ça";
 });
 
     function joinGame() {
@@ -238,10 +303,20 @@ reader.style.display = "none";
 }
 
 function nextPlayer() {
+
+  const myName =
+    localStorage.getItem("bibiperoPlayer");
+
+  if (currentPlayer && myName !== currentPlayer) {
+    document.getElementById("scanResult").textContent =
+      `⛔ Tu ne peux pas passer le tour. C'est le tour de ${currentPlayer}`;
+    return;
+  }
+
   socket.emit("nextPlayer");
 
   document.getElementById("scanResult").textContent =
-    "▶ Tour passé au joueur suivant";
+    "✅ Tour terminé";
 }
 
 function resetGame() {
@@ -251,7 +326,63 @@ function resetGame() {
     "🔄 Nouvelle partie lancée";
 }
 
+socket.on("playersUpdated", (players) => {
 
+  const list =
+    document.getElementById("playersList");
+
+  list.innerHTML = "";
+
+  const myName =
+    localStorage.getItem("bibiperoPlayer");
+
+  isMaster = false;
+
+  players.forEach(p => {
+
+    if (p.name === myName && p.isMaster)
+      isMaster = true;
+
+    const li =
+      document.createElement("li");
+
+    li.textContent =
+      `${p.isMaster ? "👑" : "👤"} ${p.name} — Case ${p.position || 0}`;
+
+    list.appendChild(li);
+  });
+
+  document.getElementById("masterControls").style.display =
+    isMaster ? "block" : "none";
+
+});
+
+function startGame() {
+
+  const playersCount =
+    document.querySelectorAll("#playersList li").length;
+
+  if (playersCount < 2) {
+    document.getElementById("scanResult").textContent =
+      "⛔ Il faut au moins 2 joueurs pour démarrer";
+    return;
+  }
+
+  socket.emit("startGame");
+
+  document.getElementById("scanResult").textContent =
+    "▶ Partie démarrée";
+}
+
+socket.on("startError", (data) => {
+  document.getElementById("scanResult").textContent =
+    `⛔ ${data.message}`;
+});
+
+socket.on("scanError", (data) => {
+  document.getElementById("scanResult").textContent =
+    `⛔ ${data.message}`;
+});
 
   </script>
 

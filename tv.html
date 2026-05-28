@@ -603,6 +603,14 @@ socket.on("stateUpdated", (data) => {
 
   currentState = data;
   updatePawns(data.players || []);
+  
+  if (!data.gameStarted) {
+  document.getElementById("turnBanner").textContent =
+    "⏳ En attente du démarrage de la partie";
+
+  closeTvCard();
+  return;
+}
 
   document.getElementById("currentPlayer").textContent =
     data.currentPlayer || "-";
