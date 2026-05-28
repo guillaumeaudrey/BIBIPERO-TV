@@ -76,6 +76,16 @@
   overflow: hidden;
 }
 
+.next-btn {
+  background: #2196f3;
+}
+
+.reset-btn {
+  margin-top: 15px;
+  background: #d32f2f;
+  color: white;
+}
+
 
   </style>
 </head>
@@ -102,17 +112,17 @@
 </div>
 
     <button id="scanBtn" class="scan-btn" onclick="openScanner()">
-  📷 Scanner une case
+  📷 Scanner ma case
 </button>
 
 <div id="scanResult"></div>
 <div id="reader"></div>
 
-<button id="nextBtn" class="scan-btn" onclick="nextPlayer()">
-  ▶ Joueur suivant
+<button id="nextBtn" class="scan-btn next-btn" onclick="nextPlayer()">
+  ✅ Fin de mon tour
 </button>
 
-<button id="resetBtn" class="scan-btn" onclick="resetGame()">
+<button id="resetBtn" class="reset-btn" onclick="resetGame()">
   🔄 Nouvelle partie
 </button>
 
@@ -129,6 +139,11 @@
 
   document.getElementById("turnInfo").textContent =
     `🎮 Tour de : ${currentPlayer}`;
+});
+
+socket.on("notYourTurn", (data) => {
+  document.getElementById("scanResult").textContent =
+    `⛔ Ce n'est pas ton tour. C'est le tour de ${data.currentPlayer}`;
 });
 
     function joinGame() {
@@ -210,6 +225,8 @@ function resetGame() {
   document.getElementById("scanResult").textContent =
     "🔄 Nouvelle partie lancée";
 }
+
+
 
   </script>
 
