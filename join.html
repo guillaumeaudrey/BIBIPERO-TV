@@ -278,6 +278,11 @@
     updateWaitingMessage();
 
     setInterval(updateWaitingMessage, 10000);
+
+
+    socket.emit("getState");
+
+    
   </script>
 
 </body>

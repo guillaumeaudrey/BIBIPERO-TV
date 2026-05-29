@@ -54,11 +54,29 @@ let currentPlayerIndex = 0;
 io.on("connection", (socket) => {
 
   console.log("Joueur connecté :", socket.id);
-  
+
   socket.emit("stateUpdated", state);
 socket.emit("playersUpdated", connectedPlayers);
   
-socket.emit("playersUpdated", connectedPlayers);
+socket.on("rejoinPlayer", (playerName) => {
+
+  const player =
+    connectedPlayers.find(
+      p => p.name === playerName
+    );
+
+  if (player) {
+
+    player.id = socket.id;
+
+    console.log(
+      playerName + " reconnecté"
+    );
+  }
+
+  socket.emit("stateUpdated", state);
+  socket.emit("playersUpdated", connectedPlayers);
+});
 
   socket.on("joinPlayer", (playerName) => {
 
@@ -254,6 +272,7 @@ socket.on("startGame", () => {
     totalActions: 0,
     isLastRound: false,
     gameStarted: true,
+    currentPlayer: connectedPlayers[0].name,
     players: connectedPlayers
   };
 
@@ -265,7 +284,10 @@ socket.on("startGame", () => {
     state.currentPlayer
   );
 });
-
+socket.on("getState", () => {
+  socket.emit("stateUpdated", state);
+  socket.emit("playersUpdated", connectedPlayers);
+});
 
 socket.on("disconnect", () => {
 

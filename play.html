@@ -164,6 +164,14 @@
   <script>
     const socket = io();
 
+    const savedPlayer =
+  localStorage.getItem("bibiperoPlayer");
+
+if (!savedPlayer) {
+  window.location.href = "/join.html";
+}
+socket.emit("rejoinPlayer", savedPlayer);
+
     let currentPlayer = "";
     let gameStarted = false;
     let isMaster = false;
@@ -332,6 +340,10 @@
       document.getElementById("scanResult").textContent =
         "🔄 Nouvelle partie lancée";
     }
+
+  socket.emit("getState");
+
+
   </script>
 
 </body>
