@@ -5,11 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
   <title>BIBIPERO - Rejoindre</title>
-  <script src="https://unpkg.com/html5-qrcode"></script>
   <script src="/socket.io/socket.io.js"></script>
 
   <style>
-
     body {
       margin: 0;
       background: #111;
@@ -18,12 +16,12 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
     }
 
     .card {
       width: 90%;
-      max-width: 400px;
+      max-width: 420px;
       background: #1d1d1d;
       border-radius: 30px;
       padding: 30px;
@@ -44,6 +42,7 @@
       font-size: 20px;
       margin-bottom: 20px;
       text-align: center;
+      box-sizing: border-box;
     }
 
     button {
@@ -55,84 +54,79 @@
       color: black;
       font-size: 20px;
       font-weight: bold;
+      margin-top: 15px;
+    }
+
+    .start-btn {
+      background: #4caf50;
+      color: white;
+    }
+
+    button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
     }
 
     #success {
-      margin-top: 20px;
+      margin-top: 15px;
       color: #4cff88;
       font-size: 18px;
     }
-    .scan-btn {
-  margin-top: 20px;
-  background: #4caf50;
-}
 
-#reader {
-  display: none;
-  width: 100%;
-  margin-top: 20px;
-  background: #000;
-  border-radius: 20px;
-  overflow: hidden;
-}
+    #masterInfo {
+      margin-top: 15px;
+      font-size: 18px;
+      color: #ffb300;
+      font-weight: bold;
+    }
 
-.next-btn {
-  background: #2196f3;
-}
+    .waiting-message {
+      margin-top: 18px;
+      padding: 14px;
+      border-radius: 15px;
+      background: rgba(255,179,0,0.12);
+      color: #ffb300;
+      font-size: 18px;
+      font-weight: bold;
+    }
 
-.reset-btn {
-  margin-top: 15px;
-  background: #d32f2f;
-  color: white;
-}
+    .players-box {
+      margin-top: 20px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 15px;
+      text-align: left;
+    }
 
-.active-turn {
-  box-shadow: 0 0 25px #4caf50;
-  border: 3px solid #4caf50;
-}
+    .players-box h2 {
+      color: #ffb300;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
 
-.inactive-turn {
-  opacity: 0.6;
-}
+    #playersList {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
 
-.players-box {
-  margin-top: 20px;
-  background: rgba(255,255,255,0.08);
-  border-radius: 18px;
-  padding: 15px;
-  text-align: left;
-}
+    #playersList li {
+      padding: 8px 10px;
+      border-radius: 10px;
+      margin-bottom: 6px;
+      background: rgba(255,255,255,0.08);
+    }
 
-.players-box h2 {
-  color: #ffb300;
-  font-size: 18px;
-  margin-bottom: 10px;
-}
-
-#playersList {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-#playersList li {
-  padding: 8px 10px;
-  border-radius: 10px;
-  margin-bottom: 6px;
-  background: rgba(255,255,255,0.08);
-}
-
-button:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-}
-
+    #scanResult {
+      margin-top: 15px;
+      font-size: 17px;
+    }
   </style>
 </head>
 
 <body>
 
-  <div class="card" id="mainCard">
+  <div class="card">
 
     <h1>🍻 Rejoindre BIBIPERO</h1>
 
@@ -147,243 +141,143 @@ button:disabled {
 
     <div id="success"></div>
 
-    <div id="turnInfo" style="margin-top:15px; font-size:18px; color:#ffb300;">
-  En attente du tour...
-</div>
-<div class="players-box">
-  <h2>👥 Joueurs</h2>
-  <ul id="playersList"></ul>
-</div>
+    <div id="masterInfo">
+      👑 Maître : -
+    </div>
 
-    <button id="scanBtn" class="scan-btn" onclick="openScanner()">
-  📷 Scanner ma case
-</button>
+    <div id="waitingMessage" class="waiting-message">
+      🍻 Les verres sont prêts... On attend le maître de l'apéro !
+    </div>
 
-<div id="scanResult"></div>
-<div id="reader"></div>
+    <div class="players-box">
+      <h2>👥 Joueurs connectés</h2>
+      <ul id="playersList"></ul>
+    </div>
 
-<button id="nextBtn" class="scan-btn next-btn" onclick="nextPlayer()">
-  ✅ Fin de mon tour
-</button>
+    <div id="masterControls">
+      <button id="startBtn" class="start-btn" onclick="startGame()">
+        ▶ Démarrer la partie
+      </button>
+    </div>
 
-<div id="masterControls">
-
-  <button id="startBtn" class="scan-btn" onclick="startGame()">
-    ▶ Démarrer la partie
-  </button>
-
-  <button id="resetBtn" class="reset-btn" onclick="resetGame()">
-    🔄 Nouvelle partie
-  </button>
-
-</div>
+    <div id="scanResult"></div>
 
   </div>
 
   <script>
-
     const socket = io();
- 
-   let currentPlayer = "";
-   let isMaster = false;
-   let gameStarted = false;
 
-   socket.on("stateUpdated", (data) => {
+    let isMaster = false;
 
-  currentPlayer = data.currentPlayer || "";
+    const waitingMessages = [
+      "🍻 Les verres sont prêts... On attend le maître de l'apéro !",
+      "🍺 Échauffement en cours... Le maître prépare une catastrophe.",
+      "🎉 La soirée charge à 99%... Plus qu'à appuyer sur Démarrer !",
+      "🤫 Ne réveillez pas le maître, il réfléchit encore.",
+      "👑 Le roi du BIBIPERO n'a pas encore donné le signal.",
+      "🍹 Vérification des stocks d'apéro en cours...",
+      "🎲 Le destin des joueurs est en train de se charger...",
+      "🍻 Rassemblement des légendes de l'apéro...",
+      "⚠️ Niveau de folie insuffisant. En attente du maître.",
+      "🚀 Préparation au décollage alcoolisé..."
+    ];
 
-  gameStarted = data.gameStarted || false;
+    function updateWaitingMessage() {
+      const randomMessage =
+        waitingMessages[
+          Math.floor(Math.random() * waitingMessages.length)
+        ];
 
-document.getElementById("scanBtn").disabled = !gameStarted;
-document.getElementById("nextBtn").disabled = !gameStarted;
+      document.getElementById("waitingMessage").textContent =
+        randomMessage;
+    }
 
-if (!gameStarted) {
+    socket.on("stateUpdated", (data) => {
+      if (data.gameStarted) {
+        window.location.href = "/play.html";
+      }
+    });
 
-  document.getElementById("turnInfo").textContent =
-    "⏳ En attente du démarrage de la partie";
+    socket.on("playersUpdated", (players) => {
+      const list = document.getElementById("playersList");
+      list.innerHTML = "";
 
-} else {
+      const myName =
+        localStorage.getItem("bibiperoPlayer");
 
-  document.getElementById("turnInfo").textContent =
-    `🎮 Tour de : ${currentPlayer}`;
-}
+      isMaster = false;
+      let masterName = "";
 
-  const myName =
-    localStorage.getItem("bibiperoPlayer");
+      players.forEach(p => {
+        if (p.isMaster) {
+          masterName = p.name;
+        }
 
-  const card =
-    document.getElementById("mainCard");
+        if (p.name === myName && p.isMaster) {
+          isMaster = true;
+        }
 
-  if (myName === currentPlayer) {
+        const li =
+          document.createElement("li");
 
-    card.classList.remove("inactive-turn");
-    card.classList.add("active-turn");
+        li.textContent =
+          `${p.isMaster ? "👑" : "👤"} ${p.name} — Case ${p.position || 0}`;
 
-  } else {
+        list.appendChild(li);
+      });
 
-    card.classList.remove("active-turn");
-    card.classList.add("inactive-turn");
-  }
-});
+      document.getElementById("masterInfo").textContent =
+        `👑 Maître : ${masterName || "-"}`;
 
-socket.on("notYourTurn", (data) => {
-  document.getElementById("scanResult").textContent =
-    `⛔ Ce n'est pas ton tour. C'est le tour de ${data.currentPlayer}`;
-});
+      document.getElementById("masterControls").style.display =
+        isMaster ? "block" : "none";
+    });
 
-socket.on("masterOnly", () => {
-  document.getElementById("scanResult").textContent =
-    "⛔ Seul le joueur maître peut faire ça";
-});
+    socket.on("masterOnly", () => {
+      document.getElementById("scanResult").textContent =
+        "⛔ Seul le joueur maître peut faire ça";
+    });
+
+    socket.on("startError", (data) => {
+      document.getElementById("scanResult").textContent =
+        `⛔ ${data.message}`;
+    });
 
     function joinGame() {
-
       const playerName =
-        document.getElementById("playerName").value;
+        document.getElementById("playerName").value.trim();
 
       if (!playerName) return;
 
-      socket.emit("joinPlayer", playerName);
+      localStorage.setItem("bibiperoPlayer", playerName);
 
-      localStorage.setItem(
-        "bibiperoPlayer",
-        playerName
-      );
+      socket.emit("joinPlayer", playerName);
 
       document.getElementById("success").textContent =
         `✅ ${playerName} a rejoint la partie`;
+
+      updateWaitingMessage();
     }
-    let html5QrCode;
 
-function openScanner() {
+    function startGame() {
+      const playersCount =
+        document.querySelectorAll("#playersList li").length;
 
-const myName = localStorage.getItem("bibiperoPlayer");
+      if (playersCount < 2) {
+        document.getElementById("scanResult").textContent =
+          "⛔ Il faut au moins 2 joueurs pour démarrer";
+        return;
+      }
 
-if (currentPlayer && myName !== currentPlayer) {
-  document.getElementById("scanResult").textContent =
-    `⛔ Ce n'est pas ton tour. C'est le tour de ${currentPlayer}`;
-  return;
-}
+      socket.emit("startGame");
 
-  const reader =
-    document.getElementById("reader");
+      document.getElementById("scanResult").textContent =
+        "▶ Partie démarrée";
+    }
 
-  reader.style.display = "block";
+    updateWaitingMessage();
 
-  document.getElementById("scanResult").textContent =
-    "📷 Scanner ouvert";
-
-  html5QrCode = new Html5Qrcode("reader");
-
-  html5QrCode.start(
-    { facingMode: "environment" },
-    {
-      fps: 10,
-      qrbox: 250
-    },
-    (decodedText) => {
-
-  const playerName =
-    localStorage.getItem("bibiperoPlayer");
-
-  
-  document.getElementById("scanResult").textContent =
-  `✅ QR scanné : ${decodedText}`;
-
-socket.emit("playerScannedCase", {
-  playerName: localStorage.getItem("bibiperoPlayer"),
-  qr: decodedText
-});
-
-html5QrCode.stop();
-reader.style.display = "none";
-}
-
-  );
-}
-
-function nextPlayer() {
-
-  const myName =
-    localStorage.getItem("bibiperoPlayer");
-
-  if (currentPlayer && myName !== currentPlayer) {
-    document.getElementById("scanResult").textContent =
-      `⛔ Tu ne peux pas passer le tour. C'est le tour de ${currentPlayer}`;
-    return;
-  }
-
-  socket.emit("nextPlayer");
-
-  document.getElementById("scanResult").textContent =
-    "✅ Tour terminé";
-}
-
-function resetGame() {
-  socket.emit("resetGame");
-
-  document.getElementById("scanResult").textContent =
-    "🔄 Nouvelle partie lancée";
-}
-
-socket.on("playersUpdated", (players) => {
-
-  const list =
-    document.getElementById("playersList");
-
-  list.innerHTML = "";
-
-  const myName =
-    localStorage.getItem("bibiperoPlayer");
-
-  isMaster = false;
-
-  players.forEach(p => {
-
-    if (p.name === myName && p.isMaster)
-      isMaster = true;
-
-    const li =
-      document.createElement("li");
-
-    li.textContent =
-      `${p.isMaster ? "👑" : "👤"} ${p.name} — Case ${p.position || 0}`;
-
-    list.appendChild(li);
-  });
-
-  document.getElementById("masterControls").style.display =
-    isMaster ? "block" : "none";
-
-});
-
-function startGame() {
-
-  const playersCount =
-    document.querySelectorAll("#playersList li").length;
-
-  if (playersCount < 2) {
-    document.getElementById("scanResult").textContent =
-      "⛔ Il faut au moins 2 joueurs pour démarrer";
-    return;
-  }
-
-  socket.emit("startGame");
-
-  document.getElementById("scanResult").textContent =
-    "▶ Partie démarrée";
-}
-
-socket.on("startError", (data) => {
-  document.getElementById("scanResult").textContent =
-    `⛔ ${data.message}`;
-});
-
-socket.on("scanError", (data) => {
-  document.getElementById("scanResult").textContent =
-    `⛔ ${data.message}`;
-});
-
+    setInterval(updateWaitingMessage, 10000);
   </script>
 
 </body>
