@@ -601,13 +601,13 @@ socket.on("stateUpdated", (data) => {
 
   console.log("STATE TV =", data);
 
-  if (!data.gameStarted) {
-    document.getElementById("turnBanner").textContent =
-      "⏳ En attente du démarrage de la partie";
+  if (!data.gameStarted && !data.title && !data.text) {
+  document.getElementById("turnBanner").textContent =
+    "⏳ En attente du démarrage de la partie";
 
-    closeTvCard();
-    return;
-  }
+  closeTvCard();
+  return;
+}
 
   updateTv(data);
 });
