@@ -1185,6 +1185,8 @@ function getFunnySentence(playerName, category, title, text) {
 
 async function speakOnTv(data) {
 
+  console.log("ElevenLabs demandé :", data);
+
   if (!data.title?.trim() || !data.text?.trim()) {
     return;
   }

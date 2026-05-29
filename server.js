@@ -10,8 +10,8 @@ const ELEVENLABS_API_KEY =
   process.env.ELEVENLABS_API_KEY;
 
 const ELEVENLABS_VOICE_ID =
-  "JdwJ7jL68CWmQZuo7KgG";
-
+  "HPuvhU1J8dCjaKv9q7bM";
+console.log("VOICE ID =", ELEVENLABS_VOICE_ID);
 
 
 
@@ -99,10 +99,21 @@ if (!ELEVENLABS_API_KEY) {
 
   } catch (err) {
 
-    console.error(
-      "Erreur ElevenLabs :",
-      err.response?.data || err.message
-    );
+    if (err.response?.data) {
+
+  console.error(
+    "Erreur ElevenLabs :",
+    err.response.data.toString()
+  );
+
+} else {
+
+  console.error(
+    "Erreur ElevenLabs :",
+    err.message
+  );
+
+}
 
     res.status(500).send("Erreur voix");
   }

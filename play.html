@@ -268,53 +268,72 @@ socket.emit("rejoinPlayer", savedPlayer);
         `⛔ ${data.message}`;
     });
 
-    function openScanner() {
+    async function openScanner() {
 
-      const myName =
-        localStorage.getItem("bibiperoPlayer");
+  const myName =
+    localStorage.getItem("bibiperoPlayer");
 
-      if (!gameStarted) {
-        document.getElementById("scanResult").textContent =
-          "⛔ La partie n'a pas encore démarré";
-        return;
-      }
+    console.log(
+    "Mon nom :",
+    myName,
+    "Tour actuel :",
+    currentPlayer
+  );
 
-      if (currentPlayer && myName !== currentPlayer) {
-        document.getElementById("scanResult").textContent =
-          `⛔ Ce n'est pas ton tour. C'est le tour de ${currentPlayer}`;
-        return;
-      }
+  if (!gameStarted) {
+    document.getElementById("scanResult").textContent =
+      "⛔ La partie n'a pas encore démarré";
+    return;
+  }
 
-      const reader =
-        document.getElementById("reader");
+  if (currentPlayer && myName !== currentPlayer) {
+    document.getElementById("scanResult").textContent =
+      `⛔ Ce n'est pas ton tour. C'est le tour de ${currentPlayer}`;
+    return;
+  }
 
-      reader.style.display = "block";
+  const reader =
+    document.getElementById("reader");
 
-      document.getElementById("scanResult").textContent =
-        "📷 Scanner ouvert";
+  reader.style.display = "block";
 
-      html5QrCode = new Html5Qrcode("reader");
+  document.getElementById("scanResult").textContent =
+    "📷 Scanner ouvert";
 
-      html5QrCode.start(
-        { facingMode: "environment" },
-        {
-          fps: 10,
-          qrbox: 250
-        },
-        (decodedText) => {
+  if (html5QrCode) {
+    try {
+      await html5QrCode.stop();
+      await html5QrCode.clear();
+    } catch (e) {}
+  }
 
-          socket.emit("playerScannedCase", {
-            playerName: localStorage.getItem("bibiperoPlayer"),
-            qr: decodedText
-          });
+console.log("Ouverture caméra...");
 
-          document.getElementById("scanResult").textContent =
-  "🎲 Action envoyée à la TV";
+  html5QrCode = new Html5Qrcode("reader");
+  await html5QrCode.start(
+  { facingMode: "environment" },
+  {
+    fps: 10,
+    qrbox: 250
+  },
+  (decodedText) => {
 
-          html5QrCode.stop();
-          reader.style.display = "none";
-        }
-      );
+    document.getElementById("scanResult").textContent =
+      `📷 QR scanné : ${decodedText}`;
+
+    socket.emit("playerScanned", {
+      playerName: myName,
+      qrValue: decodedText
+    });
+
+    html5QrCode.stop().then(() => {
+      html5QrCode.clear();
+      reader.style.display = "none";
+    });
+
+  },
+  () => {}
+);
     }
 
     function nextPlayer() {
