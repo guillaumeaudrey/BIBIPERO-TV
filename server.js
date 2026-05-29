@@ -54,7 +54,10 @@ let currentPlayerIndex = 0;
 io.on("connection", (socket) => {
 
   console.log("Joueur connecté :", socket.id);
+  
   socket.emit("stateUpdated", state);
+socket.emit("playersUpdated", connectedPlayers);
+  
 socket.emit("playersUpdated", connectedPlayers);
 
   socket.on("joinPlayer", (playerName) => {
