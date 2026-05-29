@@ -1193,7 +1193,9 @@ function speakBrowser(text) {
   utterance.lang = "fr-FR";
   utterance.rate = 1;
   utterance.pitch = 1;
-
+  
+  console.log("VOIX NAVIGATEUR :", text);
+  
   speechSynthesis.speak(utterance);
 }
 
