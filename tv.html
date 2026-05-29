@@ -620,7 +620,8 @@ socket.on("stateUpdated", (data) => {
 
   if (data.title?.trim() && data.text?.trim()) {
 
-  showTvCard(data);
+  
+    TvCard(data);
   speakOnTv(data);
 
 } else {
@@ -753,7 +754,7 @@ function showTvCard(data) {
     data.emoji || style.emoji;
 
   document.getElementById("tvCardPlayer").textContent =
-    `Tour de ${data.playerName || data.currentPlayer || "joueur"}`;
+  `👤 ${data.playerName || data.currentPlayer}`;
 
   document.getElementById("tvCardTitle").textContent =
     data.title;
@@ -1226,8 +1227,8 @@ function speakOnTv(data) {
     utterance.voice = frenchVoice;
   }
 
-  utterance.rate = 0.92;
-  utterance.pitch = 1;
+  utterance.rate = 0.85;
+  utterance.pitch = 0.9
   utterance.volume = 1;
 
   speechSynthesis.speak(utterance);
