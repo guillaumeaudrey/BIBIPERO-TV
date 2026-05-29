@@ -258,8 +258,8 @@ socket.on("startGame", () => {
 
   state = {
     playerName: "",
-    currentPlayer:
-      connectedPlayers[0].name,
+    
+    currentPlayer: connectedPlayers[0].name,
 
     caseNumber: 0,
     category: "",
@@ -272,7 +272,7 @@ socket.on("startGame", () => {
     totalActions: 0,
     isLastRound: false,
     gameStarted: true,
-    currentPlayer: connectedPlayers[0].name,
+    
     players: connectedPlayers
   };
 
