@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Feuille QR BIBIPERO</title>
+
+  
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: white;
+      color: black;
+      margin: 0;
+      padding: 8px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #ff9800;
+      margin-bottom: 5px;
+
+  margin: 0;
+  font-size: 24px;
+
+    }
+
+    .subtitle {
+      text-align: center;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .print-btn {
+      display: block;
+      margin: 0 auto 20px auto;
+      padding: 12px 25px;
+      font-size: 18px;
+      font-weight: bold;
+      border: none;
+      border-radius: 12px;
+      background: #ffb300;
+      cursor: pointer;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 4px;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+   .card {
+  border: 3px dashed #ccc;
+  border-radius: 12px;
+  padding: 8px;
+  text-align: center;
+  page-break-inside: avoid;
+  height: 175px;
+  box-sizing: border-box;
+}
+
+  .top {
+  color: white;
+
+  height: 38px;
+  width: 100%;
+
+  border-radius: 8px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 12px;
+  font-weight: bold;
+
+  text-align: center;
+  line-height: 1;
+
+  box-sizing: border-box;
+
+  margin-bottom: 8px;
+}
+
+   .qr img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+}
+
+    
+
+    .depart { background:#000; }
+    .boire { background:#ff7800; }
+    .final-boire { background:#ff7800; }
+    .malus { background:#d71919; }
+    .malus-retour { background:#d71919; }
+    .malus-devant-derriere{ background:#d71919; }
+    .malus-reveil{ background:#d71919; }
+    .bonus { background:#006b2b; }
+    .relance { background:#f2b600; }
+    .designation { background:#29a9e1; }
+    .gage-violet { background:#6a3fa0; }
+    .gage-rose { background:#e83e8c; }
+    .de { background:#003f91; }
+
+    @media print {
+
+  @page {
+    size: A4 portrait;
+    margin: 3mm;
+  }
+
+  .print-btn,
+  h1,
+  .subtitle {
+    display: none;
+  }
+
+  body {
+    padding: 5;
+  }
+
+  .grid {
+    grid-template-columns: repeat(6, 1fr);
+    gap: 3px;
+    max-width: 100%;
+  }
+
+  .card {
+    height: 170px;
+    padding: 4px;
+    border: 1px dashed #aaa;
+    border-radius: 8px;
+  }
+
+  .top {
+    height: 32px;
+    font-size: 10px;
+    margin-bottom: 4px;
+  }
+
+  .qr {
+    padding: 2px;
+  }
+
+  .qr img {
+    width: 115px !important;
+    height: 115px !important;
+  }
+}
+  </style>
+</head>
+
+<body>
+
+  <h1>FEUILLE QR — BIBIPERO</h1>
+  <div class="subtitle">Imprime, découpe et colle sur le plateau</div>
+
+  <button class="print-btn" onclick="window.print()">🖨️ Imprimer</button>
+
+  <div class="grid" id="qrGrid"></div>
+
+  <script>
+    const cases = [
+      { n: 1, label: "DÉPART", cls: "depart", icon: "🏁", image: "qr/1.png" },
+      { n: 2, label: "DÉSIGNATION", cls: "designation", icon: "👥", image: "qr/2.png" },
+      { n: 3, label: "RELANCE", cls: "relance", icon: "🔄", image: "qr/3.png" },
+      { n: 4, label: "BOIRE", cls: "boire", icon: "🍺", image: "qr/4.png" },
+      { n: 5, label: "DÉ", cls: "de", icon: "🎲", image: "qr/5.png" },
+
+      { n: 6, label: "BONUS", cls: "bonus", icon: "🎁", image: "qr/6.png" },
+      { n: 7, label: "BOIRE", cls: "boire", icon: "🍺", image: "qr/7.png" },
+      { n: 8, label: "BONUS", cls: "bonus", icon: "🎁", image: "qr/8.png" },
+      { n: 9, label: "MALUS", cls: "malus", icon: "💀", image: "qr/9.png" },
+      { n: 10, label: "BOIRE", cls: "boire", icon: "🍺", image: "qr/10.png" },
+
+      { n: 11, label: "GAGE SOCIAL", cls: "gage-violet", icon: "🤣", image: "qr/11.png" },
+      { n: 12, label: "BONUS", cls: "bonus", icon: "🎁", image: "qr/12.png" },
+      { n: 13, label: "RELANCE", cls: "relance", icon: "🔄", image: "qr/13.png" },
+      { n: 14, label: "MALUS", cls: "malus-devant-derriere", icon: "💀", image: "qr/14.png" },
+      { n: 15, label: "DÉ", cls: "de", icon: "🎲", image: "qr/15.png" },
+
+      { n: 16, label: "DÉSIGNATION", cls: "designation", icon: "👥", image: "qr/16.png" },
+      { n: 17, label: "MALUS", cls: "malus-reveil", icon: "⏰", image: "qr/17.png" },
+      { n: 18, label: "GAGE SOCIAL", cls: "gage-rose", icon: "🤣", image: "qr/18.png" },
+      { n: 19, label: "RELANCE", cls: "relance", icon: "🔄", image: "qr/19.png" },
+      { n: 20, label: "DÉSIGNATION", cls: "designation", icon: "👥", image: "qr/20.png" },
+
+      { n: 21, label: "MALUS", cls: "malus-retour", icon: "↩️", image: "qr/21.png" },
+      { n: 22, label: "DÉ", cls: "de", icon: "🎲", image: "qr/22.png" },
+      { n: 23, label: "MALUS", cls: "malus", icon: "💀", image: "qr/23.png" },
+      { n: 24, label: "DÉSIGNATION", cls: "designation", icon: "👥", image: "qr/24.png" },
+      { n: 25, label: "BOIRE", cls: "boire", icon: "🍺", image: "qr/25.png" },
+
+      { n: 26, label: "MALUS", cls: "malus", icon: "💀", image: "qr/26.png" },
+      { n: 27, label: "DÉ", cls: "de", icon: "🎲", image: "qr/27.png" },
+      { n: 28, label: "DÉSIGNATION", cls: "designation", icon: "👥", image: "qr/28.png" },
+      { n: 29, label: "BONUS", cls: "bonus", icon: "🎁", image: "qr/29.png" },
+      { n: 30, label: "FINALE BOIRE", cls: "final-boire", icon: "🍺", image: "qr/30.png" }
+    ];
+
+    const grid = document.getElementById("qrGrid");
+
+    cases.forEach(c => {
+      const card = document.createElement("div");
+      card.className = "card";
+
+      card.innerHTML = `
+  <div class="top ${c.cls}">
+    ${c.n} ${c.icon} ${c.label}
+  </div>
+
+  <div class="qr">
+  <img
+    src="qr/${c.n}.png"
+    width="110"
+    height="110"
+    style="object-fit:contain;"
+  >
+</div>
+
+  
+`;
+
+      grid.appendChild(card);
+
+    
+    });
+  </script>
+
+</body>
+</html>
