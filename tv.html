@@ -618,12 +618,19 @@ socket.on("stateUpdated", (data) => {
   document.getElementById("turnBanner").textContent =
     `🎮 Tour de ${data.currentPlayer || "joueur"}`;
 
-  if (data.title && data.text) {
-    showTvCard(data);
-    speakOnTv(data);
-  } else {
-    closeTvCard();
-  }
+  if (
+  data.title?.trim() &&
+  data.text?.trim()
+) {
+
+  showTvCard(data);
+  speakOnTv(data);
+
+} else {
+
+  closeTvCard();
+
+}
 });
    const casePositions = {
   1: { x: 88, y: 86 },
