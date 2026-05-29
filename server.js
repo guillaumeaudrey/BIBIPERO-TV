@@ -258,7 +258,7 @@ socket.on("startGame", () => {
 
   state = {
     playerName: "",
-    
+
     currentPlayer: connectedPlayers[0].name,
 
     caseNumber: 0,
@@ -291,23 +291,8 @@ socket.on("getState", () => {
 
 socket.on("disconnect", () => {
 
-  connectedPlayers =
-    connectedPlayers.filter(
-      p => p.id !== socket.id
-    );
+  console.log("Socket déconnecté :", socket.id);
 
-  if (currentPlayerIndex >= connectedPlayers.length) {
-    currentPlayerIndex = 0;
-  }
-
-  state.players = connectedPlayers;
-  state.currentPlayer =
-    connectedPlayers[currentPlayerIndex]?.name || "En attente";
-
-  io.emit("playersUpdated", connectedPlayers);
-  io.emit("stateUpdated", state);
-
-  console.log("Joueur déconnecté");
 });
 
 });
