@@ -1,7 +1,7 @@
 const http = require("http");
 const { Server } = require("socket.io");
 const { getRandomAction } = require("./ActionService");
-
+require("dotenv").config();
 const express = require("express");
 const app = express();
 
@@ -12,7 +12,7 @@ const ELEVENLABS_API_KEY =
 const ELEVENLABS_VOICE_ID =
   "HPuvhU1J8dCjaKv9q7bM";
 console.log("VOICE ID =", ELEVENLABS_VOICE_ID);
-
+console.log("API KEY =", !!ELEVENLABS_API_KEY);
 
 
 
