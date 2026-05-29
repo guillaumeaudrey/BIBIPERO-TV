@@ -1180,13 +1180,11 @@ function getFunnySentence(playerName, category, title, text) {
   }
 }
 
-function speakOnTv(data) {
+async function speakOnTv(data) {
 
-  if (!("speechSynthesis" in window)) return;
-
-  if (!data.title?.trim() || !data.text?.trim()) return;
-
-  speechSynthesis.cancel();
+  if (!data.title?.trim() || !data.text?.trim()) {
+    return;
+  }
 
   const playerName =
     data.playerName || data.currentPlayer || "Le joueur";
@@ -1200,38 +1198,44 @@ function speakOnTv(data) {
     );
 
   const finalText =
-    `${sentence} ... ${data.title}. ${data.text}`;
+    `${sentence}. ${data.title}. ${data.text}`;
 
-  const utterance =
-    new SpeechSynthesisUtterance(finalText);
+  try {
 
-  utterance.lang = "fr-FR";
+    const response = await fetch("/speak", {
 
-  const voices =
-    speechSynthesis.getVoices();
+      method: "POST",
 
-  const frenchVoice =
-    voices.find(v =>
-      v.name.includes("Google français")
-    )
-    ||
-    voices.find(v =>
-      v.name.includes("Google français Canada")
-    )
-    ||
-    voices.find(v =>
-      v.lang && v.lang.startsWith("fr")
+      headers: {
+        "Content-Type": "application/json"
+      },
+
+      body: JSON.stringify({
+        text: finalText
+      })
+
+    });
+
+    const blob =
+      await response.blob();
+
+    const audio =
+      new Audio(
+        URL.createObjectURL(blob)
+      );
+
+    audio.volume = 1;
+
+    audio.play();
+
+  } catch (err) {
+
+    console.error(
+      "Erreur voix ElevenLabs :",
+      err
     );
 
-  if (frenchVoice) {
-    utterance.voice = frenchVoice;
   }
-
-  utterance.rate = 0.85;
-  utterance.pitch = 0.9
-  utterance.volume = 1;
-
-  speechSynthesis.speak(utterance);
 }
 
 function closeTvCard() {
@@ -1241,18 +1245,6 @@ function closeTvCard() {
     overlay.classList.add("hidden");
   }
 }
-
-document.body.addEventListener("click", () => {
-  if (!("speechSynthesis" in window)) return;
-
-  speechSynthesis.cancel();
-
-  const test = new SpeechSynthesisUtterance("");
-  test.lang = "fr-FR";
-
-  speechSynthesis.speak(test);
-
-}, { once: true });
 
 
   </script>

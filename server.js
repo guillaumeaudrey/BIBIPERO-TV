@@ -5,6 +5,17 @@ const { getRandomAction } = require("./ActionService");
 const express = require("express");
 const app = express();
 
+const axios = require("axios");
+const ELEVENLABS_API_KEY =
+  process.env.ELEVENLABS_API_KEY;
+
+const ELEVENLABS_VOICE_ID =
+  "JdwJ7jL68CWmQZuo7KgG";
+
+
+
+
+
 const server = http.createServer(app);
 
 const io = new Server(server, {
@@ -39,6 +50,66 @@ app.post("/state", (req, res) => {
   state = req.body;
   res.json({ ok: true });
 });
+
+
+app.post("/speak", async (req, res) => {
+
+  try {
+
+    const text = req.body.text;
+
+    if (!text) {
+  return res.status(400).send("Texte manquant");
+}
+
+if (!ELEVENLABS_API_KEY) {
+  return res.status(500).send("Clé ElevenLabs manquante");
+}
+
+    const response = await axios({
+
+      method: "POST",
+
+      url:
+        `https://api.elevenlabs.io/v1/text-to-speech/${ELEVENLABS_VOICE_ID}`,
+
+      headers: {
+        "xi-api-key": ELEVENLABS_API_KEY,
+        "Content-Type": "application/json"
+      },
+
+      responseType: "arraybuffer",
+
+      data: {
+        text,
+        model_id: "eleven_multilingual_v2",
+
+        voice_settings: {
+          stability: 0.4,
+          similarity_boost: 0.8,
+          style: 0.5,
+          use_speaker_boost: true
+        }
+      }
+    });
+
+    res.set("Content-Type", "audio/mpeg");
+
+    res.send(response.data);
+
+  } catch (err) {
+
+    console.error(
+      "Erreur ElevenLabs :",
+      err.response?.data || err.message
+    );
+
+    res.status(500).send("Erreur voix");
+  }
+});
+
+
+
 
 const PORT = process.env.PORT || 3000;
 
