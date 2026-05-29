@@ -601,34 +601,15 @@ socket.on("stateUpdated", (data) => {
 
   console.log("STATE TV =", data);
 
-  currentState = data;
-  updatePawns(data.players || []);
-  
   if (!data.gameStarted) {
-  document.getElementById("turnBanner").textContent =
-    "⏳ En attente du démarrage de la partie";
+    document.getElementById("turnBanner").textContent =
+      "⏳ En attente du démarrage de la partie";
 
-  closeTvCard();
-  return;
-}
+    closeTvCard();
+    return;
+  }
 
-  document.getElementById("currentPlayer").textContent =
-    data.currentPlayer || "-";
-
-  document.getElementById("turnBanner").textContent =
-    `🎮 Tour de ${data.currentPlayer || "joueur"}`;
-
-  if (data.title?.trim() && data.text?.trim()) {
-
-  
-    TvCard(data);
-  speakOnTv(data);
-
-} else {
-
-  closeTvCard();
-
-}
+  updateTv(data);
 });
    const casePositions = {
   1: { x: 88, y: 86 },
@@ -820,15 +801,31 @@ function updateTv(data) {
   startAttractTimer();
 
   if (data.title?.trim() && data.text?.trim()) {
-    const sound = document.getElementById("scanSound");
-    sound.currentTime = 0;
-    sound.play().catch(() => {});
 
-    showTvCard(data);
-    speakOnTv(data);
-  } else {
-    closeTvCard();
+  console.log("Carte reçue :", data);
+
+  showTvCard(data);
+
+  const sound = document.getElementById("scanSound");
+
+  if (sound) {
+    sound.currentTime = 0;
+    sound.play().catch(err => {
+      console.log("Erreur son :", err);
+    });
   }
+
+  try {
+    speakOnTv(data);
+  } catch (err) {
+    console.error("Erreur speakOnTv :", err);
+  }
+
+} else {
+
+  closeTvCard();
+
+}
 }
 
   const current = data.currentPlayer;
@@ -841,11 +838,17 @@ function updateTv(data) {
 
   currentState = data;
 
-  animatePawnMovement(
-    current,
-    oldPos,
-    data.caseNumber
-  );
+  const newPlayer =
+  data.players?.find(p => p.name === current);
+
+const newPos =
+  newPlayer?.position || oldPos;
+
+animatePawnMovement(
+  current,
+  oldPos,
+  newPos
+);
 
   const currentName = data.currentPlayer || data.playerName || "-";
 
@@ -1201,40 +1204,31 @@ async function speakOnTv(data) {
     `${sentence}. ${data.title}. ${data.text}`;
 
   try {
-
     const response = await fetch("/speak", {
-
       method: "POST",
-
       headers: {
         "Content-Type": "application/json"
       },
-
       body: JSON.stringify({
         text: finalText
       })
-
     });
 
-    const blob =
-      await response.blob();
+    if (!response.ok) {
+      console.error("Erreur /speak :", await response.text());
+      return;
+    }
 
-    const audio =
-      new Audio(
-        URL.createObjectURL(blob)
-      );
+    const blob = await response.blob();
+    const audio = new Audio(URL.createObjectURL(blob));
 
     audio.volume = 1;
-
-    audio.play();
+    audio.play().catch(err => {
+      console.error("Erreur lecture audio :", err);
+    });
 
   } catch (err) {
-
-    console.error(
-      "Erreur voix ElevenLabs :",
-      err
-    );
-
+    console.error("Erreur voix ElevenLabs :", err);
   }
 }
 
