@@ -311,6 +311,7 @@ socket.on("playerScanned", (data) => {
 
   state = {
     ...state,
+    eventId: Date.now(),
     gameMode: "app",
     gameStarted: true,
 
@@ -329,6 +330,7 @@ socket.on("playerScanned", (data) => {
   };
 
   io.emit("stateUpdated", state);
+  console.log("Joueurs appli envoyés :", appPlayers);
   io.emit("playersUpdated", appPlayers);
 });
 
