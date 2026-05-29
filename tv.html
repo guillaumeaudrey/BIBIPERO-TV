@@ -1183,6 +1183,23 @@ function getFunnySentence(playerName, category, title, text) {
   }
 }
 
+function speakBrowser(text) {
+
+  speechSynthesis.cancel();
+
+  const utterance =
+    new SpeechSynthesisUtterance(text);
+
+  utterance.lang = "fr-FR";
+  utterance.rate = 1;
+  utterance.pitch = 1;
+
+  speechSynthesis.speak(utterance);
+}
+
+
+
+
 async function speakOnTv(data) {
 
   console.log("ElevenLabs demandé :", data);
@@ -1217,9 +1234,16 @@ async function speakOnTv(data) {
     });
 
     if (!response.ok) {
-      console.error("Erreur /speak :", await response.text());
-      return;
-    }
+
+  console.error(
+    "Erreur /speak :",
+    await response.text()
+  );
+
+  speakBrowser(finalText);
+
+  return;
+}
 
     const blob = await response.blob();
     const audio = new Audio(URL.createObjectURL(blob));
@@ -1230,8 +1254,14 @@ async function speakOnTv(data) {
     });
 
   } catch (err) {
-    console.error("Erreur voix ElevenLabs :", err);
-  }
+
+  console.error(
+    "Erreur voix ElevenLabs :",
+    err
+  );
+
+  speakBrowser(finalText);
+}
 }
 
 function closeTvCard() {
