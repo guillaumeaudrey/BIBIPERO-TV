@@ -986,32 +986,241 @@ document.body.addEventListener("click", () => {
 
 }, { once: true });
 
+function pickRandom(texts) {
+  return texts[Math.floor(Math.random() * texts.length)];
+}
+
+function getFunnySentence(playerName, category, title, text) {
+
+  playerName = playerName || "Le joueur";
+  text = (text || "").toLowerCase();
+  title = (title || "").toLowerCase();
+  category = (category || "").toLowerCase();
+
+  if (text.includes("bois")) {
+    return pickRandom([
+      `${playerName} va clairement regretter ce scan.`,
+      `Le foie de ${playerName} demande officiellement une pause.`,
+      `${playerName} boit encore… quelle surprise.`,
+      `Une nouvelle gorgée pour ${playerName}. Courage.`,
+      `${playerName} aurait dû rester sobre.`,
+      `Ça sent la fin de soirée pour ${playerName}.`,
+      `${playerName} découvre les conséquences de ses actes.`,
+      `Le verre de ${playerName} ne survivra pas.`,
+      `Hydratation forcée pour ${playerName}.`,
+      `${playerName} prend cher ce soir.`
+    ]);
+  }
+
+  if (text.includes("avance")) {
+    return pickRandom([
+      `${playerName} avance comme un champion.`,
+      `Incroyable… ${playerName} progresse enfin.`,
+      `${playerName} gagne du terrain.`,
+      `Le jeu décide enfin d’aider ${playerName}.`,
+      `${playerName} trace sa route.`,
+      `Ça avance fort pour ${playerName}.`,
+      `${playerName} accélère la cadence.`,
+      `Le destin sourit enfin à ${playerName}.`,
+      `Belle remontée pour ${playerName}.`,
+      `${playerName} fonce vers la victoire.`
+    ]);
+  }
+
+  if (text.includes("recule")) {
+    return pickRandom([
+      `${playerName} vient de se faire trahir par le jeu.`,
+      `Retour à l’envoyeur pour ${playerName}.`,
+      `${playerName} repart presque à zéro.`,
+      `Le karma frappe encore ${playerName}.`,
+      `Ça sent mauvais pour ${playerName}.`,
+      `Aïe… grosse marche arrière pour ${playerName}.`,
+      `Le jeu humilie publiquement ${playerName}.`,
+      `Très mauvaise opération pour ${playerName}.`,
+      `Ça se complique sérieusement pour ${playerName}.`,
+      `Le jeu refuse clairement de laisser gagner ${playerName}.`
+    ]);
+  }
+
+  if (text.includes("rejoue") || text.includes("relance")) {
+    return pickRandom([
+      `${playerName} refuse de laisser jouer les autres.`,
+      `Encore un tour pour ${playerName}.`,
+      `${playerName} monopolise complètement la partie.`,
+      `Le jeu n’en a pas fini avec ${playerName}.`,
+      `${playerName} repart immédiatement.`,
+      `Impossible d’arrêter ${playerName}.`,
+      `Encore ? Sérieusement ${playerName} ?`,
+      `Le dé appartient maintenant à ${playerName}.`,
+      `${playerName} active le mode turbo.`,
+      `Encore une action pour ${playerName}.`
+    ]);
+  }
+
+  if (text.includes("dernier tour")) {
+    return pickRandom([
+      `Attention… dernier tour avant le chaos final.`,
+      `Le dernier tour commence maintenant.`,
+      `Tout peut encore changer.`,
+      `C’est maintenant ou jamais.`,
+      `Dernière ligne droite pour tous les joueurs.`,
+      `Le chaos final est lancé.`,
+      `La fin de partie approche dangereusement.`,
+      `Plus personne n’est en sécurité.`,
+      `Le mode survie est activé.`,
+      `Dernière bataille avant le verdict final.`
+    ]);
+  }
+
+  if (
+    text.includes("legendary") ||
+    text.includes("légendaire") ||
+    category === "legendary"
+  ) {
+    return pickRandom([
+      `OH MON DIEU… une carte légendaire.`,
+      `${playerName} vient de débloquer une carte mythique.`,
+      `Moment historique pour ${playerName}.`,
+      `${playerName} vient de réveiller le chaos.`,
+      `${playerName} entre dans la légende.`,
+      `Le destin vient de changer pour ${playerName}.`,
+      `Cette carte va détruire l’équilibre du jeu.`,
+      `Le chaos légendaire commence maintenant.`,
+      `Les autres joueurs commencent à paniquer.`,
+      `${playerName} devient le boss final.`
+    ]);
+  }
+
+  if (text.includes("victoire") || text.includes("gagn")) {
+    return pickRandom([
+      `${playerName} remporte cette partie complètement chaotique.`,
+      `Victoire officielle pour ${playerName}.`,
+      `${playerName} devient le roi de l’apéro.`,
+      `Le champion de la soirée est ${playerName}.`,
+      `${playerName} écrase complètement la concurrence.`,
+      `${playerName} entre dans la légende de BIBIPERO.`,
+      `${playerName} survit au chaos final.`,
+      `Le grand gagnant est officiellement ${playerName}.`,
+      `${playerName} gagne avec style.`,
+      `${playerName} règne désormais sur BIBIPERO.`
+    ]);
+  }
+
+  switch (category) {
+
+    case "malus":
+      return pickRandom([
+        `Aïe… énorme malus pour ${playerName}.`,
+        `${playerName} vient de déclencher une catastrophe.`,
+        `Très mauvaise nouvelle pour ${playerName}.`,
+        `Le karma déteste profondément ${playerName}.`,
+        `Le jeu punit sévèrement ${playerName}.`,
+        `${playerName} prend extrêmement cher.`,
+        `Tout s’effondre pour ${playerName}.`,
+        `Ce scan était une erreur pour ${playerName}.`,
+        `Le jeu vient de gifler ${playerName}.`,
+        `Rien ne va plus pour ${playerName}.`
+      ]);
+
+    case "bonus":
+      return pickRandom([
+        `${playerName} vient de toucher le jackpot.`,
+        `Le jeu adore clairement ${playerName}.`,
+        `${playerName} débloque un bonus monstrueux.`,
+        `Incroyable coup de chance pour ${playerName}.`,
+        `${playerName} triche ou quoi ?`,
+        `${playerName} active le mode chance.`,
+        `Tout réussit à ${playerName} aujourd’hui.`,
+        `La chance vient officiellement de choisir ${playerName}.`,
+        `${playerName} devient beaucoup trop puissant.`,
+        `${playerName} monte clairement en puissance.`
+      ]);
+
+    case "gage-social":
+      return pickRandom([
+        `Moment de honte publique pour ${playerName}.`,
+        `${playerName} va devoir assumer maintenant.`,
+        `Le malaise approche pour ${playerName}.`,
+        `${playerName} vient de perdre toute dignité.`,
+        `Humiliation imminente pour ${playerName}.`,
+        `${playerName} devient le clown de la soirée.`,
+        `Toute la table juge actuellement ${playerName}.`,
+        `${playerName} active le mode malaise.`,
+        `Catastrophe sociale détectée pour ${playerName}.`,
+        `${playerName} entre dans l’histoire… mais pas pour les bonnes raisons.`
+      ]);
+
+    case "relance":
+      return pickRandom([
+        `${playerName} refuse de laisser la main.`,
+        `Encore un tour pour ${playerName}.`,
+        `${playerName} ne veut pas lâcher le dé.`,
+        `${playerName} relance comme un fou.`,
+        `Impossible d’arrêter ${playerName}.`
+      ]);
+
+    case "designation":
+      return pickRandom([
+        `${playerName} prépare un sale coup.`,
+        `${playerName} va choisir sa prochaine victime.`,
+        `Attention, ${playerName} désigne quelqu’un.`,
+        `${playerName} a le pouvoir de ruiner quelqu’un.`,
+        `Ça sent la trahison pour ${playerName}.`
+      ]);
+
+    default:
+      return pickRandom([
+        `${playerName} découvre une nouvelle action.`,
+        `${playerName} vient de tomber sur une surprise.`,
+        `Nouvelle carte pour ${playerName}.`,
+        `Le destin choisit encore ${playerName}.`,
+        `${playerName} ouvre une carte mystérieuse.`
+      ]);
+  }
+}
+
 function speakOnTv(data) {
 
   if (!("speechSynthesis" in window)) return;
 
+  if (!data.title?.trim() || !data.text?.trim()) return;
+
   speechSynthesis.cancel();
 
-  const text =
-  `${data.narration || ""}. ${data.title || ""}. ${data.text || ""}`;
+  const playerName =
+    data.playerName || data.currentPlayer || "Le joueur";
+
+  const sentence =
+    getFunnySentence(
+      playerName,
+      data.category,
+      data.title,
+      data.text
+    );
+
+  const finalText =
+    `${sentence} ... ${data.title}. ${data.text}`;
 
   const utterance =
-    new SpeechSynthesisUtterance(text);
+    new SpeechSynthesisUtterance(finalText);
 
   utterance.lang = "fr-FR";
 
-  // voix plus naturelle
   const voices =
     speechSynthesis.getVoices();
 
   const frenchVoice =
-  voices.find(v =>
-    v.name.includes("Google français")
-  )
-  ||
-  voices.find(v =>
-    v.name.includes("Google français Canada")
-  );
+    voices.find(v =>
+      v.name.includes("Google français")
+    )
+    ||
+    voices.find(v =>
+      v.name.includes("Google français Canada")
+    )
+    ||
+    voices.find(v =>
+      v.lang && v.lang.startsWith("fr")
+    );
 
   if (frenchVoice) {
     utterance.voice = frenchVoice;
