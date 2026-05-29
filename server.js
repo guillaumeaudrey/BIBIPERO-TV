@@ -132,6 +132,7 @@ let connectedPlayers = [];
 let currentPlayerIndex = 0;
 
 let gameMode = "none";
+let appPlayers = [];
 
 
 io.on("connection", (socket) => {
@@ -267,19 +268,68 @@ socket.on("playerScanned", (data) => {
 
   gameMode = "app";
 
-  console.log("Ancien scan reçu :", data);
+  console.log("Scan appli reçu :", data);
 
-  socket.emit("playerScannedCase", {
-    playerName:
-      data.playerName ||
-      data.currentPlayer ||
-      state.currentPlayer,
+  const qr = data.qr || data.qrValue || "";
+  const parts = qr.split("/");
 
-    qr:
-      data.qr ||
-      data.qrValue
-  });
+  const caseNumber = Number(parts[1]);
+  const category = parts[2] || "boire";
 
+  const playerName =
+    data.playerName ||
+    data.currentPlayer ||
+    "Joueur appli";
+
+  let player =
+    appPlayers.find(p => p.name === playerName);
+
+  if (!player) {
+    player = {
+      id: "app-" + playerName,
+      name: playerName,
+      position: 0,
+      totalActions: 0,
+      totalDrinks: 0
+    };
+
+    appPlayers.push(player);
+  }
+
+  const action = getRandomAction(category);
+
+  player.position = caseNumber;
+  player.totalActions += 1;
+
+  if (
+    action.category === "boire" ||
+    action.category === "malus" ||
+    action.category === "final-boire"
+  ) {
+    player.totalDrinks += 1;
+  }
+
+  state = {
+    ...state,
+    gameMode: "app",
+    gameStarted: true,
+
+    playerName: player.name,
+    currentPlayer: player.name,
+    caseNumber: caseNumber,
+
+    category: action.category,
+    title: action.title,
+    text: action.text,
+    powerLevel: action.powerLevel,
+    isLegendary: action.isLegendary || false,
+
+    totalActions: (state.totalActions || 0) + 1,
+    players: appPlayers
+  };
+
+  io.emit("stateUpdated", state);
+  io.emit("playersUpdated", appPlayers);
 });
 
 socket.on("nextPlayer", () => {
