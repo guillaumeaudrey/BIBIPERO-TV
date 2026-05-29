@@ -250,7 +250,7 @@ socket.on("startGame", () => {
 
     totalActions: 0,
     isLastRound: false,
-    gameStarted: false,
+    gameStarted: true,
     players: connectedPlayers
   };
 
