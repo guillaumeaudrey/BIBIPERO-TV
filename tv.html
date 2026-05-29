@@ -609,8 +609,32 @@ socket.on("stateUpdated", (data) => {
   return;
 }
 
+if (!data.gameStarted && !data.title && !data.text) {
+  document.getElementById("turnBanner").textContent =
+    "⏳ En attente du démarrage de la partie";
+
+  closeTvCard();
+  return;
+}
+
+if (data.narration && !data.text) {
+  data.text = data.narration;
+}
+
+if (data.actionTitle && !data.title) {
+  data.title = data.actionTitle;
+}
+
+if (data.actionText && !data.text) {
+  data.text = data.actionText;
+}
+
+updateTv(data);
+
   updateTv(data);
 });
+
+
    const casePositions = {
   1: { x: 88, y: 86 },
   2: { x: 74, y: 86 },
@@ -800,7 +824,11 @@ function updateTv(data) {
   hideAttract();
   startAttractTimer();
 
-  if (data.title?.trim() && data.text?.trim()) {
+  if (
+  data.title?.trim() &&
+  data.text?.trim() &&
+  data.title !== "Tour suivant"
+) {
 
   console.log("Carte reçue :", data);
 
