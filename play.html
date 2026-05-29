@@ -319,12 +319,12 @@ console.log("Ouverture caméra...");
   (decodedText) => {
 
     document.getElementById("scanResult").textContent =
-      `📷 QR scanné : ${decodedText}`;
+    "🎲 Action envoyée à la TV";
 
-    socket.emit("playerScanned", {
-      playerName: myName,
-      qrValue: decodedText
-    });
+    socket.emit("playerScannedCase", {
+  playerName: myName,
+  qr: decodedText
+});
 
     html5QrCode.stop().then(() => {
       html5QrCode.clear();
