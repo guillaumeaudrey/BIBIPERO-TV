@@ -131,6 +131,7 @@ server.listen(PORT, "0.0.0.0", () => {
 let connectedPlayers = [];
 let currentPlayerIndex = 0;
 
+let gameMode = "none";
 
 
 io.on("connection", (socket) => {
@@ -193,6 +194,7 @@ socket.on("playerScannedCase", (data) => {
 
   console.log("QR scanné :", data);
 
+gameMode = "web";
   if (!state.gameStarted) {
   socket.emit("scanError", {
     message: "La partie n’a pas encore démarré"
@@ -252,6 +254,7 @@ socket.on("playerScannedCase", (data) => {
     powerLevel: action.powerLevel,
     isLegendary: action.isLegendary || false,
     totalActions: (state.totalActions || 0) + 1,
+    gameMode: gameMode,
     players: connectedPlayers
   };
 
@@ -261,6 +264,8 @@ io.emit("playersUpdated", connectedPlayers);
 });
 
 socket.on("playerScanned", (data) => {
+
+  gameMode = "app";
 
   console.log("Ancien scan reçu :", data);
 
@@ -355,6 +360,8 @@ socket.on("startGame", () => {
 
   currentPlayerIndex = 0;
 
+  gameMode = "web";
+
   state = {
     playerName: "",
 
@@ -371,6 +378,7 @@ socket.on("startGame", () => {
     totalActions: 0,
     isLastRound: false,
     gameStarted: true,
+    gameMode: gameMode,
     
     players: connectedPlayers
   };
