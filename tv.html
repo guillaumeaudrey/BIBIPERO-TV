@@ -618,10 +618,7 @@ socket.on("stateUpdated", (data) => {
   document.getElementById("turnBanner").textContent =
     `🎮 Tour de ${data.currentPlayer || "joueur"}`;
 
-  if (
-  data.title?.trim() &&
-  data.text?.trim()
-) {
+  if (data.title?.trim() && data.text?.trim()) {
 
   showTvCard(data);
   speakOnTv(data);
@@ -737,17 +734,35 @@ if (player.position === maxPosition && maxPosition > 0) {
     };
 
 function showTvCard(data) {
-  const style = categoryStyles[data.category] || categoryStyles["boire"];
 
-  const overlay = document.getElementById("tvCardOverlay");
-  const card = document.getElementById("tvCard");
+  if (!data.title?.trim() || !data.text?.trim()) {
+    closeTvCard();
+    return;
+  }
 
-  document.getElementById("tvCardEmoji").textContent = data.emoji || style.emoji;
-  document.getElementById("tvCardPlayer").textContent = `Tour de ${data.playerName || "joueur"}`;
-  document.getElementById("tvCardTitle").textContent = data.title || "Action";
-  document.getElementById("tvCardText").textContent = data.text || "En attente d’une action...";
+  const style =
+    categoryStyles[data.category] || categoryStyles["boire"];
 
-  card.style.background = style.color;
+  const overlay =
+    document.getElementById("tvCardOverlay");
+
+  const card =
+    document.getElementById("tvCard");
+
+  document.getElementById("tvCardEmoji").textContent =
+    data.emoji || style.emoji;
+
+  document.getElementById("tvCardPlayer").textContent =
+    `Tour de ${data.playerName || data.currentPlayer || "joueur"}`;
+
+  document.getElementById("tvCardTitle").textContent =
+    data.title;
+
+  document.getElementById("tvCardText").textContent =
+    data.text;
+
+  card.style.background =
+    style.color;
 
   overlay.classList.remove("hidden");
 
@@ -1016,11 +1031,13 @@ function closeTvCard() {
 document.body.addEventListener("click", () => {
   if (!("speechSynthesis" in window)) return;
 
-  const test = new SpeechSynthesisUtterance("Voix BIBIPERO activée");
+  speechSynthesis.cancel();
+
+  const test = new SpeechSynthesisUtterance("");
   test.lang = "fr-FR";
-  test.volume = 1;
 
   speechSynthesis.speak(test);
+
 }, { once: true });
 
 
