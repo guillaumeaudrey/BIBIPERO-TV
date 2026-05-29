@@ -1191,11 +1191,11 @@ function speakBrowser(text) {
     new SpeechSynthesisUtterance(text);
 
   utterance.lang = "fr-FR";
-  utterance.rate = 1;
+  utterance.rate = 1.4;
   utterance.pitch = 1;
   
   console.log("VOIX NAVIGATEUR :", text);
-  
+
   speechSynthesis.speak(utterance);
 }
 
