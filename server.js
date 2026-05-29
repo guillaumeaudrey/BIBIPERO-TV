@@ -260,6 +260,23 @@ io.emit("playersUpdated", connectedPlayers);
 
 });
 
+socket.on("playerScanned", (data) => {
+
+  console.log("Ancien scan reçu :", data);
+
+  socket.emit("playerScannedCase", {
+    playerName:
+      data.playerName ||
+      data.currentPlayer ||
+      state.currentPlayer,
+
+    qr:
+      data.qr ||
+      data.qrValue
+  });
+
+});
+
 socket.on("nextPlayer", () => {
 
   if (connectedPlayers.length === 0) return;
