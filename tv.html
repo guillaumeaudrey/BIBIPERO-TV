@@ -813,18 +813,22 @@ function updateTv(data) {
   document.getElementById("turnBanner").style.display = "inline-block";
 
   if (isNewEvent) {
-    lastCardId = cardId;
+  lastCardId = cardId;
 
-    hideAttract();
-    startAttractTimer();
+  hideAttract();
+  startAttractTimer();
 
+  if (data.title?.trim() && data.text?.trim()) {
     const sound = document.getElementById("scanSound");
     sound.currentTime = 0;
     sound.play().catch(() => {});
 
     showTvCard(data);
     speakOnTv(data);
+  } else {
+    closeTvCard();
   }
+}
 
   const current = data.currentPlayer;
 
@@ -877,9 +881,9 @@ function updateTv(data) {
       }
     }
 
-    loadState();
+    //loadState();
     startAttractTimer();
-    setInterval(loadState, 1000);
+    //setInterval(loadState, 1000);
 
     async function animatePawnMovement(playerName, oldPos, newPos) {
   if (!playerName || newPos === oldPos) {

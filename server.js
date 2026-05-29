@@ -189,7 +189,7 @@ socket.on("nextPlayer", () => {
     ...state,
     playerName: "",
     currentPlayer: connectedPlayers[currentPlayerIndex].name,
-    caseNumber: 0,
+    //caseNumber: 0,
     category: "",
     title: "",
     text: "",
