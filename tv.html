@@ -422,6 +422,22 @@
   align-items: center;
   z-index: 90000;
   animation: attractPulse 2s infinite ease-in-out;
+ 
+}
+.attract-back-btn {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+
+  background: rgba(0,0,0,0.45);
+  color: white;
+
+  text-decoration: none;
+
+  padding: 10px 16px;
+  border-radius: 12px;
+
+  opacity: 0.6;
 }
 
 .attract-screen.hidden {
@@ -796,7 +812,7 @@ function showTvCard(data) {
 
   setTimeout(() => {
     overlay.classList.add("hidden");
-  }, 5000);
+  }, 15000);
 }
 
 
@@ -1348,10 +1364,16 @@ function closeTvCard() {
 </div>
 
 <div id="attractScreen" class="attract-screen hidden">
+
   <img
-  src="bibipero_logo.png"
-  class="attract-image"
->
+      src="bibipero_logo.png"
+      class="attract-image"
+  > 
+  
+  <a href="/" class="attract-back-btn">
+    ⬅ Accueil
+</a>
+
   <div class="attract-text">Scanne une case pour commencer 🍻</div>
 </div>
  
