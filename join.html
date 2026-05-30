@@ -206,9 +206,9 @@
     🍻 Créer une partie
     </button>
 
-    <button onclick="showJoinMode()" class="secondary-btn">
-    🎟️ Rejoindre une partie
-    </button>
+    <button onclick="joinGame()" class="start-btn" id="joinRoomBtn" style="display:none;">
+  ✅ Entrer dans le salon
+</button>
 
     <div id="success"></div>
 
@@ -442,11 +442,9 @@ function disconnectPlayer() {
 }
 
 function showJoinMode() {
-
-  document
-    .getElementById("joinSection")
-    .style.display = "block";
-
+  document.getElementById("joinSection").style.display = "block";
+  document.getElementById("joinRoomBtn").style.display = "block";
+  document.getElementById("showJoinBtn").style.display = "none";
 }
 
 function createGame() {
@@ -477,7 +475,7 @@ socket.on("roomCreated", (data) => {
 
   document.getElementById("success").textContent =
     `✅ Partie créée ! Code : ${data.roomCode}`;
-    
+
   document.getElementById("roomCodeDisplay").style.display = "block";
 document.getElementById("roomCodeDisplay").textContent =
   `🎟️ Salon : ${data.roomCode}`;  
