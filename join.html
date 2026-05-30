@@ -133,6 +133,11 @@
   font-weight: bold;
   font-size: 18px;
 }
+
+.new-game-btn {
+  background: #d32f2f;
+  color: white;
+}
   </style>
 </head>
 
@@ -170,6 +175,11 @@
       <button id="startBtn" class="start-btn" onclick="startGame()">
         ▶ Démarrer la partie
       </button>
+
+      <button id="newGameBtn" class="new-game-btn" onclick="resetWebGame()">
+  🔄 Nouvelle partie
+</button>
+
     </div>
 
     <div id="scanResult"></div>
@@ -308,6 +318,10 @@
 
   location.reload();
 });
+
+function resetWebGame() {
+  socket.emit("resetGame");
+}
     
   </script>
 

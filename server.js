@@ -398,7 +398,10 @@ socket.on("resetGame", () => {
     players: connectedPlayers
   };
 
+  io.emit("playersUpdated", connectedPlayers);
+  io.emit("gameReset");
   io.emit("stateUpdated", state);
+
 
   console.log("Nouvelle partie lancée");
 });
