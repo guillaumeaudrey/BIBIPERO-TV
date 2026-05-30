@@ -2,17 +2,87 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Application BIBIPERO</title>
+
+<style>
+body{
+  margin:0;
+  min-height:100vh;
+  background:#111;
+  color:white;
+  font-family:Arial,sans-serif;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.container{
+  width:90%;
+  max-width:420px;
+  text-align:center;
+}
+
+.title{
+  font-size:36px;
+  font-weight:900;
+  color:#ffb300;
+  margin-bottom:15px;
+}
+
+.card{
+  background:#1f1f1f;
+  border-radius:22px;
+  padding:25px;
+  box-shadow:0 0 30px rgba(255,179,0,.15);
+}
+
+p{
+  font-size:18px;
+  line-height:1.4;
+  opacity:.9;
+}
+
+.btn{
+  display:block;
+  margin-top:18px;
+  padding:16px;
+  border-radius:14px;
+  text-decoration:none;
+  color:white;
+  background:#c62828;
+  font-weight:bold;
+  font-size:20px;
+}
+
+.back{
+  background:#333;
+}
+</style>
 </head>
+
 <body>
 
-<h1>📱 Application BIBIPERO</h1>
+<div class="container">
 
-<p>
-Téléchargement bientôt disponible.
-</p>
+  <div class="title">📱 Application BIBIPERO</div>
 
-<a href="/">⬅ Retour</a>
+  <div class="card">
+    <p>
+      L'application BIBIPERO permet de jouer avec le plateau réel,
+      scanner les cases QR, afficher les actions et envoyer la partie sur la TV.
+    </p>
+
+    <p>
+      Téléchargement bientôt disponible.
+    </p>
+
+    <a class="btn" href="#">⬇ Télécharger l'application</a>
+
+    <a class="btn back" href="/">⬅ Retour accueil</a>
+  </div>
+
+</div>
 
 </body>
 </html>

@@ -2,17 +2,113 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Règles BIBIPERO</title>
+
+<style>
+body{
+  margin:0;
+  min-height:100vh;
+  background:#111;
+  color:white;
+  font-family:Arial,sans-serif;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.container{
+  width:90%;
+  max-width:520px;
+}
+
+.title{
+  text-align:center;
+  font-size:36px;
+  font-weight:900;
+  color:#ffb300;
+  margin-bottom:20px;
+}
+
+.card{
+  background:#1f1f1f;
+  border-radius:22px;
+  padding:25px;
+  box-shadow:0 0 30px rgba(255,179,0,.15);
+}
+
+h2{
+  color:#ffb300;
+  font-size:22px;
+  margin-top:20px;
+}
+
+p, li{
+  font-size:17px;
+  line-height:1.45;
+  opacity:.9;
+}
+
+ul{
+  padding-left:22px;
+}
+
+.btn{
+  display:block;
+  margin-top:22px;
+  padding:16px;
+  border-radius:14px;
+  text-decoration:none;
+  color:white;
+  background:#333;
+  font-weight:bold;
+  font-size:20px;
+  text-align:center;
+}
+</style>
 </head>
+
 <body>
 
-<h1>📖 Règles du jeu</h1>
+<div class="container">
 
-<p>
-Les règles seront ajoutées prochainement.
-</p>
+  <div class="title">📖 Règles BIBIPERO</div>
 
-<a href="/">⬅ Retour</a>
+  <div class="card">
+
+    <h2>🎯 But du jeu</h2>
+    <p>
+      Avancer sur le plateau, scanner les cases QR et survivre aux actions
+      jusqu’à la fin de la partie.
+    </p>
+
+    <h2>👥 Joueurs</h2>
+    <ul>
+      <li>Minimum 2 joueurs conseillé.</li>
+      <li>Chaque joueur peut rejoindre avec son téléphone.</li>
+      <li>La TV affiche le plateau, les actions et le classement.</li>
+    </ul>
+
+    <h2>🎲 Déroulement d’un tour</h2>
+    <ul>
+      <li>Le joueur lance le dé.</li>
+      <li>Il avance son pion.</li>
+      <li>Il scanne le QR de la case.</li>
+      <li>La TV affiche l’action.</li>
+      <li>Le joueur applique la règle indiquée.</li>
+    </ul>
+
+    <h2>🏁 Fin de partie</h2>
+    <p>
+      La partie se termine lorsqu’un joueur atteint la dernière case,
+      ou quand les joueurs décident de terminer la soirée.
+    </p>
+
+    <a class="btn" href="/">⬅ Retour accueil</a>
+
+  </div>
+
+</div>
 
 </body>
 </html>
