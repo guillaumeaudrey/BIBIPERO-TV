@@ -294,19 +294,7 @@
         `⛔ ${data.message}`;
     });
 
-  socket.on("joinError", (data) => {
-
-  const status =
-    document.getElementById("status");
-
-  if (status) {
-    status.textContent =
-      `⛔ ${data.message}`;
-    status.style.color = "#ff4d4d";
-  }
-
-});
-
+  
 
     function joinGame() {
 
@@ -376,7 +364,10 @@ function resetWebGame() {
   if (savedName) {
     document.getElementById("playerName").value = savedName;
 
-    socket.emit("joinPlayer", savedName);
+    socket.emit("joinPlayer", {
+  playerName: savedName,
+  roomCode: currentRoomCode
+});
 
     document.getElementById("success").textContent =
       `✅ ${savedName} est reconnecté`;
