@@ -210,6 +210,7 @@
     const socket = io();
 
     let isMaster = false;
+    let currentRoomCode = "";
 
     const waitingMessages = [
       "🍻 Les verres sont prêts... On attend le maître de l'apéro !",
@@ -237,6 +238,8 @@
     socket.on("stateUpdated", (data) => {
 
     if (data.roomCode) {
+  currentRoomCode = data.roomCode;
+
   document.getElementById("roomCodeDisplay").textContent =
     `🎟️ Salon : ${data.roomCode}`;
 }
@@ -291,6 +294,20 @@
         `⛔ ${data.message}`;
     });
 
+  socket.on("joinError", (data) => {
+
+  const status =
+    document.getElementById("status");
+
+  if (status) {
+    status.textContent =
+      `⛔ ${data.message}`;
+    status.style.color = "#ff4d4d";
+  }
+
+});
+
+
     function joinGame() {
 
    if (localStorage.getItem("bibiperoPlayer")) {
@@ -306,7 +323,10 @@
 
       localStorage.setItem("bibiperoPlayer", playerName);
 
-      socket.emit("joinPlayer", playerName);
+      socket.emit("joinPlayer", {
+  playerName: playerName,
+  roomCode: currentRoomCode
+});
 
       document.getElementById("success").textContent =
         `✅ ${playerName} a rejoint la partie`;
@@ -363,6 +383,11 @@ function resetWebGame() {
   }
 
   socket.emit("getState");
+});
+
+socket.on("joinError", (data) => {
+  document.getElementById("success").textContent =
+    `⛔ ${data.message}`;
 });
   </script>
 

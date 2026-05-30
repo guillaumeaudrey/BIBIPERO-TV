@@ -180,8 +180,24 @@ socket.on("rejoinPlayer", (playerName) => {
   socket.emit("playersUpdated", connectedPlayers);
 });
 
-  socket.on("joinPlayer", (playerName) => {
+  socket.on("joinPlayer", (data) => {
 
+  const playerName =
+    typeof data === "string"
+      ? data
+      : data.playerName;
+
+  const playerRoom =
+    typeof data === "string"
+      ? roomCode
+      : data.roomCode;
+
+  if (playerRoom !== roomCode) {
+    socket.emit("joinError", {
+      message: "Mauvais code salon"
+    });
+    return;
+  }
   let existingPlayer =
     connectedPlayers.find(p => p.name === playerName);
 
