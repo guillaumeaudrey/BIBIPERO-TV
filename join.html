@@ -164,6 +164,12 @@
     </div>
 
     <input
+  id="roomInput"
+  placeholder="Code salon"
+  maxlength="4"
+/>
+
+    <input
       id="playerName"
       placeholder="Ton prénom"
     />
@@ -298,29 +304,41 @@
 
     function joinGame() {
 
-   if (localStorage.getItem("bibiperoPlayer")) {
+  if (localStorage.getItem("bibiperoPlayer")) {
+    document.getElementById("success").textContent =
+      "⚠️ Ce téléphone est déjà connecté avec un joueur.";
+    return;
+  }
+
+  const playerName =
+    document.getElementById("playerName").value.trim();
+
+  const roomInput =
+    document.getElementById("roomInput")
+      .value
+      .trim()
+      .toUpperCase();
+
+  if (!playerName) return;
+
+  if (roomInput !== currentRoomCode) {
+    document.getElementById("success").textContent =
+      "⛔ Mauvais code salon";
+    return;
+  }
+
+  localStorage.setItem("bibiperoPlayer", playerName);
+
+  socket.emit("joinPlayer", {
+    playerName: playerName,
+    roomCode: roomInput
+  });
+
   document.getElementById("success").textContent =
-    "⚠️ Ce téléphone est déjà connecté avec un joueur.";
-  return;
+    `✅ ${playerName} a rejoint la partie`;
+
+  updateWaitingMessage();
 }
-
-      const playerName =
-        document.getElementById("playerName").value.trim();
-
-      if (!playerName) return;
-
-      localStorage.setItem("bibiperoPlayer", playerName);
-
-      socket.emit("joinPlayer", {
-  playerName: playerName,
-  roomCode: currentRoomCode
-});
-
-      document.getElementById("success").textContent =
-        `✅ ${playerName} a rejoint la partie`;
-
-      updateWaitingMessage();
-    }
 
     function startGame() {
       const playersCount =

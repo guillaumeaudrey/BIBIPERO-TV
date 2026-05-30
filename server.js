@@ -1,7 +1,63 @@
-let roomCode = Math.random()
-  .toString(36)
-  .substring(2, 6)
-  .toUpperCase();
+const roomNames = [
+
+  "APERO",
+  "BIBINE",
+  "GLOU",
+  "SHOT",
+  "BIERE",
+  "PIZZA",
+
+  "BONUS",
+  "GAGE",
+  "DEFI",
+
+  "FETE",
+  "CHAUD",
+  "FUSEE",
+  "ROI",
+  "REINE",
+  "TAVERNE",
+  "RIGOLO",
+  "LOL",
+  "YOLO",
+  "PARTY",
+
+  "GLAGLA",
+  "POMPETTE",
+  "MOUSSE",
+  "RICARD",
+  "PASTIS",
+  "CULSEC",
+  "TOURNEE",
+  "LEGENDES",
+  "WARRIOR",
+  "CHAMPION",
+
+  "COQUIN",
+  "SINGE",
+  "LICORNE",
+  "DRAGON",
+  "PIRATE",
+  "VIKING",
+  "TITAN",
+  "BOSS",
+  "CHEF",
+  "KING",
+  "SKOL",
+  "TRINQUE",
+  "GLING",
+  "BOUM",
+  "OUPS",
+  "HOP",
+
+];
+let roomCode =
+  roomNames[
+    Math.floor(Math.random() * roomNames.length)
+  ] + "-" +
+  String(
+  Math.floor(Math.random() * 100)
+).padStart(2, "0");
 
 const http = require("http");
 const { Server } = require("socket.io");
