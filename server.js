@@ -384,6 +384,7 @@ socket.on("resetGame", () => {
   currentPlayerIndex = 0;
 
   state = {
+    source: "web",
     playerName: "En attente",
     currentPlayer: "En attente",
     caseNumber: 0,
@@ -429,6 +430,7 @@ socket.on("startGame", () => {
   gameMode = "web";
 
   state = {
+    source: "web",
     playerName: "",
 
     currentPlayer: connectedPlayers[0].name,
