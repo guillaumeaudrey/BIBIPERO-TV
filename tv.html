@@ -1012,7 +1012,9 @@ if (connectedPanel) {
   if (isNewEvent) {
   lastCardId = cardId;
 
+  if (data.gameStarted) {
   hideAttract();
+}
   startAttractTimer();
 
   if (
