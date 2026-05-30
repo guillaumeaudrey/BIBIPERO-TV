@@ -298,6 +298,16 @@
 
     socket.emit("getState");
 
+    socket.on("gameReset", () => {
+
+  localStorage.removeItem("bibiperoPlayer");
+  localStorage.removeItem("bibiperoJoined");
+
+  document.getElementById("success").textContent = "";
+  document.getElementById("playerName").value = "";
+
+  location.reload();
+});
     
   </script>
 
