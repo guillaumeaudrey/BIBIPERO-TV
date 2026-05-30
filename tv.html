@@ -913,6 +913,15 @@ function startAttractTimer() {
 }
 
 function updateTv(data) {
+  if (
+  !data.gameStarted &&
+  (!data.title || data.title === "BIBIPERO TV" || data.title === "Nouvelle partie") &&
+  (!data.text || data.text.includes("En attente"))
+) {
+  closeTvCard();
+  showAttract();
+  return;
+}
 
   if (data.gameStarted) {
   hideAttract();
