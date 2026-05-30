@@ -530,6 +530,24 @@
   background:#333;
 }
 
+.attract-title{
+  font-size:48px;
+  font-weight:900;
+  color:#ffb300;
+  margin-bottom:20px;
+}
+
+.attract-subtitle{
+  font-size:28px;
+  color:white;
+  margin-bottom:15px;
+}
+
+.attract-mode{
+  font-size:22px;
+  opacity:.8;
+}
+
   </style>
 </head>
 <body>
@@ -643,8 +661,8 @@
     "⏳ En attente d’une partie";
 
   closeTvCard();
-  hideWinner();
-  hideAttract();
+hideWinner();
+showAttract();
 
   const connectedPanel =
     document.getElementById("connectedPlayersPanel");
@@ -858,6 +876,20 @@ function showTvCard(data) {
   }
 }
 
+function showAttract() {
+
+  document
+    .getElementById("attractScreen")
+    .classList.remove("hidden");
+
+  const music =
+    document.getElementById("attractMusic");
+
+  if (music) {
+    music.play().catch(() => {});
+  }
+}
+
 function startAttractTimer() {
   clearTimeout(attractTimer);
 
@@ -868,6 +900,10 @@ function startAttractTimer() {
 }
 
 function updateTv(data) {
+
+  if (data.gameStarted) {
+  hideAttract();
+}
 
   const connectedPanel =
   document.getElementById("connectedPlayersPanel");
@@ -954,8 +990,16 @@ animatePawnMovement(
 
   const currentName = data.currentPlayer || data.playerName || "-";
 
+  if (
+  !currentName ||
+  currentName === "En attente"
+) {
+  document.getElementById("turnBanner").textContent =
+    "⏳ En attente du démarrage de la partie";
+} else {
   document.getElementById("turnBanner").textContent =
     `🎮 Tour de ${currentName}`;
+}
 
   document.getElementById("currentPlayer").textContent =
     currentName;
@@ -1414,7 +1458,10 @@ function closeTvCard() {
     📺 Retour TV
 </a>
 
-  <div class="attract-text">Scanne une case pour commencer 🍻</div>
+  <div class="attract-text">
+  <div>🍻 BIBIPERO TV</div>
+  <div>En attente du démarrage d'une partie</div>
+  <div>📱 Application ou 🌍 Web</div>
 </div>
  
 <audio
