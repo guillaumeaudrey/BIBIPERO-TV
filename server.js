@@ -176,31 +176,33 @@ socket.on("rejoinPlayer", (playerName) => {
 
   socket.on("joinPlayer", (playerName) => {
 
-  const alreadyExists =
-    connectedPlayers.some(p => p.name === playerName);
+  let existingPlayer =
+    connectedPlayers.find(p => p.name === playerName);
 
-  if (!alreadyExists) {
-    const isMaster =
-  connectedPlayers.length === 0;
-
-connectedPlayers.push({
-  id: socket.id,
-  name: playerName,
-  position: 0,
-  totalActions: 0,
-  totalDrinks: 0,
-  isMaster: isMaster
-});
+  if (existingPlayer) {
+    existingPlayer.id = socket.id;
+  } else {
+    connectedPlayers.push({
+      id: socket.id,
+      name: playerName,
+      position: 0,
+      totalActions: 0,
+      totalDrinks: 0,
+      isMaster: connectedPlayers.length === 0
+    });
   }
 
   state.players = connectedPlayers;
-  state.currentPlayer =
-    connectedPlayers[currentPlayerIndex]?.name || playerName;
+
+  if (!state.currentPlayer || state.currentPlayer === "En attente") {
+    state.currentPlayer =
+      connectedPlayers[currentPlayerIndex]?.name || playerName;
+  }
 
   io.emit("playersUpdated", connectedPlayers);
   io.emit("stateUpdated", state);
 
-  console.log(playerName + " a rejoint la partie");
+  console.log(playerName + " a rejoint ou s'est reconnecté");
 });
 
 socket.on("playerScannedCase", (data) => {

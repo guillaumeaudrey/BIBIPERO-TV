@@ -322,7 +322,22 @@
 function resetWebGame() {
   socket.emit("resetGame");
 }
-    
+    window.addEventListener("load", () => {
+
+  const savedName =
+    localStorage.getItem("bibiperoPlayer");
+
+  if (savedName) {
+    document.getElementById("playerName").value = savedName;
+
+    socket.emit("joinPlayer", savedName);
+
+    document.getElementById("success").textContent =
+      `✅ ${savedName} est reconnecté`;
+  }
+
+  socket.emit("getState");
+});
   </script>
 
 </body>
