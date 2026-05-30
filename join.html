@@ -447,9 +447,34 @@ function showJoinMode() {
 
 function createGame() {
 
-  joinGame();
+  const playerName =
+    document.getElementById("playerName").value.trim();
+
+  if (!playerName) {
+    document.getElementById("success").textContent =
+      "⛔ Entre ton prénom d'abord";
+    return;
+  }
+
+  socket.emit("createRoom", {
+    playerName: playerName
+  });
 
 }
+
+socket.on("roomCreated", (data) => {
+
+  currentRoomCode = data.roomCode;
+
+  localStorage.setItem("bibiperoPlayer", data.playerName);
+
+  document.getElementById("roomCodeDisplay").textContent =
+    `🎟️ Salon : ${data.roomCode}`;
+
+  document.getElementById("success").textContent =
+    `✅ Partie créée ! Code : ${data.roomCode}`;
+
+});
   </script>
 
 </body>

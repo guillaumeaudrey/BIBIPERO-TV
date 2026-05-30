@@ -236,6 +236,61 @@ socket.on("rejoinPlayer", (playerName) => {
   socket.emit("playersUpdated", connectedPlayers);
 });
 
+
+socket.on("createRoom", (data) => {
+
+  roomCode =
+    roomNames[
+      Math.floor(Math.random() * roomNames.length)
+    ] + "-" +
+    String(
+      Math.floor(Math.random() * 100)
+    ).padStart(2, "0");
+
+  connectedPlayers = [];
+
+  const playerName = data.playerName;
+
+  connectedPlayers.push({
+    id: socket.id,
+    name: playerName,
+    position: 0,
+    totalActions: 0,
+    totalDrinks: 0,
+    isMaster: true,
+    source: "web"
+  });
+
+  currentPlayerIndex = 0;
+
+  state = {
+    source: "web",
+    roomCode: roomCode,
+    playerName: playerName,
+    currentPlayer: playerName,
+    caseNumber: 0,
+    category: "",
+    title: "",
+    text: "",
+    powerLevel: 0,
+    isLegendary: false,
+    totalActions: 0,
+    isLastRound: false,
+    gameStarted: false,
+    players: connectedPlayers
+  };
+
+  io.emit("playersUpdated", connectedPlayers);
+  io.emit("stateUpdated", state);
+
+  socket.emit("roomCreated", {
+    roomCode: roomCode,
+    playerName: playerName
+  });
+
+  console.log("Salon créé :", roomCode, "par", playerName);
+});
+
   socket.on("joinPlayer", (data) => {
 
   const playerName =
