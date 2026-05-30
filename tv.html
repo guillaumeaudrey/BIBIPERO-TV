@@ -606,6 +606,8 @@
 
     const socket = io();
 
+    
+
 socket.on("playersUpdated", (players) => {
 
   const list =
@@ -629,34 +631,24 @@ socket.on("stateUpdated", (data) => {
   console.log("STATE TV =", data);
 
   if (!data.gameStarted && !data.title && !data.text) {
-  document.getElementById("turnBanner").textContent =
-    "⏳ En attente du démarrage de la partie";
+    document.getElementById("turnBanner").textContent =
+      "⏳ En attente du démarrage de la partie";
 
-  closeTvCard();
-  return;
-}
+    closeTvCard();
+    return;
+  }
 
-if (!data.gameStarted && !data.title && !data.text) {
-  document.getElementById("turnBanner").textContent =
-    "⏳ En attente du démarrage de la partie";
+  if (data.narration && !data.text) {
+    data.text = data.narration;
+  }
 
-  closeTvCard();
-  return;
-}
+  if (data.actionTitle && !data.title) {
+    data.title = data.actionTitle;
+  }
 
-if (data.narration && !data.text) {
-  data.text = data.narration;
-}
-
-if (data.actionTitle && !data.title) {
-  data.title = data.actionTitle;
-}
-
-if (data.actionText && !data.text) {
-  data.text = data.actionText;
-}
-
-updateTv(data);
+  if (data.actionText && !data.text) {
+    data.text = data.actionText;
+  }
 
   updateTv(data);
 });

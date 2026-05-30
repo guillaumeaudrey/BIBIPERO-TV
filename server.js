@@ -55,9 +55,10 @@ app.post("/state", (req, res) => {
     connectedPlayers = [];
 
     io.emit("playersUpdated", connectedPlayers);
-
     io.emit("gameReset");
   }
+
+  io.emit("stateUpdated", state);
 
   res.json({ ok: true });
 });
