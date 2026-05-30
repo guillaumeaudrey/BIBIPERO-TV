@@ -521,18 +521,18 @@ margin: 0 auto 25px auto;
 
   z-index:9999;
 
-  background:#222;
-  color:white;
+  background:rgba(0,0,0,.45);
 
-  text-decoration:none;
+  padding:8px;
 
-  padding:10px 16px;
+  border-radius:14px;
 
-  border-radius:12px;
+  backdrop-filter: blur(4px);
+}
 
-  font-weight:bold;
-
-  box-shadow:0 0 15px rgba(0,0,0,.4);
+.home-logo{
+  width:60px;
+  display:block;
 }
 
 .home-btn:hover{
@@ -562,7 +562,11 @@ margin: 0 auto 25px auto;
 <body>
 
   <a class="home-btn" href="/">
-🏠 Accueil
+  <img
+    src="bibipero_logo.png"
+    alt="BIBIPERO"
+    class="home-logo"
+  >
 </a>
   <div class="screen">
     <header class="header">
