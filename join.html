@@ -175,9 +175,12 @@
 
     <h1>🍻 Rejoindre BIBIPERO</h1>
     
-    <div id="roomCodeDisplay" class="room-code">
-    🎟️ Salon : ----
-    </div>
+    <div id="joinSection" style="display:none;">
+
+<label>🎟️ Code salon</label>
+<input id="roomInput" ...>
+
+</div>
 
     <div class="input-group">
   <label>🎟️ Code salon</label>
@@ -196,8 +199,12 @@
   />
 </div>
 
-    <button onclick="joinGame()">
-      Rejoindre
+    <button onclick="createGame()">
+    🍻 Créer une partie
+    </button>
+
+    <button onclick="showJoinMode()" class="secondary-btn">
+    🎟️ Rejoindre une partie
     </button>
 
     <div id="success"></div>
@@ -429,6 +436,20 @@ function disconnectPlayer() {
   localStorage.removeItem("bibiperoJoined");
 
   location.reload();
+}
+
+function showJoinMode() {
+
+  document
+    .getElementById("joinSection")
+    .style.display = "block";
+
+}
+
+function createGame() {
+
+  joinGame();
+
 }
   </script>
 
