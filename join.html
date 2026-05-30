@@ -320,10 +320,7 @@
   localStorage.removeItem("bibiperoPlayer");
   localStorage.removeItem("bibiperoJoined");
 
-  document.getElementById("success").textContent = "";
-  document.getElementById("playerName").value = "";
-
-  location.reload();
+  window.location.href = "/join.html";
 });
 
 function resetWebGame() {

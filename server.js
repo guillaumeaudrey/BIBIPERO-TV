@@ -400,11 +400,12 @@ socket.on("resetGame", () => {
   };
 
   io.emit("playersUpdated", []);
-  io.emit("gameReset");
   io.emit("stateUpdated", state);
   
+
   setTimeout(() => {
   io.emit("hardReset");
+  io.emit("gameReset");
 }, 100);
 
   console.log("Nouvelle partie complète : joueurs supprimés");
