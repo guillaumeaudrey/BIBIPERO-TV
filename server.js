@@ -183,13 +183,14 @@ socket.on("rejoinPlayer", (playerName) => {
     existingPlayer.id = socket.id;
   } else {
     connectedPlayers.push({
-      id: socket.id,
-      name: playerName,
-      position: 0,
-      totalActions: 0,
-      totalDrinks: 0,
-      isMaster: connectedPlayers.length === 0
-    });
+  id: socket.id,
+  name: playerName,
+  position: 0,
+  totalActions: 0,
+  totalDrinks: 0,
+  isMaster: connectedPlayers.length === 0,
+  source: "web"
+});
   }
 
   state.players = connectedPlayers;
@@ -198,6 +199,8 @@ socket.on("rejoinPlayer", (playerName) => {
     state.currentPlayer =
       connectedPlayers[currentPlayerIndex]?.name || playerName;
   }
+  
+state.source = "web";
 
   io.emit("playersUpdated", connectedPlayers);
   io.emit("stateUpdated", state);

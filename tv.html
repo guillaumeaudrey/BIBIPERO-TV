@@ -576,7 +576,7 @@
 
   <aside class="side">
 
-    <section class="panel">
+    <section class="panel" id="connectedPlayersPanel">
   <h2>👥 Joueurs connectés</h2>
   <ul id="connectedPlayers" class="ranking"></ul>
 </section>
@@ -836,6 +836,14 @@ function startAttractTimer() {
 }
 
 function updateTv(data) {
+
+  const connectedPanel =
+  document.getElementById("connectedPlayersPanel");
+
+if (connectedPanel) {
+  connectedPanel.style.display =
+    data.source === "app" ? "none" : "block";
+}
 
   const cardId =
     data.eventId || `${data.playerName}-${data.caseNumber}-${data.title}-${data.totalActions}`;
