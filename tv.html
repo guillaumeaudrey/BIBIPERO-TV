@@ -623,22 +623,37 @@
     const socket = io();
 
     socket.on("hardReset", () => {
+
   currentState = {};
   lastCardId = "";
 
-  document.getElementById("ranking").innerHTML = "";
-  document.getElementById("connectedPlayers").innerHTML = "";
-  document.getElementById("playersLayer").innerHTML = "";
+  const ranking = document.getElementById("ranking");
+  const connectedPlayers = document.getElementById("connectedPlayers");
+  const playersLayer = document.getElementById("playersLayer");
+
+  if (ranking) ranking.innerHTML = "";
+  if (connectedPlayers) connectedPlayers.innerHTML = "";
+  if (playersLayer) playersLayer.innerHTML = "";
 
   document.getElementById("currentPlayer").textContent = "-";
   document.getElementById("lastRound").textContent = "Non";
   document.getElementById("actionsCount").textContent = "0";
+
   document.getElementById("turnBanner").textContent =
     "⏳ En attente d’une partie";
 
   closeTvCard();
   hideWinner();
   hideAttract();
+
+  const connectedPanel =
+    document.getElementById("connectedPlayersPanel");
+
+  if (connectedPanel) {
+    connectedPanel.style.display = "block";
+  }
+
+  console.log("TV HARD RESET OK");
 });
 
 socket.on("playersUpdated", (players) => {
