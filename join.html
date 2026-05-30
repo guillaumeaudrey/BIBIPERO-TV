@@ -149,6 +149,22 @@
   color:#ffb300;
 }
 
+.input-group {
+  text-align: left;
+  margin-bottom: 18px;
+}
+
+.input-group label {
+  display: block;
+  color: #ffb300;
+  font-weight: bold;
+  margin-bottom: 8px;
+  font-size: 16px;
+}
+
+.input-group input {
+  margin-bottom: 0;
+}
 
   </style>
 </head>
@@ -163,16 +179,22 @@
     🎟️ Salon : ----
     </div>
 
-    <input
-  id="roomInput"
-  placeholder="Code salon"
-  maxlength="4"
-/>
+    <div class="input-group">
+  <label>🎟️ Code salon</label>
+  <input
+    id="roomInput"
+    placeholder="Ex : BIBINE-42"
+    maxlength="12"
+  />
+</div>
 
-    <input
-      id="playerName"
-      placeholder="Ton prénom"
-    />
+<div class="input-group">
+  <label>👤 Ton prénom</label>
+  <input
+    id="playerName"
+    placeholder="Ex : Guillaume"
+  />
+</div>
 
     <button onclick="joinGame()">
       Rejoindre
