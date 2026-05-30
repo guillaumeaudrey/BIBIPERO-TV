@@ -174,7 +174,11 @@
   <div class="card">
 
     <h1>🍻 Rejoindre BIBIPERO</h1>
-    
+
+    <div id="roomCodeDisplay" class="room-code" style="display:none;">
+  🎟️ Salon : ----
+</div>
+
     <div class="input-group">
   <label>👤 Ton prénom</label>
 
@@ -473,6 +477,10 @@ socket.on("roomCreated", (data) => {
 
   document.getElementById("success").textContent =
     `✅ Partie créée ! Code : ${data.roomCode}`;
+    
+  document.getElementById("roomCodeDisplay").style.display = "block";
+document.getElementById("roomCodeDisplay").textContent =
+  `🎟️ Salon : ${data.roomCode}`;  
 
 });
   </script>
