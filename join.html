@@ -270,6 +270,13 @@
     });
 
     function joinGame() {
+
+   if (localStorage.getItem("bibiperoPlayer")) {
+  document.getElementById("success").textContent =
+    "⚠️ Ce téléphone est déjà connecté avec un joueur.";
+  return;
+}
+
       const playerName =
         document.getElementById("playerName").value.trim();
 
