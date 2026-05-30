@@ -283,14 +283,19 @@
 .turn-banner {
   margin-top: 12px;
   padding: 10px 22px;
+
   display: inline-block;
-  background: rgba(255,179,0,0.15);
-  border: 2px solid rgba(255,179,0,0.35);
+
+  background: rgba(255,179,0,0.10);
+  border: 1px solid rgba(255,179,0,0.25);
+
   border-radius: 999px;
+
   color: #ffcc4d;
-  font-size: 22px;
+  font-size: 20px;
   font-weight: bold;
-  box-shadow: 0 0 18px rgba(255,179,0,0.2);
+
+  box-shadow: 0 0 12px rgba(255,179,0,0.15);
 }
 .winner-stats {
   margin-top: 25px;
@@ -422,7 +427,7 @@
   align-items: center;
   z-index: 90000;
   animation: attractPulse 2s infinite ease-in-out;
- 
+ text-align:center;
 }
 .attract-back-btn {
   position: fixed;
@@ -447,6 +452,9 @@
 .attract-image {
   width: 420px;
   max-width: 70vw;
+
+  display: block;
+margin: 0 auto 25px auto;
 
   animation:
     logoGlow 2s infinite ease-in-out,
@@ -493,8 +501,9 @@
 }
 .attract-text {
   margin-top: 25px;
-  font-size: 32px;
+  text-align: center;
   color: white;
+  width:100%;
 }
 
 @keyframes attractPulse {
@@ -531,21 +540,21 @@
 }
 
 .attract-title{
-  font-size:48px;
+  font-size:42px;
   font-weight:900;
   color:#ffb300;
-  margin-bottom:20px;
+  margin-bottom:14px;
 }
 
 .attract-subtitle{
   font-size:28px;
   color:white;
-  margin-bottom:15px;
+  margin-bottom:12px;
 }
 
 .attract-mode{
-  font-size:22px;
-  opacity:.8;
+  font-size:24px;
+  opacity:0.9;
 }
 
   </style>
@@ -1467,8 +1476,8 @@ function closeTvCard() {
 <audio
   id="attractMusic"
   src="music_bibiperoson.mp3"
+  preload="auto"
   loop
-  controls
 ></audio>
 
 </body>
