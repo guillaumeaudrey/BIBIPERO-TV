@@ -46,8 +46,16 @@ app.get("/state", (req, res) => {
   res.json(state);
 });
 
+let connectedPlayers = [];
 app.post("/state", (req, res) => {
+
   state = req.body;
+
+  if (state.resetGame === true) {
+    connectedPlayers = [];
+    io.emit("playersUpdated", connectedPlayers);
+  }
+
   res.json({ ok: true });
 });
 
@@ -128,7 +136,7 @@ server.listen(PORT, "0.0.0.0", () => {
   console.log(`BIBIPERO TV lancé sur le port ${PORT}`);
 });
 
-let connectedPlayers = [];
+
 let currentPlayerIndex = 0;
 
 let gameMode = "none";
