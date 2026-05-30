@@ -622,7 +622,24 @@
 
     const socket = io();
 
-    
+    socket.on("hardReset", () => {
+  currentState = {};
+  lastCardId = "";
+
+  document.getElementById("ranking").innerHTML = "";
+  document.getElementById("connectedPlayers").innerHTML = "";
+  document.getElementById("playersLayer").innerHTML = "";
+
+  document.getElementById("currentPlayer").textContent = "-";
+  document.getElementById("lastRound").textContent = "Non";
+  document.getElementById("actionsCount").textContent = "0";
+  document.getElementById("turnBanner").textContent =
+    "⏳ En attente d’une partie";
+
+  closeTvCard();
+  hideWinner();
+  hideAttract();
+});
 
 socket.on("playersUpdated", (players) => {
 
