@@ -377,17 +377,12 @@ socket.on("nextPlayer", () => {
 
 socket.on("resetGame", () => {
 
-  connectedPlayers.forEach(p => {
-    p.position = 0;
-    p.totalActions = 0;
-    p.totalDrinks = 0;
-  });
-
+  connectedPlayers = [];
   currentPlayerIndex = 0;
 
   state = {
-    playerName: "",
-    currentPlayer: connectedPlayers[0]?.name || "En attente",
+    playerName: "En attente",
+    currentPlayer: "En attente",
     caseNumber: 0,
     category: "",
     title: "",
@@ -397,15 +392,14 @@ socket.on("resetGame", () => {
     totalActions: 0,
     isLastRound: false,
     gameStarted: false,
-    players: connectedPlayers
+    players: []
   };
 
-  io.emit("playersUpdated", connectedPlayers);
+  io.emit("playersUpdated", []);
   io.emit("gameReset");
   io.emit("stateUpdated", state);
 
-
-  console.log("Nouvelle partie lancée");
+  console.log("Nouvelle partie complète : joueurs supprimés");
 });
 
 socket.on("startGame", () => {
