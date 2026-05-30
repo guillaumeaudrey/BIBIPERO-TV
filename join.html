@@ -231,7 +231,9 @@
 <a class="back-btn" href="/">
   ⬅ Retour accueil
 </a>
-
+ <button onclick="disconnectPlayer()" class="new-game-btn">
+🚪 Quitter le joueur
+</button>
   </div>
 
   <script>
@@ -420,6 +422,14 @@ socket.on("joinError", (data) => {
   document.getElementById("success").textContent =
     `⛔ ${data.message}`;
 });
+
+function disconnectPlayer() {
+
+  localStorage.removeItem("bibiperoPlayer");
+  localStorage.removeItem("bibiperoJoined");
+
+  location.reload();
+}
   </script>
 
 </body>
