@@ -30,12 +30,7 @@ body{
   margin-bottom:10px;
 }
 
-.title{
-  font-size:48px;
-  font-weight:900;
-  color:#ffb300;
-  margin-bottom:40px;
-}
+
 
 .menu{
   display:flex;
@@ -95,6 +90,27 @@ body{
   opacity:.8;
   font-size:20px;
 }
+.main-logo{
+  width:300px;
+  max-width:70vw;
+
+  display:block;
+  margin:0 auto 20px auto;
+
+  filter:drop-shadow(0 0 20px #ffb300);
+
+  animation:logoFloat 4s infinite ease-in-out;
+}
+@keyframes logoFloat {
+
+  0%,100%{
+    transform:translateY(0);
+  }
+
+  50%{
+    transform:translateY(-8px);
+  }
+}
 </style>
 </head>
 
@@ -102,11 +118,11 @@ body{
 
 <div class="container">
 
-<div class="logo">🍻</div>
-
-<div class="title">
-BIBIPERO
-</div>
+<img
+  src="bibipero_logo.png"
+  class="main-logo"
+  alt="BIBIPERO"
+>
 
 <div class="subtitle">
 Le jeu d'apéro connecté 🍻

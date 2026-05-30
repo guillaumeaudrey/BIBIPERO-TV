@@ -431,10 +431,12 @@
 }
 .attract-back-btn {
   position: fixed;
-  bottom: 25px;
-  right: 25px;
+  top: 15px;
+  left: 15px;
 
-  background: rgba(0,0,0,0.45);
+  z-index: 99999;
+
+  background: rgba(0,0,0,.45);
   color: white;
 
   text-decoration: none;
@@ -442,9 +444,18 @@
   padding: 10px 16px;
   border-radius: 12px;
 
-  opacity: 0.6;
-}
+  font-weight: bold;
 
+  backdrop-filter: blur(4px);
+
+  opacity: .85;
+
+  transition: .2s;
+}
+.attract-back-btn:hover{
+  transform: scale(1.05);
+  opacity: 1;
+}
 .attract-screen.hidden {
   display: none;
 }
@@ -531,7 +542,7 @@ margin: 0 auto 25px auto;
 }
 
 .home-logo{
-  width:60px;
+  width:55px;
   display:block;
 }
 
@@ -555,6 +566,15 @@ margin: 0 auto 25px auto;
 .attract-mode{
   font-size:24px;
   opacity:0.9;
+}
+
+.mini-logo{
+  width:50px;
+  display:block;
+}
+
+.attract-back-btn{
+  padding:6px;
 }
 
   </style>
@@ -1441,6 +1461,10 @@ function closeTvCard() {
   }
 }
 
+function returnToTv() {
+  clearTimeout(attractTimer);
+  hideAttract();
+}
 
   </script>
   <audio id="scanSound" src="scan.mp3" preload="auto"></audio>
@@ -1476,8 +1500,10 @@ function closeTvCard() {
       class="attract-image"
   > 
   
-  <a href="/tv.html" class="attract-back-btn">
-    📺 Retour TV
+ <a href="#"
+   class="attract-back-btn"
+   onclick="returnToTv(); return false;">
+  <img src="bibipero_logo.png" class="mini-logo">
 </a>
 
   <div class="attract-text">
