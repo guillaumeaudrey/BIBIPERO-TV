@@ -1,3 +1,8 @@
+let roomCode = Math.random()
+  .toString(36)
+  .substring(2, 6)
+  .toUpperCase();
+
 const http = require("http");
 const { Server } = require("socket.io");
 const { getRandomAction } = require("./ActionService");
@@ -57,7 +62,8 @@ app.post("/state", (req, res) => {
     io.emit("playersUpdated", connectedPlayers);
     io.emit("gameReset");
   }
-
+   
+  state.roomCode = roomCode;
   io.emit("stateUpdated", state);
 
   res.json({ ok: true });
@@ -203,6 +209,7 @@ socket.on("rejoinPlayer", (playerName) => {
 state.source = "web";
 
   io.emit("playersUpdated", connectedPlayers);
+  state.roomCode = roomCode;
   io.emit("stateUpdated", state);
 
   console.log(playerName + " a rejoint ou s'est reconnecté");
@@ -275,7 +282,7 @@ gameMode = "web";
     gameMode: gameMode,
     players: connectedPlayers
   };
-
+  state.roomCode = roomCode;
   io.emit("stateUpdated", state);
 io.emit("playersUpdated", connectedPlayers);
 
@@ -345,7 +352,7 @@ socket.on("playerScanned", (data) => {
     totalActions: (state.totalActions || 0) + 1,
     players: appPlayers
   };
-
+  state.roomCode = roomCode;
   io.emit("stateUpdated", state);
   console.log("Joueurs appli envoyés :", appPlayers);
   io.emit("playersUpdated", appPlayers);
@@ -370,7 +377,7 @@ socket.on("nextPlayer", () => {
     isLegendary: false,
     players: connectedPlayers
   };
-
+  state.roomCode = roomCode;
   io.emit("stateUpdated", state);
   io.emit("playersUpdated", connectedPlayers);
 
@@ -398,7 +405,7 @@ socket.on("resetGame", () => {
     gameStarted: false,
     players: []
   };
-
+  state.roomCode = roomCode;
   io.emit("playersUpdated", []);
   io.emit("stateUpdated", state);
   
@@ -455,7 +462,7 @@ socket.on("startGame", () => {
     
     players: connectedPlayers
   };
-
+  state.roomCode = roomCode;
   io.emit("stateUpdated", state);
   io.emit("playersUpdated", connectedPlayers);
 

@@ -577,6 +577,12 @@ margin: 0 auto 25px auto;
   padding:6px;
 }
 
+.room-code{
+  margin-top:10px;
+  font-size:22px;
+  font-weight:bold;
+  color:#ffb300;
+}
   </style>
 </head>
 <body>
@@ -596,6 +602,10 @@ margin: 0 auto 25px auto;
     <div class="subtitle">
         Mode TV — Plateau interactif
     </div>
+
+    <div id="roomCode" class="room-code">
+🎟️ Salon : ----
+</div>
 
     <div id="turnBanner" class="turn-banner">
         🎮 Tour de joueur
@@ -933,6 +943,12 @@ function startAttractTimer() {
 }
 
 function updateTv(data) {
+
+if (data.roomCode) {
+  document.getElementById("roomCode").textContent =
+    `🎟️ Salon : ${data.roomCode}`;
+}
+
   if (
   !data.gameStarted &&
   (!data.title || data.title === "BIBIPERO TV" || data.title === "Nouvelle partie") &&
