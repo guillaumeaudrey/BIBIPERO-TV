@@ -402,6 +402,7 @@ socket.on("resetGame", () => {
   io.emit("playersUpdated", []);
   io.emit("gameReset");
   io.emit("stateUpdated", state);
+  io.emit("hardReset");
 
   console.log("Nouvelle partie complète : joueurs supprimés");
 });
