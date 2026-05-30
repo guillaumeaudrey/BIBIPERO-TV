@@ -489,11 +489,38 @@
     opacity: 1;
   }
 }
+.home-btn{
+  position:fixed;
+  top:15px;
+  left:15px;
 
+  z-index:9999;
+
+  background:#222;
+  color:white;
+
+  text-decoration:none;
+
+  padding:10px 16px;
+
+  border-radius:12px;
+
+  font-weight:bold;
+
+  box-shadow:0 0 15px rgba(0,0,0,.4);
+}
+
+.home-btn:hover{
+  background:#333;
+}
 
   </style>
 </head>
 <body>
+
+  <a class="home-btn" href="/">
+🏠 Accueil
+</a>
   <div class="screen">
     <header class="header">
 
@@ -887,7 +914,7 @@ animatePawnMovement(
     currentName;
 
     console.log("MODE ACTIF :", data.gameMode);
-    
+
   const ranking = document.getElementById("ranking");
   ranking.innerHTML = "";
 
