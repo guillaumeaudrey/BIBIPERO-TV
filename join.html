@@ -138,6 +138,18 @@
   background: #d32f2f;
   color: white;
 }
+
+.room-code{
+  margin-top:10px;
+  margin-bottom:20px;
+
+  font-size:22px;
+  font-weight:bold;
+
+  color:#ffb300;
+}
+
+
   </style>
 </head>
 
@@ -146,6 +158,10 @@
   <div class="card">
 
     <h1>🍻 Rejoindre BIBIPERO</h1>
+    
+    <div id="roomCodeDisplay" class="room-code">
+    🎟️ Salon : ----
+    </div>
 
     <input
       id="playerName"
@@ -219,6 +235,12 @@
     }
 
     socket.on("stateUpdated", (data) => {
+
+    if (data.roomCode) {
+  document.getElementById("roomCodeDisplay").textContent =
+    `🎟️ Salon : ${data.roomCode}`;
+}
+
       if (data.gameStarted) {
         window.location.href = "/play.html";
       }
