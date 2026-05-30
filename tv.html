@@ -748,6 +748,15 @@ socket.on("playersUpdated", (players) => {
 
 socket.on("stateUpdated", (data) => {
 
+  if (!data.gameStarted) {
+  closeTvCard();
+
+  const overlay = document.getElementById("tvCardOverlay");
+  if (overlay) {
+    overlay.classList.add("hidden");
+  }
+}
+
   console.log("STATE TV =", data);
 
   if (data.narration && !data.text) {
