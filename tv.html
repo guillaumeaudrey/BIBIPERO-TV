@@ -607,6 +607,24 @@ margin: 0 auto 25px auto;
   color: #ffcc4d;
   text-transform: uppercase;
 }
+
+.history-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.history-list li {
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  font-size: 18px;
+}
+
+
+
+
+
+
   </style>
 </head>
 <body>
@@ -674,6 +692,11 @@ margin: 0 auto 25px auto;
       <h2>🏆 Classement</h2>
       <ul id="ranking" class="ranking"></ul>
     </section>
+    
+    <section class="panel">
+  <h2>📜 Dernières actions</h2>
+  <ul id="historyList" class="history-list"></ul>
+</section>
 
     <section class="panel">
       <h2>🎲 Partie</h2>
@@ -716,8 +739,10 @@ margin: 0 auto 25px auto;
     let lastCardId = "";
     let attractTimer;
 
-    const socket = io();
+    const actionHistory = [];
 
+    const socket = io();
+    
     const params = new URLSearchParams(window.location.search);
     const roomFromUrl = params.get("room");
     const currentRoomCode = (roomFromUrl || localStorage.getItem("bibiperoRoomCode") || "").toUpperCase();
@@ -957,6 +982,8 @@ function showTvCard(data) {
   document.getElementById("tvCardText").textContent =
     data.text;
 
+    addHistory(data);
+
   card.style.background =
     style.color;
 
@@ -971,6 +998,40 @@ function showTvCard(data) {
   }, 15000);
 }
 
+function addHistory(data) {
+  if (!data || !data.gameStarted) return;
+  if (!data.title?.trim() || !data.text?.trim()) return;
+
+  const list = document.getElementById("historyList");
+  if (!list) return;
+
+  const style =
+    categoryStyles[data.category] || categoryStyles["boire"];
+
+  const playerName =
+    data.playerName || data.currentPlayer || "Joueur";
+
+  const itemText =
+    `${style.emoji} ${playerName} → ${data.title}`;
+
+  if (actionHistory[0] === itemText) {
+    return;
+  }
+
+  actionHistory.unshift(itemText);
+
+  if (actionHistory.length > 5) {
+    actionHistory.pop();
+  }
+
+  list.innerHTML = "";
+
+  actionHistory.forEach(item => {
+    const li = document.createElement("li");
+    li.textContent = item;
+    list.appendChild(li);
+  });
+}
 
     function hideAttract() {
   document.getElementById("attractScreen").classList.add("hidden");
