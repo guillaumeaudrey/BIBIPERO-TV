@@ -428,6 +428,16 @@ function resetWebGame() {
 }
     window.addEventListener("load", () => {
 
+  const params = new URLSearchParams(window.location.search);
+  const roomFromLink = params.get("room");
+
+  // Si on arrive avec un lien d’invitation, on NE reconnecte PAS l’ancien joueur.
+  // Sinon l’invité peut garder le prénom du maître ou envoyer un mauvais salon.
+  if (roomFromLink) {
+    socket.emit("getState");
+    return;
+  }
+
   const savedName =
     localStorage.getItem("bibiperoPlayer");
 
@@ -435,9 +445,9 @@ function resetWebGame() {
     document.getElementById("playerName").value = savedName;
 
     socket.emit("joinPlayer", {
-  playerName: savedName,
-  roomCode: currentRoomCode
-});
+      playerName: savedName,
+      roomCode: currentRoomCode
+    });
 
     document.getElementById("success").textContent =
       `✅ ${savedName} est reconnecté`;
