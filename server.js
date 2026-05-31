@@ -162,20 +162,22 @@ io.on("connection", (socket) => {
   console.log("Socket connecté :", socket.id);
 
   socket.on("joinTvRoom", (data = {}) => {
-    const roomCode = (data.roomCode || "").toString().toUpperCase();
-    const room = getRoom(roomCode);
+  const roomCode = (data.roomCode || "").toString().toUpperCase();
 
-    if (!room) {
-      socket.emit("stateUpdated", createEmptyState(roomCode));
-      socket.emit("playersUpdated", []);
-      return;
-    }
+  socket.join(roomCode);
+  socket.data.roomCode = roomCode;
 
-    socket.join(roomCode);
-    socket.data.roomCode = roomCode;
-    socket.emit("stateUpdated", room.state);
-    socket.emit("playersUpdated", room.players);
-  });
+  const room = getRoom(roomCode);
+
+  if (!room) {
+    socket.emit("stateUpdated", createEmptyState(roomCode));
+    socket.emit("playersUpdated", []);
+    return;
+  }
+
+  socket.emit("stateUpdated", room.state);
+  socket.emit("playersUpdated", room.players);
+});
 
   socket.on("getState", (data = {}) => {
     const roomCode = (data.roomCode || socket.data.roomCode || "").toString().toUpperCase();
