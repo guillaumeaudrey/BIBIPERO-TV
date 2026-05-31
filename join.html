@@ -106,6 +106,8 @@
     0 0 22px rgba(255,179,0,.12);
 
   text-transform: uppercase;
+
+  animation: roomGlow 2s infinite alternate;
 }
 
     .section {
@@ -293,17 +295,30 @@
     }
 
     #playersList li {
-      padding: 11px 12px;
-      margin-bottom: 8px;
 
-      border-radius: 14px;
+  padding: 14px 16px;
 
-      background: rgba(255,255,255,.08);
+  border-radius: 16px;
 
-      color: white;
-      font-size: 17px;
-      font-weight: 700;
-    }
+  margin-bottom: 10px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,.06),
+      rgba(255,255,255,.03)
+    );
+
+  border-left: 4px solid #ffb300;
+
+  font-size: 17px;
+
+  transition:.2s;
+}
+
+#playersList li:hover{
+  transform:translateX(4px);
+}
 
     .bottom-actions {
       margin-top: 18px;
@@ -418,12 +433,7 @@
   color:#ffb300;
 }
 
-.bottom-nav{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-top:14px;
-}
+
 
   </style>
 </head>
@@ -551,11 +561,6 @@
       </button>
 
       <div class="bottom-nav">
-
-  <button class="fake-button dark-btn" onclick="history.back()">
-    <span class="btn-icon">⬅</span>
-    <span>Retour</span>
-  </button>
 
   <a class="fake-button dark-btn" href="/">
     <span class="btn-icon">🏠</span>
@@ -739,13 +744,24 @@
     });
 
     socket.on("playerJoined", (data) => {
-      const myName = localStorage.getItem("bibiperoPlayer");
 
-      if (myName && data.playerName !== myName) {
-        document.getElementById("success").textContent =
-          `✅ ${data.playerName} a rejoint le salon`;
-      }
-    });
+  const myName =
+    localStorage.getItem("bibiperoPlayer");
+
+  if (myName && data.playerName !== myName) {
+
+    const success =
+      document.getElementById("success");
+
+    success.textContent =
+      `🎉 ${data.playerName} a rejoint le salon`;
+
+    setTimeout(() => {
+      success.textContent = "";
+    }, 3000);
+  }
+
+});
 
     socket.on("gameReset", () => {
       localStorage.removeItem("bibiperoPlayer");
