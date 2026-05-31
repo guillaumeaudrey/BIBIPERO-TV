@@ -377,6 +377,10 @@
     return;
   }
 
+  const joinBtn = document.getElementById("joinRoomBtn");
+  joinBtn.disabled = true;
+  joinBtn.textContent = "⏳ Connexion...";
+
   // On laisse le serveur valider le code salon.
   // Ça évite le bug où il fallait cliquer 2 fois parce que currentRoomCode
   // n'était pas encore arrivé côté navigateur.
@@ -456,6 +460,10 @@ function resetWebGame() {
 });
 
 socket.on("joinError", (data) => {
+  const joinBtn = document.getElementById("joinRoomBtn");
+  joinBtn.disabled = false;
+  joinBtn.textContent = "✅ Entrer dans le salon";
+
   document.getElementById("success").textContent =
     `⛔ ${data.message}`;
 });
@@ -463,6 +471,10 @@ socket.on("joinError", (data) => {
 socket.on("joinSuccess", (data) => {
   localStorage.setItem("bibiperoPlayer", data.playerName);
   localStorage.setItem("bibiperoJoined", "true");
+
+  const joinBtn = document.getElementById("joinRoomBtn");
+  joinBtn.disabled = true;
+  joinBtn.textContent = "✅ Salon rejoint";
 
   document.getElementById("success").textContent =
     `✅ ${data.playerName} a rejoint la partie`;
@@ -554,6 +566,8 @@ window.addEventListener("load", () => {
 
     document.getElementById("playerName").value = "";
     document.getElementById("createGameBtn").style.display = "none";
+    document.getElementById("showJoinBtn").style.display = "none";
+    document.getElementById("joinRoomBtn").style.display = "block";
 
     document.getElementById("success").textContent =
       "🎟️ Code salon reçu, entre ton prénom";

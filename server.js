@@ -339,6 +339,21 @@ state.source = "web";
   state.roomCode = roomCode;
   io.emit("stateUpdated", state);
 
+  // Confirmation envoyée uniquement au joueur qui vient de rejoindre.
+  // Sans ça, join.html reste bloqué sur "Connexion au salon..."
+  // et donne l'impression qu'il faut cliquer deux fois.
+  socket.emit("joinSuccess", {
+    playerName: playerName,
+    roomCode: roomCode,
+    isMaster: existingPlayer ? existingPlayer.isMaster : false
+  });
+
+  // Message envoyé aux autres pages ouvertes, notamment au maître.
+  socket.broadcast.emit("playerJoined", {
+    playerName: playerName,
+    roomCode: roomCode
+  });
+
   console.log(playerName + " a rejoint ou s'est reconnecté");
 });
 
