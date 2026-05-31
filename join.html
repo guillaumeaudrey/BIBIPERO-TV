@@ -80,24 +80,33 @@
     }
 
     .room-code {
-      display: none;
-      margin: 0 0 18px;
-      padding: 16px 18px;
+  display: none;
+  margin: 0 0 18px;
+  padding: 16px 18px;
 
-      border-radius: 22px;
+  border-radius: 22px;
 
-      background:
-        linear-gradient(180deg, rgba(255,179,0,.16), rgba(255,179,0,.07));
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,179,0,.16),
+      rgba(255,179,0,.07)
+    );
 
-      border: 1px solid var(--gold-border);
+  border: 1px solid var(--gold-border);
 
-      color: var(--gold);
-      font-size: 26px;
-      font-weight: 900;
-      text-align: center;
+  color: var(--gold);
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: 1px;
 
-      box-shadow: 0 0 22px rgba(255,179,0,.12);
-    }
+  text-align: center;
+
+  box-shadow:
+    0 0 22px rgba(255,179,0,.12);
+
+  text-transform: uppercase;
+}
 
     .section {
       margin-top: 16px;
@@ -332,6 +341,35 @@
         font-size: 17px;
       }
     }
+
+    #createGameBtn{
+  margin-top:22px;
+}
+#showJoinBtn{
+
+  background:
+    linear-gradient(
+      135deg,
+      #1f1f1f,
+      #343434
+    )!important;
+
+  border:
+    1px solid rgba(255,179,0,.25);
+
+  color:white;
+}
+
+.join-tagline{
+  color:#ffb300;
+  font-size:18px;
+  font-weight:700;
+  text-align:center;
+  margin-top:6px;
+  margin-bottom:18px;
+  text-shadow:0 0 12px rgba(255,179,0,.25);
+}
+
   </style>
 </head>
 
@@ -339,7 +377,14 @@
   <div class="card">
 
     <div class="top-logo">🍻 BIBIPERO</div>
-    <div class="subtitle">Crée ou rejoins un salon d’apéro connecté</div>
+
+    <div class="subtitle">
+      Crée ou rejoins un salon d’apéro connecté
+    </div>
+
+    <div class="join-tagline">
+      👑 Entre dans l'arène BIBIPERO
+    </div>
 
     <div id="roomCodeDisplay" class="room-code">
       🎟️ Salon : ----
@@ -468,6 +513,14 @@
       const display = document.getElementById("roomCodeDisplay");
       display.textContent = `🎟️ Salon : ${currentRoomCode}`;
       display.style.display = "block";
+
+    const tagline =
+   document.querySelector(".join-tagline");
+
+    if (tagline) {
+     tagline.style.display = "none";
+    }
+
     }
 
     function showMasterButtons() {
