@@ -9,14 +9,19 @@
 
   <style>
     :root {
-      --bg: #111;
-      --card: #1d1d1d;
+      --bg: #090909;
+      --card: #191919;
+      --panel: rgba(255,255,255,.075);
+      --panel-strong: rgba(255,179,0,.11);
       --gold: #ffb300;
+      --gold-light: #ffcc4d;
+      --gold-dark: #d18a00;
       --green: #4caf50;
-      --blue: #1565c0;
-      --red: #d32f2f;
-      --soft: rgba(255,255,255,0.08);
-      --soft-gold: rgba(255,179,0,0.12);
+      --blue: #226bc8;
+      --red: #d72835;
+      --text-soft: #d8d8d8;
+      --border: rgba(255,255,255,.12);
+      --gold-border: rgba(255,179,0,.25);
     }
 
     * {
@@ -25,167 +30,250 @@
 
     body {
       margin: 0;
-      background:
-        radial-gradient(circle at top, rgba(255,179,0,0.18), transparent 35%),
-        var(--bg);
-      color: white;
-      font-family: Arial, sans-serif;
+      min-height: 100vh;
+      padding: 18px;
+
       display: flex;
       justify-content: center;
       align-items: flex-start;
-      min-height: 100vh;
-      padding: 18px;
+
+      color: white;
+      font-family: Arial, sans-serif;
+
+      background:
+        radial-gradient(circle at top, rgba(255,179,0,.22), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(128,0,255,.10), transparent 35%),
+        linear-gradient(180deg,#101010,#060606);
     }
 
     .card {
       width: 100%;
-      max-width: 460px;
-      background: var(--card);
-      border-radius: 30px;
+      max-width: 500px;
       padding: 24px;
+
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)),
+        var(--card);
+
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 32px;
+
       text-align: center;
-      box-shadow: 0 0 30px rgba(255,180,0,0.3);
+
+      box-shadow:
+        0 0 38px rgba(255,179,0,.18),
+        0 28px 80px rgba(0,0,0,.55);
     }
 
-    h1 {
+    .top-logo {
+      font-size: 32px;
+      font-weight: 900;
       color: var(--gold);
-      margin: 0 0 18px;
-      font-size: 30px;
+      text-shadow: 0 0 18px rgba(255,179,0,.30);
+      margin-bottom: 6px;
     }
 
     .subtitle {
-      margin-top: -8px;
-      margin-bottom: 18px;
-      color: #ddd;
+      color: var(--text-soft);
       font-size: 15px;
+      margin-bottom: 18px;
+    }
+
+    .room-code {
+      display: none;
+      margin: 0 0 18px;
+      padding: 16px 18px;
+
+      border-radius: 22px;
+
+      background:
+        linear-gradient(180deg, rgba(255,179,0,.16), rgba(255,179,0,.07));
+
+      border: 1px solid var(--gold-border);
+
+      color: var(--gold);
+      font-size: 26px;
+      font-weight: 900;
+      text-align: center;
+
+      box-shadow: 0 0 22px rgba(255,179,0,.12);
     }
 
     .section {
-      margin-top: 18px;
-      padding: 16px;
-      background: var(--soft);
-      border-radius: 20px;
+      margin-top: 16px;
+      padding: 18px;
+
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+
       text-align: left;
+    }
+
+    .section.gold {
+      background:
+        linear-gradient(180deg, rgba(255,179,0,.13), rgba(255,179,0,.04));
+      border-color: var(--gold-border);
     }
 
     .section-title {
       color: var(--gold);
-      font-weight: bold;
-      font-size: 18px;
-      margin-bottom: 12px;
+      font-weight: 900;
+      font-size: 19px;
+      margin-bottom: 14px;
       text-align: center;
     }
 
     .input-group {
-      text-align: left;
       margin-bottom: 14px;
+      text-align: left;
     }
 
     .input-group label {
       display: block;
-      color: var(--gold);
-      font-weight: bold;
       margin-bottom: 8px;
-      font-size: 16px;
+
+      color: var(--gold);
+      font-weight: 900;
+      font-size: 15px;
     }
 
     input {
       width: 100%;
       padding: 15px;
-      border-radius: 15px;
+
       border: none;
-      font-size: 20px;
-      text-align: center;
+      border-radius: 18px;
+
       background: white;
       color: #111;
+
+      font-size: 20px;
+      text-align: center;
+
+      outline: none;
+    }
+
+    input:focus {
+      box-shadow: 0 0 0 3px rgba(255,179,0,.35);
     }
 
     input[readonly] {
-      background: #eee;
+      background: #ececec;
       color: #555;
     }
 
-    button, .fake-button {
+    button,
+    .fake-button {
       width: 100%;
-      padding: 15px;
-      border-radius: 15px;
-      border: none;
-      color: black;
-      font-size: 19px;
-      font-weight: bold;
+      min-height: 58px;
       margin-top: 12px;
-      cursor: pointer;
+      padding: 0 18px;
+
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      align-items: center;
+      gap: 10px;
+
+      border: none;
+      border-radius: 18px;
+
+      color: white;
+      font-size: 18px;
+      font-weight: 900;
       text-decoration: none;
-      display: block;
-      text-align: center;
+      text-align: left;
+
+      cursor: pointer;
+      transition: .2s;
+
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.16),
+        0 12px 26px rgba(0,0,0,.32);
+    }
+
+    button:hover,
+    .fake-button:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.08);
     }
 
     button:disabled {
-      opacity: 0.45;
+      opacity: .45;
       cursor: not-allowed;
+      transform: none;
+      filter: none;
+    }
+
+    .btn-icon {
+      text-align: center;
+      font-size: 22px;
     }
 
     .primary-btn {
-      background: var(--gold);
-      color: black;
+      background: linear-gradient(135deg,#e09a00,#ffbf24);
+      color: #111;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.25),
+        0 0 26px rgba(255,179,0,.28),
+        0 12px 26px rgba(0,0,0,.32);
     }
 
     .start-btn {
-      background: var(--green);
-      color: white;
+      background: linear-gradient(135deg,#45b85a,#278238);
     }
 
     .invite-btn {
-      background: var(--blue);
-      color: white;
+      background: linear-gradient(135deg,#226bc8,#154f9f);
     }
 
     .new-game-btn {
-      background: var(--red);
-      color: white;
+      background: linear-gradient(135deg,#de2a38,#a81722);
     }
 
     .dark-btn {
-      background: #333;
-      color: white;
+      background:
+        linear-gradient(135deg,#242424,#343434);
+      border: 1px solid rgba(255,179,0,.18);
     }
 
-    .room-code {
-      display: none;
-      margin: 12px 0 18px;
-      padding: 14px;
-      border-radius: 18px;
-      background: var(--soft-gold);
-      font-size: 24px;
-      font-weight: bold;
-      color: var(--gold);
-      text-align: center;
+    .mini-actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
     }
 
-    #success, #scanResult {
+    #success,
+    #scanResult {
       margin-top: 14px;
-      color: #4cff88;
-      font-size: 17px;
-      text-align: center;
       min-height: 22px;
+
+      color: #4cff88;
+      font-size: 16px;
+      font-weight: 700;
+      text-align: center;
     }
 
     #masterInfo {
-      margin-top: 12px;
-      font-size: 18px;
+      margin-bottom: 12px;
+
       color: var(--gold);
-      font-weight: bold;
+      font-size: 18px;
+      font-weight: 900;
       text-align: center;
     }
 
     .waiting-message {
-      margin-top: 14px;
-      padding: 14px;
-      border-radius: 15px;
-      background: var(--soft-gold);
+      margin: 12px 0 14px;
+      padding: 13px;
+
+      border-radius: 16px;
+
+      background: var(--panel-strong);
+
       color: var(--gold);
-      font-size: 17px;
-      font-weight: bold;
+      font-size: 16px;
+      font-weight: 900;
       text-align: center;
     }
 
@@ -196,21 +284,53 @@
     }
 
     #playersList li {
-      padding: 10px 12px;
-      border-radius: 12px;
+      padding: 11px 12px;
       margin-bottom: 8px;
-      background: var(--soft);
+
+      border-radius: 14px;
+
+      background: rgba(255,255,255,.08);
+
+      color: white;
       font-size: 17px;
+      font-weight: 700;
     }
 
-    .button-row {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
+    .bottom-actions {
+      margin-top: 18px;
     }
 
     .hidden {
       display: none !important;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 12px;
+      }
+
+      .card {
+        padding: 18px;
+        border-radius: 28px;
+      }
+
+      .top-logo {
+        font-size: 29px;
+      }
+
+      .section {
+        padding: 16px;
+      }
+
+      .room-code {
+        font-size: 23px;
+      }
+
+      button,
+      .fake-button {
+        min-height: 55px;
+        font-size: 17px;
+      }
     }
   </style>
 </head>
@@ -218,7 +338,7 @@
 <body>
   <div class="card">
 
-    <h1>🍻 BIBIPERO</h1>
+    <div class="top-logo">🍻 BIBIPERO</div>
     <div class="subtitle">Crée ou rejoins un salon d’apéro connecté</div>
 
     <div id="roomCodeDisplay" class="room-code">
@@ -241,38 +361,45 @@
       </div>
 
       <button id="createGameBtn" class="primary-btn" onclick="createGame()">
-        🍻 Créer une partie
+        <span class="btn-icon">🍻</span>
+        <span>Créer une partie</span>
       </button>
 
       <button id="showJoinBtn" class="dark-btn" onclick="showJoinMode()">
-        🎟️ Rejoindre une partie
+        <span class="btn-icon">🎟️</span>
+        <span>Rejoindre une partie</span>
       </button>
 
       <button id="joinRoomBtn" class="start-btn" onclick="joinGame()" style="display:none;">
-        ✅ Entrer dans le salon
+        <span class="btn-icon">✅</span>
+        <span>Entrer dans le salon</span>
       </button>
 
       <div id="success"></div>
     </div>
 
-    <div class="section" id="masterPanel" style="display:none;">
+    <div class="section gold" id="masterPanel" style="display:none;">
       <div class="section-title">👑 Maître du salon</div>
 
       <button id="openTvBtn" class="invite-btn" onclick="openTvRoom()" style="display:none;">
-        📺 Ouvrir la TV du salon
+        <span class="btn-icon">📺</span>
+        <span>Ouvrir la TV du salon</span>
       </button>
 
       <button id="inviteBtn" class="invite-btn" onclick="copyInviteLink()" style="display:none;">
-        📋 Copier le lien d'invitation
+        <span class="btn-icon">📋</span>
+        <span>Copier le lien d'invitation</span>
       </button>
 
       <div id="masterControls" style="display:none;">
         <button id="startBtn" class="start-btn" onclick="startGame()">
-          ▶ Démarrer la partie
+          <span class="btn-icon">▶</span>
+          <span>Démarrer la partie</span>
         </button>
 
         <button id="newGameBtn" class="new-game-btn" onclick="resetWebGame()">
-          🔄 Nouvelle partie
+          <span class="btn-icon">🔄</span>
+          <span>Nouvelle partie</span>
         </button>
       </div>
     </div>
@@ -293,13 +420,17 @@
 
     <div id="scanResult"></div>
 
-    <button onclick="disconnectPlayer()" class="new-game-btn">
-      🚪 Quitter le joueur
-    </button>
+    <div class="bottom-actions">
+      <button onclick="disconnectPlayer()" class="new-game-btn">
+        <span class="btn-icon">🚪</span>
+        <span>Quitter le joueur</span>
+      </button>
 
-    <a class="fake-button dark-btn" href="/">
-      ⬅ Retour accueil
-    </a>
+      <a class="fake-button dark-btn" href="/">
+        <span class="btn-icon">⬅</span>
+        <span>Retour accueil</span>
+      </a>
+    </div>
   </div>
 
   <script>
@@ -341,8 +472,8 @@
 
     function showMasterButtons() {
       document.getElementById("masterPanel").style.display = "block";
-      document.getElementById("inviteBtn").style.display = "block";
-      document.getElementById("openTvBtn").style.display = "block";
+      document.getElementById("inviteBtn").style.display = "grid";
+      document.getElementById("openTvBtn").style.display = "grid";
     }
 
     function hideMasterButtons() {
@@ -423,6 +554,7 @@
     socket.on("joinError", (data) => {
       const joinBtn = document.getElementById("joinRoomBtn");
       joinBtn.disabled = false;
+      joinBtn.style.display = "grid";
       joinBtn.textContent = "✅ Entrer dans le salon";
 
       document.getElementById("success").textContent =
@@ -438,7 +570,8 @@
 
       const joinBtn = document.getElementById("joinRoomBtn");
       joinBtn.disabled = true;
-      joinBtn.textContent = "✅ Salon rejoint";
+      joinBtn.innerHTML =
+        `<span class="btn-icon">✅</span><span>Salon rejoint</span>`;
 
       document.getElementById("success").textContent =
         `✅ ${data.playerName} a rejoint la partie`;
@@ -486,6 +619,11 @@
       showRoomCode(data.roomCode);
       showMasterButtons();
 
+      document.getElementById("createGameBtn").style.display = "none";
+      document.getElementById("showJoinBtn").style.display = "none";
+      document.getElementById("joinSection").style.display = "none";
+      document.getElementById("joinRoomBtn").style.display = "none";
+
       document.getElementById("success").textContent =
         `✅ Partie créée ! Code : ${data.roomCode}`;
 
@@ -496,7 +634,7 @@
 
     function showJoinMode() {
       document.getElementById("joinSection").style.display = "block";
-      document.getElementById("joinRoomBtn").style.display = "block";
+      document.getElementById("joinRoomBtn").style.display = "grid";
       document.getElementById("showJoinBtn").style.display = "none";
     }
 
@@ -527,7 +665,8 @@
 
       const joinBtn = document.getElementById("joinRoomBtn");
       joinBtn.disabled = true;
-      joinBtn.textContent = "⏳ Connexion...";
+      joinBtn.innerHTML =
+        `<span class="btn-icon">⏳</span><span>Connexion...</span>`;
 
       socket.emit("joinPlayer", {
         playerName: playerName,
@@ -637,7 +776,7 @@
         document.getElementById("playerName").value = "";
         document.getElementById("createGameBtn").style.display = "none";
         document.getElementById("showJoinBtn").style.display = "none";
-        document.getElementById("joinRoomBtn").style.display = "block";
+        document.getElementById("joinRoomBtn").style.display = "grid";
 
         document.getElementById("success").textContent =
           "🎟️ Code salon reçu, entre ton prénom";
