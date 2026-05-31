@@ -207,17 +207,17 @@
 
 </div>
 
-    <button onclick="createGame()">
+    <button id="createGameBtn" onclick="createGame()">
     🍻 Créer une partie
     </button>
 
     <button onclick="showJoinMode()" class="secondary-btn" id="showJoinBtn">
-  🎟️ Rejoindre une partie
-</button>
+    🎟️ Rejoindre une partie
+    </button>
 
-<button onclick="joinGame()" class="start-btn" id="joinRoomBtn" style="display:none;">
-  ✅ Entrer dans le salon
-</button>
+    <button onclick="joinGame()" class="start-btn" id="joinRoomBtn" style="display:none;">
+    ✅ Entrer dans le salon
+    </button>
 
     <div id="success"></div>
 
@@ -519,6 +519,9 @@ window.addEventListener("load", () => {
 
   if (roomFromLink) {
     currentRoomCode = roomFromLink.toUpperCase();
+
+    document.getElementById("playerName").value = "";
+    document.getElementById("createGameBtn").style.display = "none";
 
     document.getElementById("joinSection").style.display = "block";
     document.getElementById("roomInput").value = currentRoomCode;
