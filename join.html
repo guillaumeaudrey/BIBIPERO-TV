@@ -338,8 +338,17 @@
       document.getElementById("masterInfo").textContent =
         `👑 Maître : ${masterName || "-"}`;
 
-      document.getElementById("masterControls").style.display =
-        isMaster ? "block" : "none";
+      const savedName =
+  localStorage.getItem("bibiperoPlayer");
+
+const savedRoom =
+  localStorage.getItem("bibiperoRoomCode");
+
+const shouldShowMasterControls =
+  isMaster && savedName && savedRoom;
+
+document.getElementById("masterControls").style.display =
+  shouldShowMasterControls ? "block" : "none";
     });
 
     socket.on("masterOnly", () => {
@@ -459,7 +468,9 @@ if (savedName && savedRoom) {
     `✅ ${savedName} est reconnecté`;
 }
 
+  setTimeout(() => {
   socket.emit("getState");
+}, 300);
 });
 
 socket.on("joinError", (data) => {
