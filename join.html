@@ -482,8 +482,16 @@
 
       <button id="joinRoomBtn" class="start-btn" onclick="joinGame()" style="display:none;">
         <span class="btn-icon">✅</span>
-        <span>Entrer dans le salon</span>
+        <span>Rejoindre le salon</span>
       </button>
+
+      <button id="cancelJoinBtn"
+        class="dark-btn"
+        onclick="cancelJoinMode()"
+        style="display:none;">
+  <span class="btn-icon">⬅</span>
+  <span>Retour</span>
+</button>
 
       <div id="success"></div>
     </div>
@@ -810,10 +818,32 @@
     });
 
     function showJoinMode() {
-      document.getElementById("joinSection").style.display = "block";
-      document.getElementById("joinRoomBtn").style.display = "grid";
-      document.getElementById("showJoinBtn").style.display = "none";
-    }
+
+  document.getElementById("joinSection").style.display = "block";
+
+  document.getElementById("joinRoomBtn").style.display = "grid";
+
+  document.getElementById("showJoinBtn").style.display = "none";
+
+  document.getElementById("createGameBtn").style.display = "none";
+
+  document.getElementById("cancelJoinBtn").style.display = "grid";
+
+}
+function cancelJoinMode() {
+
+  document.getElementById("joinSection").style.display = "none";
+
+  document.getElementById("joinRoomBtn").style.display = "none";
+
+  document.getElementById("cancelJoinBtn").style.display = "none";
+
+  document.getElementById("showJoinBtn").style.display = "grid";
+
+  document.getElementById("createGameBtn").style.display = "grid";
+
+}
+
 
     function joinGame() {
       const playerName =
