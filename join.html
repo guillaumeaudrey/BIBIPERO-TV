@@ -571,6 +571,8 @@ document.getElementById("roomCodeDisplay").textContent =
   document.getElementById("inviteBtn").style.display = "block";
   document.getElementById("openTvBtn").style.display = "block";
 
+  
+
   setTimeout(() => {
     socket.emit("getState", { roomCode: currentRoomCode });
   }, 200);
@@ -630,9 +632,9 @@ function openTvRoom() {
   }
 
   window.open(
-    `${window.location.origin}/tv.html?room=${currentRoomCode}`,
-    "_blank"
-  );
+  `${window.location.origin}/tv.html?room=${currentRoomCode}`,
+  "_blank"
+);
 }
 
   </script>
