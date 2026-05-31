@@ -164,13 +164,20 @@
   <script>
     const socket = io();
 
+    const params = new URLSearchParams(window.location.search);
+    const roomFromUrl = params.get("room");
+    const savedRoomCode = (roomFromUrl || localStorage.getItem("bibiperoRoomCode") || "").toUpperCase();
+    if (savedRoomCode) {
+      localStorage.setItem("bibiperoRoomCode", savedRoomCode);
+    }
+
     const savedPlayer =
   localStorage.getItem("bibiperoPlayer");
 
 if (!savedPlayer) {
-  window.location.href = "/join.html";
+  window.location.href = savedRoomCode ? `/join.html?room=${savedRoomCode}` : "/join.html";
 }
-socket.emit("rejoinPlayer", savedPlayer);
+socket.emit("rejoinPlayer", { playerName: savedPlayer, roomCode: savedRoomCode });
 
     let currentPlayer = "";
     let gameStarted = false;
@@ -180,7 +187,7 @@ socket.emit("rejoinPlayer", savedPlayer);
     socket.on("stateUpdated", (data) => {
 
       if (!data.gameStarted) {
-        window.location.href = "/join.html";
+        window.location.href = savedRoomCode ? `/join.html?room=${savedRoomCode}` : "/join.html";
         return;
       }
 
@@ -323,7 +330,8 @@ console.log("Ouverture caméra...");
 
     socket.emit("playerScannedCase", {
   playerName: myName,
-  qr: decodedText
+  qr: decodedText,
+  roomCode: savedRoomCode
 });
 
     html5QrCode.stop().then(() => {
@@ -339,10 +347,14 @@ console.log("Ouverture caméra...");
     function nextPlayer() {
 
       if (html5QrCode) {
-  html5QrCode.stop().catch(() => {});
-}
+        html5QrCode.stop().catch(() => {});
+        html5QrCode = null;
+      }
 
-document.getElementById("reader").style.display = "none";
+      const reader = document.getElementById("reader");
+      if (reader) {
+        reader.style.display = "none";
+      }
 
       const myName =
         localStorage.getItem("bibiperoPlayer");
@@ -353,20 +365,20 @@ document.getElementById("reader").style.display = "none";
         return;
       }
 
-      socket.emit("nextPlayer");
+      socket.emit("nextPlayer", { roomCode: savedRoomCode });
 
       document.getElementById("scanResult").textContent =
         "✅ Tour terminé";
     }
 
     function resetGame() {
-      socket.emit("resetGame");
+      socket.emit("resetGame", { roomCode: savedRoomCode });
 
       document.getElementById("scanResult").textContent =
         "🔄 Nouvelle partie lancée";
     }
 
-  socket.emit("getState");
+  socket.emit("getState", { roomCode: savedRoomCode });
 
 
   </script>

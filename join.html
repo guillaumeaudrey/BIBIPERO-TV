@@ -230,6 +230,15 @@
   📋 Copier le lien d'invitation
 </button>
 
+<button
+  id="openTvBtn"
+  class="invite-btn"
+  onclick="openRoomTv()"
+  style="display:none;"
+>
+  📺 Ouvrir la TV du salon
+</button>
+
     <div id="masterInfo">
       👑 Maître : -
     </div>
@@ -303,7 +312,7 @@
 }
 
       if (data.gameStarted) {
-        window.location.href = "/play.html";
+        window.location.href = `/play.html?room=${data.roomCode || currentRoomCode}`;
       }
     });
 
@@ -312,7 +321,7 @@
       list.innerHTML = "";
 
       const myName =
-  localStorage.getItem("bibiperoPlayer") || "";
+        localStorage.getItem("bibiperoPlayer") || "";
 
       isMaster = false;
       let masterName = "";
@@ -322,12 +331,9 @@
           masterName = p.name;
         }
 
-        if (
-     p.name.trim().toLowerCase() === myName.trim().toLowerCase()
-        && p.isMaster
-      ) {
-       isMaster = true;
-      }
+        if (p.name.trim().toLowerCase() === myName.trim().toLowerCase() && p.isMaster) {
+          isMaster = true;
+        }
 
         const li =
           document.createElement("li");
@@ -341,17 +347,8 @@
       document.getElementById("masterInfo").textContent =
         `👑 Maître : ${masterName || "-"}`;
 
-      const savedName =
-  localStorage.getItem("bibiperoPlayer");
-
-const savedRoom =
-  localStorage.getItem("bibiperoRoomCode");
-
-const shouldShowMasterControls =
-  isMaster && savedName && savedRoom;
-
-document.getElementById("masterControls").style.display =
-  shouldShowMasterControls ? "block" : "none";
+      document.getElementById("masterControls").style.display =
+        isMaster ? "block" : "none";
     });
 
     socket.on("masterOnly", () => {
@@ -417,7 +414,7 @@ document.getElementById("masterControls").style.display =
         return;
       }
 
-      socket.emit("startGame");
+      socket.emit("startGame", { roomCode: currentRoomCode });
 
       document.getElementById("scanResult").textContent =
         "▶ Partie démarrée";
@@ -428,18 +425,19 @@ document.getElementById("masterControls").style.display =
     setInterval(updateWaitingMessage, 10000);
 
 
-    socket.emit("getState");
+    socket.emit("getState", { roomCode: currentRoomCode || localStorage.getItem("bibiperoRoomCode") || "" });
 
     socket.on("gameReset", () => {
 
   localStorage.removeItem("bibiperoPlayer");
   localStorage.removeItem("bibiperoJoined");
+  localStorage.removeItem("bibiperoRoomCode");
 
   window.location.href = "/join.html";
 });
 
 function resetWebGame() {
-  socket.emit("resetGame");
+  socket.emit("resetGame", { roomCode: currentRoomCode || localStorage.getItem("bibiperoRoomCode") || "" });
 }
     window.addEventListener("load", () => {
 
@@ -449,31 +447,36 @@ function resetWebGame() {
   // Si on arrive avec un lien d’invitation, on NE reconnecte PAS l’ancien joueur.
   // Sinon l’invité peut garder le prénom du maître ou envoyer un mauvais salon.
   if (roomFromLink) {
-    socket.emit("getState");
+    currentRoomCode = roomFromLink.toUpperCase();
+    localStorage.setItem("bibiperoRoomCode", currentRoomCode);
+    localStorage.setItem("bibiperoRoomCode", currentRoomCode);
+    socket.emit("getState", { roomCode: currentRoomCode });
     return;
   }
 
   const savedName =
-  localStorage.getItem("bibiperoPlayer");
+    localStorage.getItem("bibiperoPlayer");
 
-const savedRoom =
-  localStorage.getItem("bibiperoRoomCode");
+  const savedRoom =
+    localStorage.getItem("bibiperoRoomCode");
 
-if (savedName && savedRoom) {
-  document.getElementById("playerName").value = savedName;
+  if (savedName && savedRoom) {
+    currentRoomCode = savedRoom;
 
-  socket.emit("joinPlayer", {
-    playerName: savedName,
-    roomCode: savedRoom
-  });
+    document.getElementById("playerName").value = savedName;
 
-  document.getElementById("success").textContent =
-    `✅ ${savedName} est reconnecté`;
-}
+    socket.emit("joinPlayer", {
+      playerName: savedName,
+      roomCode: savedRoom
+    });
+
+    document.getElementById("success").textContent =
+      `✅ ${savedName} est reconnecté`;
+  }
 
   setTimeout(() => {
-  socket.emit("getState");
-}, 300);
+    socket.emit("getState", { roomCode: currentRoomCode || savedRoom || "" });
+  }, 300);
 });
 
 socket.on("joinError", (data) => {
@@ -487,7 +490,9 @@ socket.on("joinError", (data) => {
 
 socket.on("joinSuccess", (data) => {
   localStorage.setItem("bibiperoPlayer", data.playerName);
+  localStorage.setItem("bibiperoRoomCode", data.roomCode);
   localStorage.setItem("bibiperoJoined", "true");
+  localStorage.setItem("bibiperoRoomCode", data.roomCode);
 
   const joinBtn = document.getElementById("joinRoomBtn");
   joinBtn.disabled = true;
@@ -543,7 +548,7 @@ socket.on("roomCreated", (data) => {
   currentRoomCode = data.roomCode;
 
   localStorage.setItem("bibiperoPlayer", data.playerName);
-  localStorage.setItem("bibiperoRoomCode",data.roomCode);
+  localStorage.setItem("bibiperoRoomCode", data.roomCode);
 
   document.getElementById("roomCodeDisplay").textContent =
     `🎟️ Salon : ${data.roomCode}`;
@@ -556,12 +561,19 @@ document.getElementById("roomCodeDisplay").textContent =
   `🎟️ Salon : ${data.roomCode}`;  
 
   document.getElementById("inviteBtn").style.display = "block";
+  document.getElementById("openTvBtn").style.display = "block";
 
   setTimeout(() => {
-  socket.emit("getState");
-}, 200);
+    socket.emit("getState", { roomCode: currentRoomCode });
+  }, 200);
 
 });
+
+function openRoomTv() {
+  const code = currentRoomCode || localStorage.getItem("bibiperoRoomCode") || "";
+  if (!code) return;
+  window.open(`${window.location.origin}/tv.html?room=${code}`, "_blank");
+}
 
 function copyInviteLink() {
 
@@ -580,6 +592,7 @@ window.addEventListener("load", () => {
 
   if (roomFromLink) {
     currentRoomCode = roomFromLink.toUpperCase();
+    localStorage.setItem("bibiperoRoomCode", currentRoomCode);
 
     
 
@@ -597,6 +610,7 @@ window.addEventListener("load", () => {
 
     localStorage.removeItem("bibiperoPlayer");
     localStorage.removeItem("bibiperoJoined");
+    socket.emit("getState", { roomCode: currentRoomCode });
   }
 });
 

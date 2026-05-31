@@ -694,6 +694,16 @@ margin: 0 auto 25px auto;
 
     const socket = io();
 
+    const params = new URLSearchParams(window.location.search);
+    const roomFromUrl = params.get("room");
+    const currentRoomCode = (roomFromUrl || localStorage.getItem("bibiperoRoomCode") || "").toUpperCase();
+    if (currentRoomCode) {
+      localStorage.setItem("bibiperoRoomCode", currentRoomCode);
+      socket.emit("joinTvRoom", { roomCode: currentRoomCode });
+    } else {
+      socket.emit("getState", { roomCode: "" });
+    }
+
     socket.on("hardReset", () => {
 
   currentState = {};
@@ -756,6 +766,8 @@ socket.on("stateUpdated", (data) => {
     overlay.classList.add("hidden");
   }
 }
+
+  if (data.roomCode) { localStorage.setItem("bibiperoRoomCode", data.roomCode); }
 
   console.log("STATE TV =", data);
 
