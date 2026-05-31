@@ -338,6 +338,12 @@ console.log("Ouverture caméra...");
 
     function nextPlayer() {
 
+      if (html5QrCode) {
+  html5QrCode.stop().catch(() => {});
+}
+
+document.getElementById("reader").style.display = "none";
+
       const myName =
         localStorage.getItem("bibiperoPlayer");
 
