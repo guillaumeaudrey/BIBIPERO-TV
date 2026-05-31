@@ -513,7 +513,23 @@ function copyInviteLink() {
     "✅ Lien d'invitation copié !";
 }
 
+window.addEventListener("load", () => {
+  const params = new URLSearchParams(window.location.search);
+  const roomFromLink = params.get("room");
 
+  if (roomFromLink) {
+    currentRoomCode = roomFromLink.toUpperCase();
+
+    document.getElementById("joinSection").style.display = "block";
+    document.getElementById("roomInput").value = currentRoomCode;
+
+    document.getElementById("success").textContent =
+      "🎟️ Code salon reçu, entre ton prénom";
+
+    localStorage.removeItem("bibiperoPlayer");
+    localStorage.removeItem("bibiperoJoined");
+  }
+});
 
   </script>
 
