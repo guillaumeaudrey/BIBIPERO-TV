@@ -242,6 +242,12 @@ io.on("connection", (socket) => {
       socket.emit("joinError", { message: "Mauvais code salon" });
       return;
     }
+    if (room.state.gameStarted) {
+  socket.emit("joinError", {
+    message: "La partie est déjà commencée"
+  });
+  return;
+}
 
     socket.join(roomCode);
     socket.data.roomCode = roomCode;
