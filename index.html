@@ -3,112 +3,219 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>BIBIPERO</title>
 
 <style>
+*{
+  box-sizing:border-box;
+}
 
 body{
   margin:0;
   min-height:100vh;
-
+  background:
+    radial-gradient(circle at top, rgba(255,179,0,.22), transparent 34%),
+    linear-gradient(180deg,#101010,#060606);
+  color:white;
+  font-family:Arial,sans-serif;
   display:flex;
   justify-content:center;
   align-items:center;
-
-  background:#111;
-  color:white;
-  font-family:Arial,sans-serif;
+  padding:24px;
 }
 
-.container{
+.page{
+  width:100%;
+  max-width:1050px;
+  display:grid;
+  grid-template-columns:1fr 420px;
+  gap:40px;
+  align-items:center;
+}
+
+.hero{
   text-align:center;
 }
 
-.logo{
-  font-size:70px;
-  margin-bottom:10px;
+.main-logo{
+  width:430px;
+  max-width:85vw;
+  display:block;
+  margin:0 auto 20px auto;
+  filter:drop-shadow(0 0 30px rgba(255,179,0,.75));
+  animation:logoFloat 4s infinite ease-in-out;
 }
 
+.badge{
+  display:inline-block;
+  margin-bottom:16px;
+  padding:9px 18px;
+  border-radius:999px;
+  background:rgba(255,179,0,.14);
+  border:1px solid rgba(255,179,0,.35);
+  color:#ffcc4d;
+  font-size:16px;
+  font-weight:bold;
+}
 
+.title{
+  font-size:44px;
+  line-height:1.05;
+  font-weight:900;
+  margin-bottom:12px;
+  color:#ffb300;
+  text-shadow:0 0 22px rgba(255,179,0,.35);
+}
+
+.subtitle{
+  font-size:22px;
+  color:#ddd;
+  line-height:1.35;
+  max-width:560px;
+  margin:0 auto;
+}
+
+.menu-card{
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:30px;
+  padding:24px;
+  box-shadow:0 25px 70px rgba(0,0,0,.55);
+  backdrop-filter:blur(8px);
+}
+
+.menu-title{
+  color:#ffb300;
+  font-size:24px;
+  font-weight:900;
+  margin-bottom:6px;
+}
+
+.menu-subtitle{
+  color:#ccc;
+  font-size:15px;
+  margin-bottom:18px;
+}
 
 .menu{
   display:flex;
   flex-direction:column;
-  gap:15px;
-  width:320px;
+  gap:12px;
 }
 
 .menu a{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
   text-decoration:none;
   color:white;
-
-  background:#1f1f1f;
-
-  padding:18px;
-
-  border-radius:16px;
-
-  font-size:22px;
-  font-weight:bold;
-
-  transition:0.2s;
+  background:#1d1d1d;
+  padding:17px 18px;
+  border-radius:18px;
+  font-size:20px;
+  font-weight:900;
+  border:1px solid rgba(255,255,255,.08);
+  transition:.18s ease;
 }
 
 .menu a:hover{
-  transform:scale(1.03);
+  transform:translateY(-2px) scale(1.01);
+  box-shadow:0 12px 28px rgba(0,0,0,.35);
 }
 
-.tv{
-  background:#1565c0;
+.menu a span:first-child{
+  display:flex;
+  align-items:center;
+  gap:10px;
 }
 
-.join{
-  background:#2e7d32;
+.arrow{
+  opacity:.55;
+  font-size:22px;
 }
 
-.qr{
-  background:#ef6c00;
+.tv{ background:linear-gradient(135deg,#1565c0,#0d47a1)!important; }
+.join{ background:linear-gradient(135deg,#2e7d32,#145c1a)!important; }
+.qr{ background:linear-gradient(135deg,#ef6c00,#bf4d00)!important; }
+.app{ background:linear-gradient(135deg,#c62828,#8f1616)!important; }
+.rules{ background:linear-gradient(135deg,#8e24aa,#5e1576)!important; }
+
+.info-row{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-top:18px;
 }
 
-.rules{
-  background:#8e24aa;
+.info-box{
+  padding:12px 8px;
+  border-radius:16px;
+  background:rgba(0,0,0,.25);
+  color:#ddd;
+  font-size:14px;
+  font-weight:bold;
 }
 
 .version{
-  margin-top:25px;
-  opacity:.6;
+  margin-top:18px;
+  text-align:center;
+  color:#aaa;
+  font-size:14px;
 }
 
-.app{
-  background:#c62828;
+@keyframes logoFloat{
+  0%,100%{ transform:translateY(0); }
+  50%{ transform:translateY(-10px); }
 }
 
-.subtitle{
-  margin-top:-25px;
-  margin-bottom:30px;
-  opacity:.8;
-  font-size:20px;
-}
-.main-logo{
-  width:300px;
-  max-width:70vw;
-
-  display:block;
-  margin:0 auto 20px auto;
-
-  filter:drop-shadow(0 0 20px #ffb300);
-
-  animation:logoFloat 4s infinite ease-in-out;
-}
-@keyframes logoFloat {
-
-  0%,100%{
-    transform:translateY(0);
+@media (max-width:900px){
+  body{
+    align-items:flex-start;
   }
 
-  50%{
-    transform:translateY(-8px);
+  .page{
+    grid-template-columns:1fr;
+    gap:22px;
+  }
+
+  .main-logo{
+    width:320px;
+  }
+
+  .title{
+    font-size:34px;
+  }
+
+  .subtitle{
+    font-size:18px;
+  }
+
+  .menu-card{
+    padding:20px;
+  }
+}
+
+@media (max-width:480px){
+  body{
+    padding:14px;
+  }
+
+  .main-logo{
+    width:250px;
+  }
+
+  .title{
+    font-size:30px;
+  }
+
+  .menu a{
+    font-size:18px;
+    padding:16px;
+  }
+
+  .info-row{
+    grid-template-columns:1fr;
   }
 }
 </style>
@@ -116,48 +223,64 @@ body{
 
 <body>
 
-<div class="container">
+<main class="page">
 
-<img
-  src="bibipero_logo.png"
-  class="main-logo"
-  alt="BIBIPERO"
->
+  <section class="hero">
+    <img
+      src="bibipero_logo.png"
+      class="main-logo"
+      alt="BIBIPERO"
+    >
 
-<div class="subtitle">
-Le jeu d'apéro connecté 🍻
-</div>
+    <div class="badge">🍻 Jeu d'apéro connecté</div>
 
-<div class="menu">
+    <div class="title">
+      Scanne • Joue • Bois • Gagne
+    </div>
 
-<a class="tv" href="/tv.html">
-📺 Ouvrir la TV
-</a>
+    <p class="subtitle">
+      Lance une TV, invite tes amis, scanne les QR et laisse BIBIPERO gérer le chaos de la soirée.
+    </p>
+  </section>
 
-<a class="join" href="/join.html">
-👥 Rejoindre une partie
-</a>
+  <section class="menu-card">
+    <div class="menu-title">Que veux-tu faire ?</div>
+    <div class="menu-subtitle">Choisis un mode pour commencer la partie.</div>
 
-<a class="qr" href="/qr.html">
-🖨️ Imprimer les QR
-</a>
+    <nav class="menu">  
+      <a class="join" href="/join.html">
+        <span>👥 Créer / rejoindre une partie</span>
+        <span class="arrow">›</span>
+      </a>
 
-<a class="app" href="/app.html">
-📱 Application BIBIPERO
-</a>
+      <a class="qr" href="/qr.html">
+        <span>🖨️ Imprimer les QR</span>
+        <span class="arrow">›</span>
+      </a>
 
-<a class="rules" href="/rules.html">
-📖 Règles du jeu
-</a>
+      <a class="app" href="/app.html">
+        <span>📱 Application BIBIPERO</span>
+        <span class="arrow">›</span>
+      </a>
 
-</div>
+      <a class="rules" href="/rules.html">
+        <span>📖 Règles du jeu</span>
+        <span class="arrow">›</span>
+      </a>
+    </nav>
 
-<div class="version">
-BIBIPERO v1.0 • 📱 Application • 🌍 Web • 📺 TV
-</div>
+    <div class="info-row">
+      <div class="info-box">🌍 Web</div>
+      <div class="info-box">📺 TV</div>
+      <div class="info-box">📱 App</div>
+    </div>
 
-</div>
+    <div class="version">
+      BIBIPERO v1.0 • Mode salon connecté
+    </div>
+  </section>
+
+</main>
 
 </body>
 </html>
-
