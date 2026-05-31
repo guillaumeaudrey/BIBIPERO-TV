@@ -370,6 +370,21 @@
   text-shadow:0 0 12px rgba(255,179,0,.25);
 }
 
+.players-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  margin-bottom:12px;
+}
+
+#playerCount{
+  color:#ddd;
+  font-size:15px;
+  font-weight:600;
+}
+
+
   </style>
 </head>
 
@@ -452,15 +467,23 @@
     <div class="section">
       <div class="section-title">👥 Joueurs connectés</div>
 
-      <div id="masterInfo">
-        👑 Maître : -
-      </div>
+      <div class="players-header">
 
-      <div id="waitingMessage" class="waiting-message">
-        🍻 Les verres sont prêts... On attend le maître de l'apéro !
-      </div>
+  <div id="masterInfo">
+    👑 Maître : -
+  </div>
 
-      <ul id="playersList"></ul>
+  <div id="playerCount">
+    👥 0 joueur
+  </div>
+
+</div>
+
+<div id="waitingMessage" class="waiting-message">
+  🍻 Les verres sont prêts... On attend le maître de l'apéro !
+</div>
+
+<ul id="playersList"></ul>
     </div>
 
     <div id="scanResult"></div>
@@ -559,10 +582,30 @@
       const list = document.getElementById("playersList");
       list.innerHTML = "";
 
+      if (players.length === 0) {
+
+  list.innerHTML = `
+    <li style="
+      text-align:center;
+      opacity:.8;
+      padding:20px;
+    ">
+      🍻 Aucun joueur connecté
+      <br><br>
+      Invite tes amis avec le lien du salon.
+    </li>
+  `;
+
+  return;
+}
+
       const myName = localStorage.getItem("bibiperoPlayer") || "";
 
       isMaster = false;
       let masterName = "";
+
+      document.getElementById("playerCount").textContent =
+  `👥 ${players.length} joueur${players.length > 1 ? "s" : ""}`;
 
       players.forEach(p => {
         if (p.isMaster) {
