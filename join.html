@@ -356,12 +356,6 @@
 
     function joinGame() {
 
-  if (localStorage.getItem("bibiperoPlayer")) {
-    document.getElementById("success").textContent =
-      "⚠️ Ce téléphone est déjà connecté avec un joueur.";
-    return;
-  }
-
   const playerName =
     document.getElementById("playerName").value.trim();
 
@@ -371,23 +365,28 @@
       .trim()
       .toUpperCase();
 
-  if (!playerName) return;
-
-  if (roomInput !== currentRoomCode) {
+  if (!playerName) {
     document.getElementById("success").textContent =
-      "⛔ Mauvais code salon";
+      "⛔ Entre ton prénom";
     return;
   }
 
-  localStorage.setItem("bibiperoPlayer", playerName);
+  if (!roomInput) {
+    document.getElementById("success").textContent =
+      "⛔ Code salon manquant";
+    return;
+  }
 
+  // On laisse le serveur valider le code salon.
+  // Ça évite le bug où il fallait cliquer 2 fois parce que currentRoomCode
+  // n'était pas encore arrivé côté navigateur.
   socket.emit("joinPlayer", {
     playerName: playerName,
     roomCode: roomInput
   });
 
   document.getElementById("success").textContent =
-    `✅ ${playerName} a rejoint la partie`;
+    "⏳ Connexion au salon...";
 
   updateWaitingMessage();
 }
@@ -459,6 +458,23 @@ function resetWebGame() {
 socket.on("joinError", (data) => {
   document.getElementById("success").textContent =
     `⛔ ${data.message}`;
+});
+
+socket.on("joinSuccess", (data) => {
+  localStorage.setItem("bibiperoPlayer", data.playerName);
+  localStorage.setItem("bibiperoJoined", "true");
+
+  document.getElementById("success").textContent =
+    `✅ ${data.playerName} a rejoint la partie`;
+});
+
+socket.on("playerJoined", (data) => {
+  const myName = localStorage.getItem("bibiperoPlayer");
+
+  if (myName && data.playerName !== myName) {
+    document.getElementById("success").textContent =
+      `✅ ${data.playerName} a rejoint le salon`;
+  }
 });
 
 function disconnectPlayer() {
