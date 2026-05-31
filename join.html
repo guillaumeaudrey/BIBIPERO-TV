@@ -312,7 +312,7 @@
       list.innerHTML = "";
 
       const myName =
-        localStorage.getItem("bibiperoPlayer");
+  localStorage.getItem("bibiperoPlayer") || "";
 
       isMaster = false;
       let masterName = "";
@@ -322,9 +322,12 @@
           masterName = p.name;
         }
 
-        if (p.name === myName && p.isMaster) {
-          isMaster = true;
-        }
+        if (
+     p.name.trim().toLowerCase() === myName.trim().toLowerCase()
+        && p.isMaster
+      ) {
+       isMaster = true;
+      }
 
         const li =
           document.createElement("li");
