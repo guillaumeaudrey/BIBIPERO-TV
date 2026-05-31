@@ -442,19 +442,22 @@ function resetWebGame() {
   }
 
   const savedName =
-    localStorage.getItem("bibiperoPlayer");
+  localStorage.getItem("bibiperoPlayer");
 
-  if (savedName) {
-    document.getElementById("playerName").value = savedName;
+const savedRoom =
+  localStorage.getItem("bibiperoRoomCode");
 
-    socket.emit("joinPlayer", {
-      playerName: savedName,
-      roomCode: currentRoomCode
-    });
+if (savedName && savedRoom) {
+  document.getElementById("playerName").value = savedName;
 
-    document.getElementById("success").textContent =
-      `✅ ${savedName} est reconnecté`;
-  }
+  socket.emit("joinPlayer", {
+    playerName: savedName,
+    roomCode: savedRoom
+  });
+
+  document.getElementById("success").textContent =
+    `✅ ${savedName} est reconnecté`;
+}
 
   socket.emit("getState");
 });
@@ -493,6 +496,7 @@ function disconnectPlayer() {
 
   localStorage.removeItem("bibiperoPlayer");
   localStorage.removeItem("bibiperoJoined");
+  localStorage.removeItem("bibiperoRoomCode");
 
   location.reload();
 }
@@ -525,6 +529,7 @@ socket.on("roomCreated", (data) => {
   currentRoomCode = data.roomCode;
 
   localStorage.setItem("bibiperoPlayer", data.playerName);
+  localStorage.setItem("bibiperoRoomCode",data.roomCode);
 
   document.getElementById("roomCodeDisplay").textContent =
     `🎟️ Salon : ${data.roomCode}`;
