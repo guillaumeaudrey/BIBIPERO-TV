@@ -384,6 +384,46 @@
   font-weight:600;
 }
 
+.master-actions-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-bottom:10px;
+}
+
+.small-action-btn{
+  padding:14px 10px;
+  font-size:16px;
+}
+
+.main-start-btn{
+  margin-top:0;
+}
+
+.home-link{
+  display:block;
+  text-align:center;
+  margin-top:14px;
+
+  color:#bbb;
+  text-decoration:none;
+
+  font-size:15px;
+  font-weight:600;
+
+  transition:.2s;
+}
+
+.home-link:hover{
+  color:#ffb300;
+}
+
+.bottom-nav{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:14px;
+}
 
   </style>
 </head>
@@ -439,30 +479,46 @@
     </div>
 
     <div class="section gold" id="masterPanel" style="display:none;">
-      <div class="section-title">👑 Maître du salon</div>
+  <div class="section-title">👑 Maître du salon</div>
 
-      <button id="openTvBtn" class="invite-btn" onclick="openTvRoom()" style="display:none;">
-        <span class="btn-icon">📺</span>
-        <span>Ouvrir la TV du salon</span>
-      </button>
+  <div class="master-actions-grid">
 
-      <button id="inviteBtn" class="invite-btn" onclick="copyInviteLink()" style="display:none;">
-        <span class="btn-icon">📋</span>
-        <span>Copier le lien d'invitation</span>
-      </button>
+    <button
+      id="openTvBtn"
+      class="invite-btn small-action-btn"
+      onclick="openTvRoom()"
+      style="display:none;"
+    >
+      <span class="btn-icon">📺</span>
+      <span>TV</span>
+    </button>
 
-      <div id="masterControls" style="display:none;">
-        <button id="startBtn" class="start-btn" onclick="startGame()">
-          <span class="btn-icon">▶</span>
-          <span>Démarrer la partie</span>
-        </button>
+    <button
+      id="inviteBtn"
+      class="invite-btn small-action-btn"
+      onclick="copyInviteLink()"
+      style="display:none;"
+    >
+      <span class="btn-icon">📋</span>
+      <span>Inviter</span>
+    </button>
 
-        <button id="newGameBtn" class="new-game-btn" onclick="resetWebGame()">
-          <span class="btn-icon">🔄</span>
-          <span>Nouvelle partie</span>
-        </button>
-      </div>
-    </div>
+  </div>
+
+  <div id="masterControls" style="display:none;">
+
+    <button id="startBtn" class="start-btn main-start-btn" onclick="startGame()">
+      <span class="btn-icon">▶</span>
+      <span>Démarrer la partie</span>
+    </button>
+
+    <button id="newGameBtn" class="new-game-btn" onclick="resetWebGame()">
+      <span class="btn-icon">🔄</span>
+      <span>Nouvelle partie</span>
+    </button>
+
+  </div>
+</div>
 
     <div class="section">
       <div class="section-title">👥 Joueurs connectés</div>
@@ -494,10 +550,19 @@
         <span>Quitter le joueur</span>
       </button>
 
-      <a class="fake-button dark-btn" href="/">
-        <span class="btn-icon">⬅</span>
-        <span>Retour accueil</span>
-      </a>
+      <div class="bottom-nav">
+
+  <button class="fake-button dark-btn" onclick="history.back()">
+    <span class="btn-icon">⬅</span>
+    <span>Retour</span>
+  </button>
+
+  <a class="fake-button dark-btn" href="/">
+    <span class="btn-icon">🏠</span>
+    <span>Accueil</span>
+  </a>
+
+</div>
     </div>
   </div>
 
