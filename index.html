@@ -218,6 +218,120 @@ body{
     grid-template-columns:1fr;
   }
 }
+
+.main-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+
+  font-size: 25px;
+  padding: 22px;
+
+  box-shadow: 0 0 25px rgba(46,125,50,0.45);
+
+  position: relative;
+  overflow: hidden;
+}
+
+.game-icon {
+  font-size: 34px;
+
+  animation: iconBounce 1.8s infinite ease-in-out;
+}
+
+.game-text {
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+@keyframes iconBounce {
+
+  0%,100% {
+    transform: rotate(-8deg) translateY(0);
+  }
+
+  50% {
+    transform: rotate(8deg) translateY(-5px);
+  }
+}
+
+.main-action:hover {
+  transform: scale(1.05);
+  box-shadow:
+    0 0 20px rgba(255,179,0,0.4),
+    0 0 40px rgba(255,179,0,0.2);
+}
+
+.menu-btn,
+.main-action {
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  gap:12px;
+}
+
+.menu-icon {
+  font-size:28px;
+}
+
+.game-icon {
+  font-size:34px;
+  animation: iconBounce 1.8s infinite ease-in-out;
+}
+
+.game-text {
+  font-size:26px;
+  font-weight:900;
+  letter-spacing:1px;
+}
+
+.main-action {
+  box-shadow:
+    0 0 25px rgba(46,125,50,.45);
+}
+
+.main-action:hover {
+
+  transform:scale(1.05);
+
+  box-shadow:
+    0 0 20px rgba(255,179,0,.4),
+    0 0 40px rgba(255,179,0,.2);
+}
+
+@keyframes iconBounce {
+
+  0%,100% {
+    transform: rotate(-8deg) translateY(0);
+  }
+
+  50% {
+    transform: rotate(8deg) translateY(-5px);
+  }
+}
+
+.steps {
+
+  margin:0 auto 28px auto;
+  width:320px;
+
+  padding:16px;
+
+  background:rgba(255,255,255,.07);
+
+  border:1px solid rgba(255,255,255,.12);
+
+  border-radius:18px;
+
+  font-size:17px;
+  line-height:1.8;
+
+  color:#eee;
+}
 </style>
 </head>
 
@@ -245,28 +359,33 @@ body{
 
   <section class="menu-card">
     <div class="menu-title">Que veux-tu faire ?</div>
-    <div class="menu-subtitle">Choisis un mode pour commencer la partie.</div>
+    <div class="steps">
+  <div>1️⃣ Crée ton salon</div>
+  <div>2️⃣ Ouvre la TV</div>
+  <div>3️⃣ Scanne les QR</div>
+  <div>4️⃣ Deviens le roi de l'apéro 👑</div>
+</div>
 
     <nav class="menu">  
-      <a class="join" href="/join.html">
-        <span>👥 Créer / rejoindre une partie</span>
-        <span class="arrow">›</span>
-      </a>
+      <a class="join main-action" href="/join.html">
+  <span class="game-icon">🍻</span>
+  <span class="game-text">JOUER À BIBIPERO</span>
+</a>
 
-      <a class="qr" href="/qr.html">
-        <span>🖨️ Imprimer les QR</span>
-        <span class="arrow">›</span>
-      </a>
+<a class="qr menu-btn" href="/qr.html">
+  <span class="menu-icon">🖨️</span>
+  <span>IMPRIMER LES QR</span>
+</a>
 
-      <a class="app" href="/app.html">
-        <span>📱 Application BIBIPERO</span>
-        <span class="arrow">›</span>
-      </a>
+<a class="app menu-btn" href="/app.html">
+  <span class="menu-icon">📱</span>
+  <span>APPLICATION BIBIPERO</span>
+</a>
 
-      <a class="rules" href="/rules.html">
-        <span>📖 Règles du jeu</span>
-        <span class="arrow">›</span>
-      </a>
+<a class="rules menu-btn" href="/rules.html">
+  <span class="menu-icon">📖</span>
+  <span>RÈGLES DU JEU</span>
+</a>
     </nav>
 
     <div class="info-row">
