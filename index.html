@@ -314,24 +314,49 @@ body{
   }
 }
 
-.steps {
+.hero-box {
 
-  margin:0 auto 28px auto;
-  width:320px;
+  margin-bottom: 30px;
 
-  padding:16px;
+  padding: 22px;
 
-  background:rgba(255,255,255,.07);
+  border-radius: 22px;
 
-  border:1px solid rgba(255,255,255,.12);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,179,0,.12),
+      rgba(255,179,0,.04)
+    );
 
-  border-radius:18px;
+  border:
+    1px solid rgba(255,179,0,.25);
 
-  font-size:17px;
-  line-height:1.8;
-
-  color:#eee;
+  box-shadow:
+    0 0 25px rgba(255,179,0,.12);
 }
+
+.hero-title {
+
+  color: #ffb300;
+
+  font-size: 28px;
+  font-weight: 900;
+
+  margin-bottom: 18px;
+
+  text-transform: uppercase;
+}
+
+.hero-line {
+
+  font-size: 20px;
+
+  margin: 10px 0;
+
+  color: #f5f5f5;
+}
+
 </style>
 </head>
 
@@ -359,11 +384,24 @@ body{
 
   <section class="menu-card">
     <div class="menu-title">Que veux-tu faire ?</div>
-    <div class="steps">
-  <div>1️⃣ Crée ton salon</div>
-  <div>2️⃣ Ouvre la TV</div>
-  <div>3️⃣ Scanne les QR</div>
-  <div>4️⃣ Deviens le roi de l'apéro 👑</div>
+    <div class="hero-box">
+
+  <div class="hero-title">
+    👑 LE TRÔNE DE L'APÉRO T'ATTEND
+  </div>
+
+  <div class="hero-line">
+    🍻 Réunis tes amis
+  </div>
+
+  <div class="hero-line">
+    🎲 Affronte le destin
+  </div>
+
+  <div class="hero-line">
+    🏆 Deviens une légende BIBIPERO
+  </div>
+
 </div>
 
     <nav class="menu">  
