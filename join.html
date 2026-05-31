@@ -239,15 +239,6 @@
   📺 Ouvrir la TV du salon
 </button>
 
-<button
-  id="openTvBtn"
-  class="invite-btn"
-  onclick="openRoomTv()"
-  style="display:none;"
->
-  📺 Ouvrir la TV du salon
-</button>
-
     <div id="masterInfo">
       👑 Maître : -
     </div>
@@ -572,7 +563,7 @@ document.getElementById("roomCodeDisplay").textContent =
   document.getElementById("inviteBtn").style.display = "block";
   document.getElementById("openTvBtn").style.display = "block";
 
-  
+ 
 
   setTimeout(() => {
     socket.emit("getState", { roomCode: currentRoomCode });
@@ -580,11 +571,7 @@ document.getElementById("roomCodeDisplay").textContent =
 
 });
 
-function openRoomTv() {
-  const code = currentRoomCode || localStorage.getItem("bibiperoRoomCode") || "";
-  if (!code) return;
-  window.open(`${window.location.origin}/tv.html?room=${code}`, "_blank");
-}
+
 
 function copyInviteLink() {
 
@@ -624,6 +611,19 @@ window.addEventListener("load", () => {
     socket.emit("getState", { roomCode: currentRoomCode });
   }
 });
+
+function openTvRoom() {
+  if (!currentRoomCode) {
+    document.getElementById("success").textContent =
+      "⛔ Crée d'abord une partie";
+    return;
+  }
+
+  window.open(
+  `${window.location.origin}/tv.html?room=${currentRoomCode}`,
+  "_blank"
+);
+}
 
   </script>
 
