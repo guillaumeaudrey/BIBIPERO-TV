@@ -520,11 +520,14 @@ window.addEventListener("load", () => {
   if (roomFromLink) {
     currentRoomCode = roomFromLink.toUpperCase();
 
-    document.getElementById("playerName").value = "";
-    document.getElementById("createGameBtn").style.display = "none";
+    
 
     document.getElementById("joinSection").style.display = "block";
     document.getElementById("roomInput").value = currentRoomCode;
+    document.getElementById("roomInput").readOnly = true;
+
+    document.getElementById("playerName").value = "";
+    document.getElementById("createGameBtn").style.display = "none";
 
     document.getElementById("success").textContent =
       "🎟️ Code salon reçu, entre ton prénom";
