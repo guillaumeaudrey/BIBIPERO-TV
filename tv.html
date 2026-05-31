@@ -51,7 +51,7 @@
 .board-image {
   display: block;
   width: 100%;
- max-width: 950px;
+ max-width: 850px;
   max-height: 78vh;
   object-fit: contain;
   border-radius: 30px;
@@ -110,7 +110,7 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  width: 420px;
+  width: 500px;
 }
     .panel {
   background: rgba(255,255,255,0.08);
@@ -595,7 +595,18 @@ margin: 0 auto 25px auto;
   color: #ffcc4d;
 }
 
+.current-player-label {
+  font-size: 20px;
+  opacity: 0.8;
+  margin-bottom: 10px;
+}
 
+#currentPlayer {
+  font-size: 48px;
+  font-weight: 900;
+  color: #ffcc4d;
+  text-transform: uppercase;
+}
   </style>
 </head>
 <body>
@@ -668,8 +679,13 @@ margin: 0 auto 25px auto;
       <h2>🎲 Partie</h2>
 
       <div class="status">
-        Joueur actuel :
-        <span id="currentPlayer">-</span>
+        <div class="current-player-label">
+  👑 TOUR DE
+</div>
+
+<div id="currentPlayer">
+  -
+</div>
       </div>
 
       <div class="status">
