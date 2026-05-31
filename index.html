@@ -261,20 +261,35 @@ body{
 }
 
 @media (max-width:480px){
+
   body{
-    padding:14px;
+    padding:12px;
+  }
+
+  .page{
+    gap:16px;
   }
 
   .main-logo{
-    width:250px;
+    width:230px;
   }
 
   .title{
-    font-size:30px;
+    font-size:28px;
+  }
+
+  .subtitle{
+    font-size:16px;
+    line-height:1.4;
+  }
+
+  .menu-card{
+    padding:18px;
+    border-radius:24px;
   }
 
   .menu a{
-    min-height:70px;
+    min-height:66px;
     padding:0 16px;
     grid-template-columns:36px 1fr 24px;
   }
@@ -294,6 +309,69 @@ body{
   .info-row{
     grid-template-columns:1fr;
   }
+
+}
+.hero {
+  position: relative;
+}
+
+.gold-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.gold-particles span {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #ffb300;
+  border-radius: 50%;
+  box-shadow: 0 0 12px #ffb300;
+  opacity: .55;
+  animation: particleFloat 6s infinite ease-in-out;
+}
+
+.gold-particles span:nth-child(1) { left: 18%; top: 20%; animation-delay: 0s; }
+.gold-particles span:nth-child(2) { left: 78%; top: 18%; animation-delay: 1s; }
+.gold-particles span:nth-child(3) { left: 12%; top: 55%; animation-delay: 2s; }
+.gold-particles span:nth-child(4) { left: 85%; top: 58%; animation-delay: 3s; }
+.gold-particles span:nth-child(5) { left: 40%; top: 10%; animation-delay: 1.5s; }
+.gold-particles span:nth-child(6) { left: 62%; top: 72%; animation-delay: 2.5s; }
+
+@keyframes particleFloat {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    opacity: .25;
+  }
+
+  50% {
+    transform: translateY(-18px) scale(1.4);
+    opacity: .8;
+  }
+}
+.join {
+  position: relative;
+  overflow: hidden;
+}
+
+.join::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255,255,255,.45),
+    transparent
+  );
+  transform: translateX(-120%);
+  transition: .5s;
+}
+
+.join:hover::before {
+  transform: translateX(120%);
 }
 </style>
 </head>
@@ -303,6 +381,16 @@ body{
 <main class="page">
 
   <section class="hero">
+
+    <div class="gold-particles">
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+</div>
+
     <img
       src="bibipero_logo.png"
       class="main-logo"
