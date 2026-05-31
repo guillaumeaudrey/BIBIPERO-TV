@@ -243,7 +243,7 @@
       <ul id="playersList"></ul>
     </div>
 
-    <div id="masterControls">
+    <div id="masterControls" style="display:none;">
       <button id="startBtn" class="start-btn" onclick="startGame()">
         ▶ Démarrer la partie
       </button>
@@ -553,6 +553,10 @@ document.getElementById("roomCodeDisplay").textContent =
   `🎟️ Salon : ${data.roomCode}`;  
 
   document.getElementById("inviteBtn").style.display = "block";
+
+  setTimeout(() => {
+  socket.emit("getState");
+}, 200);
 
 });
 
