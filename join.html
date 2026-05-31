@@ -227,6 +227,9 @@
   onclick="copyInviteLink()"
   style="display:none;"
 >
+  📋 Copier le lien d'invitation
+</button>
+
 <button
   id="openTvBtn"
   class="invite-btn"
@@ -234,8 +237,6 @@
   style="display:none;"
 >
   📺 Ouvrir la TV du salon
-</button>
-  📋 Copier le lien d'invitation
 </button>
 
 <button
@@ -623,19 +624,6 @@ window.addEventListener("load", () => {
     socket.emit("getState", { roomCode: currentRoomCode });
   }
 });
-
-function openTvRoom() {
-  if (!currentRoomCode) {
-    document.getElementById("success").textContent =
-      "⛔ Crée d'abord une partie";
-    return;
-  }
-
-  window.open(
-  `${window.location.origin}/tv.html?room=${currentRoomCode}`,
-  "_blank"
-);
-}
 
   </script>
 
