@@ -8,30 +8,85 @@
   <script src="/socket.io/socket.io.js"></script>
 
   <style>
+    :root {
+      --bg: #111;
+      --card: #1d1d1d;
+      --gold: #ffb300;
+      --green: #4caf50;
+      --blue: #1565c0;
+      --red: #d32f2f;
+      --soft: rgba(255,255,255,0.08);
+      --soft-gold: rgba(255,179,0,0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
-      background: #111;
+      background:
+        radial-gradient(circle at top, rgba(255,179,0,0.18), transparent 35%),
+        var(--bg);
       color: white;
-      font-family: Arial;
+      font-family: Arial, sans-serif;
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start;
       min-height: 100vh;
+      padding: 18px;
     }
 
     .card {
-      width: 90%;
-      max-width: 420px;
-      background: #1d1d1d;
+      width: 100%;
+      max-width: 460px;
+      background: var(--card);
       border-radius: 30px;
-      padding: 30px;
+      padding: 24px;
       text-align: center;
       box-shadow: 0 0 30px rgba(255,180,0,0.3);
     }
 
     h1 {
-      color: #ffb300;
-      margin-bottom: 20px;
+      color: var(--gold);
+      margin: 0 0 18px;
+      font-size: 30px;
+    }
+
+    .subtitle {
+      margin-top: -8px;
+      margin-bottom: 18px;
+      color: #ddd;
+      font-size: 15px;
+    }
+
+    .section {
+      margin-top: 18px;
+      padding: 16px;
+      background: var(--soft);
+      border-radius: 20px;
+      text-align: left;
+    }
+
+    .section-title {
+      color: var(--gold);
+      font-weight: bold;
+      font-size: 18px;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .input-group {
+      text-align: left;
+      margin-bottom: 14px;
+    }
+
+    .input-group label {
+      display: block;
+      color: var(--gold);
+      font-weight: bold;
+      margin-bottom: 8px;
+      font-size: 16px;
     }
 
     input {
@@ -40,26 +95,29 @@
       border-radius: 15px;
       border: none;
       font-size: 20px;
-      margin-bottom: 20px;
       text-align: center;
-      box-sizing: border-box;
+      background: white;
+      color: #111;
     }
 
-    button {
+    input[readonly] {
+      background: #eee;
+      color: #555;
+    }
+
+    button, .fake-button {
       width: 100%;
       padding: 15px;
       border-radius: 15px;
       border: none;
-      background: #ffb300;
       color: black;
-      font-size: 20px;
+      font-size: 19px;
       font-weight: bold;
-      margin-top: 15px;
-    }
-
-    .start-btn {
-      background: #4caf50;
-      color: white;
+      margin-top: 12px;
+      cursor: pointer;
+      text-decoration: none;
+      display: block;
+      text-align: center;
     }
 
     button:disabled {
@@ -67,41 +125,68 @@
       cursor: not-allowed;
     }
 
-    #success {
-      margin-top: 15px;
+    .primary-btn {
+      background: var(--gold);
+      color: black;
+    }
+
+    .start-btn {
+      background: var(--green);
+      color: white;
+    }
+
+    .invite-btn {
+      background: var(--blue);
+      color: white;
+    }
+
+    .new-game-btn {
+      background: var(--red);
+      color: white;
+    }
+
+    .dark-btn {
+      background: #333;
+      color: white;
+    }
+
+    .room-code {
+      display: none;
+      margin: 12px 0 18px;
+      padding: 14px;
+      border-radius: 18px;
+      background: var(--soft-gold);
+      font-size: 24px;
+      font-weight: bold;
+      color: var(--gold);
+      text-align: center;
+    }
+
+    #success, #scanResult {
+      margin-top: 14px;
       color: #4cff88;
-      font-size: 18px;
+      font-size: 17px;
+      text-align: center;
+      min-height: 22px;
     }
 
     #masterInfo {
-      margin-top: 15px;
+      margin-top: 12px;
       font-size: 18px;
-      color: #ffb300;
+      color: var(--gold);
       font-weight: bold;
+      text-align: center;
     }
 
     .waiting-message {
-      margin-top: 18px;
+      margin-top: 14px;
       padding: 14px;
       border-radius: 15px;
-      background: rgba(255,179,0,0.12);
-      color: #ffb300;
-      font-size: 18px;
+      background: var(--soft-gold);
+      color: var(--gold);
+      font-size: 17px;
       font-weight: bold;
-    }
-
-    .players-box {
-      margin-top: 20px;
-      background: rgba(255,255,255,0.08);
-      border-radius: 18px;
-      padding: 15px;
-      text-align: left;
-    }
-
-    .players-box h2 {
-      color: #ffb300;
-      font-size: 18px;
-      margin-bottom: 10px;
+      text-align: center;
     }
 
     #playersList {
@@ -111,166 +196,110 @@
     }
 
     #playersList li {
-      padding: 8px 10px;
-      border-radius: 10px;
-      margin-bottom: 6px;
-      background: rgba(255,255,255,0.08);
-    }
-
-    #scanResult {
-      margin-top: 15px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      margin-bottom: 8px;
+      background: var(--soft);
       font-size: 17px;
     }
 
-    .back-btn {
-  display: block;
-  margin-top: 18px;
-  padding: 14px;
-  border-radius: 14px;
-  background: #333;
-  color: white;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 18px;
-}
+    .button-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
 
-.new-game-btn {
-  background: #d32f2f;
-  color: white;
-}
-
-.room-code{
-  margin-top:10px;
-  margin-bottom:20px;
-
-  font-size:22px;
-  font-weight:bold;
-
-  color:#ffb300;
-}
-
-.input-group {
-  text-align: left;
-  margin-bottom: 18px;
-}
-
-.input-group label {
-  display: block;
-  color: #ffb300;
-  font-weight: bold;
-  margin-bottom: 8px;
-  font-size: 16px;
-}
-
-.input-group input {
-  margin-bottom: 0;
-}
-
-.invite-btn {
-  background: #1565c0;
-  color: white;
-}
-
+    .hidden {
+      display: none !important;
+    }
   </style>
 </head>
 
 <body>
-
   <div class="card">
 
-    <h1>🍻 Rejoindre BIBIPERO</h1>
+    <h1>🍻 BIBIPERO</h1>
+    <div class="subtitle">Crée ou rejoins un salon d’apéro connecté</div>
 
-    <div id="roomCodeDisplay" class="room-code" style="display:none;">
-  🎟️ Salon : ----
-</div>
-
-    <div class="input-group">
-  <label>👤 Ton prénom</label>
-
-  <input
-    id="playerName"
-    placeholder="Ex : Guillaume"
-  />
-</div>
-
-<div id="joinSection" style="display:none;">
-
-  <div class="input-group">
-    <label>🎟️ Code salon</label>
-
-    <input
-      id="roomInput"
-      placeholder="Ex : BIBINE-42"
-      maxlength="12"
-    />
-  </div>
-
-</div>
-
-    <button id="createGameBtn" onclick="createGame()">
-    🍻 Créer une partie
-    </button>
-
-    <button onclick="showJoinMode()" class="secondary-btn" id="showJoinBtn">
-    🎟️ Rejoindre une partie
-    </button>
-
-    <button onclick="joinGame()" class="start-btn" id="joinRoomBtn" style="display:none;">
-    ✅ Entrer dans le salon
-    </button>
-
-    <div id="success"></div>
-
-    <button
-  id="inviteBtn"
-  class="invite-btn"
-  onclick="copyInviteLink()"
-  style="display:none;"
->
-  📋 Copier le lien d'invitation
-</button>
-
-<button
-  id="openTvBtn"
-  class="invite-btn"
-  onclick="openTvRoom()"
-  style="display:none;"
->
-  📺 Ouvrir la TV du salon
-</button>
-
-    <div id="masterInfo">
-      👑 Maître : -
+    <div id="roomCodeDisplay" class="room-code">
+      🎟️ Salon : ----
     </div>
 
-    <div id="waitingMessage" class="waiting-message">
-      🍻 Les verres sont prêts... On attend le maître de l'apéro !
-    </div>
+    <div class="section" id="identitySection">
+      <div class="section-title">👤 Joueur</div>
 
-    <div class="players-box">
-      <h2>👥 Joueurs connectés</h2>
-      <ul id="playersList"></ul>
-    </div>
+      <div class="input-group">
+        <label>Ton prénom</label>
+        <input id="playerName" placeholder="Ex : Guillaume" />
+      </div>
 
-    <div id="masterControls" style="display:none;">
-      <button id="startBtn" class="start-btn" onclick="startGame()">
-        ▶ Démarrer la partie
+      <div id="joinSection" style="display:none;">
+        <div class="input-group">
+          <label>Code salon</label>
+          <input id="roomInput" placeholder="Ex : BIBINE-42" maxlength="12" />
+        </div>
+      </div>
+
+      <button id="createGameBtn" class="primary-btn" onclick="createGame()">
+        🍻 Créer une partie
       </button>
 
-      <button id="newGameBtn" class="new-game-btn" onclick="resetWebGame()">
-  🔄 Nouvelle partie
-</button>
+      <button id="showJoinBtn" class="dark-btn" onclick="showJoinMode()">
+        🎟️ Rejoindre une partie
+      </button>
 
+      <button id="joinRoomBtn" class="start-btn" onclick="joinGame()" style="display:none;">
+        ✅ Entrer dans le salon
+      </button>
+
+      <div id="success"></div>
+    </div>
+
+    <div class="section" id="masterPanel" style="display:none;">
+      <div class="section-title">👑 Maître du salon</div>
+
+      <button id="openTvBtn" class="invite-btn" onclick="openTvRoom()" style="display:none;">
+        📺 Ouvrir la TV du salon
+      </button>
+
+      <button id="inviteBtn" class="invite-btn" onclick="copyInviteLink()" style="display:none;">
+        📋 Copier le lien d'invitation
+      </button>
+
+      <div id="masterControls" style="display:none;">
+        <button id="startBtn" class="start-btn" onclick="startGame()">
+          ▶ Démarrer la partie
+        </button>
+
+        <button id="newGameBtn" class="new-game-btn" onclick="resetWebGame()">
+          🔄 Nouvelle partie
+        </button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">👥 Joueurs connectés</div>
+
+      <div id="masterInfo">
+        👑 Maître : -
+      </div>
+
+      <div id="waitingMessage" class="waiting-message">
+        🍻 Les verres sont prêts... On attend le maître de l'apéro !
+      </div>
+
+      <ul id="playersList"></ul>
     </div>
 
     <div id="scanResult"></div>
 
-<a class="back-btn" href="/">
-  ⬅ Retour accueil
-</a>
- <button onclick="disconnectPlayer()" class="new-game-btn">
-🚪 Quitter le joueur
-</button>
+    <button onclick="disconnectPlayer()" class="new-game-btn">
+      🚪 Quitter le joueur
+    </button>
+
+    <a class="fake-button dark-btn" href="/">
+      ⬅ Retour accueil
+    </a>
   </div>
 
   <script>
@@ -294,25 +323,51 @@
 
     function updateWaitingMessage() {
       const randomMessage =
-        waitingMessages[
-          Math.floor(Math.random() * waitingMessages.length)
-        ];
+        waitingMessages[Math.floor(Math.random() * waitingMessages.length)];
 
-      document.getElementById("waitingMessage").textContent =
-        randomMessage;
+      document.getElementById("waitingMessage").textContent = randomMessage;
+    }
+
+    function showRoomCode(roomCode) {
+      if (!roomCode) return;
+
+      currentRoomCode = roomCode.toUpperCase();
+      localStorage.setItem("bibiperoRoomCode", currentRoomCode);
+
+      const display = document.getElementById("roomCodeDisplay");
+      display.textContent = `🎟️ Salon : ${currentRoomCode}`;
+      display.style.display = "block";
+    }
+
+    function showMasterButtons() {
+      document.getElementById("masterPanel").style.display = "block";
+      document.getElementById("inviteBtn").style.display = "block";
+      document.getElementById("openTvBtn").style.display = "block";
+    }
+
+    function hideMasterButtons() {
+      document.getElementById("masterPanel").style.display = "none";
+      document.getElementById("inviteBtn").style.display = "none";
+      document.getElementById("openTvBtn").style.display = "none";
+      document.getElementById("masterControls").style.display = "none";
     }
 
     socket.on("stateUpdated", (data) => {
+      if (data.roomCode) {
+        showRoomCode(data.roomCode);
+      }
 
-    if (data.roomCode) {
-  currentRoomCode = data.roomCode;
+      const joinedName = localStorage.getItem("bibiperoPlayer") || "";
+      const joinedRoom = localStorage.getItem("bibiperoRoomCode") || "";
 
-  document.getElementById("roomCodeDisplay").textContent =
-    `🎟️ Salon : ${data.roomCode}`;
-}
-
-      if (data.gameStarted) {
-        window.location.href = `/play.html?room=${data.roomCode || currentRoomCode}`;
+      if (
+        data.gameStarted &&
+        joinedName &&
+        joinedRoom &&
+        (data.roomCode || currentRoomCode)
+      ) {
+        window.location.href =
+          `/play.html?room=${data.roomCode || currentRoomCode}`;
       }
     });
 
@@ -320,8 +375,7 @@
       const list = document.getElementById("playersList");
       list.innerHTML = "";
 
-      const myName =
-        localStorage.getItem("bibiperoPlayer") || "";
+      const myName = localStorage.getItem("bibiperoPlayer") || "";
 
       isMaster = false;
       let masterName = "";
@@ -331,13 +385,14 @@
           masterName = p.name;
         }
 
-        if (p.name.trim().toLowerCase() === myName.trim().toLowerCase() && p.isMaster) {
+        if (
+          p.name.trim().toLowerCase() === myName.trim().toLowerCase() &&
+          p.isMaster
+        ) {
           isMaster = true;
         }
 
-        const li =
-          document.createElement("li");
-
+        const li = document.createElement("li");
         li.textContent =
           `${p.isMaster ? "👑" : "👤"} ${p.name} — Case ${p.position || 0}`;
 
@@ -346,6 +401,10 @@
 
       document.getElementById("masterInfo").textContent =
         `👑 Maître : ${masterName || "-"}`;
+
+      if (isMaster) {
+        showMasterButtons();
+      }
 
       document.getElementById("masterControls").style.display =
         isMaster ? "block" : "none";
@@ -361,48 +420,125 @@
         `⛔ ${data.message}`;
     });
 
-  
+    socket.on("joinError", (data) => {
+      const joinBtn = document.getElementById("joinRoomBtn");
+      joinBtn.disabled = false;
+      joinBtn.textContent = "✅ Entrer dans le salon";
+
+      document.getElementById("success").textContent =
+        `⛔ ${data.message}`;
+    });
+
+    socket.on("joinSuccess", (data) => {
+      localStorage.setItem("bibiperoPlayer", data.playerName);
+      localStorage.setItem("bibiperoRoomCode", data.roomCode);
+      localStorage.setItem("bibiperoJoined", "true");
+
+      showRoomCode(data.roomCode);
+
+      const joinBtn = document.getElementById("joinRoomBtn");
+      joinBtn.disabled = true;
+      joinBtn.textContent = "✅ Salon rejoint";
+
+      document.getElementById("success").textContent =
+        `✅ ${data.playerName} a rejoint la partie`;
+    });
+
+    socket.on("playerJoined", (data) => {
+      const myName = localStorage.getItem("bibiperoPlayer");
+
+      if (myName && data.playerName !== myName) {
+        document.getElementById("success").textContent =
+          `✅ ${data.playerName} a rejoint le salon`;
+      }
+    });
+
+    socket.on("gameReset", () => {
+      localStorage.removeItem("bibiperoPlayer");
+      localStorage.removeItem("bibiperoJoined");
+      localStorage.removeItem("bibiperoRoomCode");
+
+      window.location.href = "/join.html";
+    });
+
+    function createGame() {
+      const playerName =
+        document.getElementById("playerName").value.trim();
+
+      if (!playerName) {
+        document.getElementById("success").textContent =
+          "⛔ Entre ton prénom d'abord";
+        return;
+      }
+
+      socket.emit("createRoom", {
+        playerName: playerName
+      });
+    }
+
+    socket.on("roomCreated", (data) => {
+      currentRoomCode = data.roomCode;
+
+      localStorage.setItem("bibiperoPlayer", data.playerName);
+      localStorage.setItem("bibiperoRoomCode", data.roomCode);
+      localStorage.setItem("bibiperoJoined", "true");
+
+      showRoomCode(data.roomCode);
+      showMasterButtons();
+
+      document.getElementById("success").textContent =
+        `✅ Partie créée ! Code : ${data.roomCode}`;
+
+      setTimeout(() => {
+        socket.emit("getState", { roomCode: currentRoomCode });
+      }, 200);
+    });
+
+    function showJoinMode() {
+      document.getElementById("joinSection").style.display = "block";
+      document.getElementById("joinRoomBtn").style.display = "block";
+      document.getElementById("showJoinBtn").style.display = "none";
+    }
 
     function joinGame() {
+      const playerName =
+        document.getElementById("playerName").value.trim();
 
-  const playerName =
-    document.getElementById("playerName").value.trim();
+      const roomInput =
+        document.getElementById("roomInput")
+          .value
+          .trim()
+          .toUpperCase();
 
-  const roomInput =
-    document.getElementById("roomInput")
-      .value
-      .trim()
-      .toUpperCase();
+      if (!playerName) {
+        document.getElementById("success").textContent =
+          "⛔ Entre ton prénom";
+        return;
+      }
 
-  if (!playerName) {
-    document.getElementById("success").textContent =
-      "⛔ Entre ton prénom";
-    return;
-  }
+      if (!roomInput) {
+        document.getElementById("success").textContent =
+          "⛔ Code salon manquant";
+        return;
+      }
 
-  if (!roomInput) {
-    document.getElementById("success").textContent =
-      "⛔ Code salon manquant";
-    return;
-  }
+      currentRoomCode = roomInput;
+      localStorage.setItem("bibiperoRoomCode", currentRoomCode);
 
-  const joinBtn = document.getElementById("joinRoomBtn");
-  joinBtn.disabled = true;
-  joinBtn.textContent = "⏳ Connexion...";
+      const joinBtn = document.getElementById("joinRoomBtn");
+      joinBtn.disabled = true;
+      joinBtn.textContent = "⏳ Connexion...";
 
-  // On laisse le serveur valider le code salon.
-  // Ça évite le bug où il fallait cliquer 2 fois parce que currentRoomCode
-  // n'était pas encore arrivé côté navigateur.
-  socket.emit("joinPlayer", {
-    playerName: playerName,
-    roomCode: roomInput
-  });
+      socket.emit("joinPlayer", {
+        playerName: playerName,
+        roomCode: roomInput
+      });
 
-  document.getElementById("success").textContent =
-    "⏳ Connexion au salon...";
+      document.getElementById("success").textContent =
+        "⏳ Connexion au salon...";
 
-  updateWaitingMessage();
-}
+      updateWaitingMessage();
+    }
 
     function startGame() {
       const playersCount =
@@ -414,218 +550,133 @@
         return;
       }
 
-      socket.emit("startGame", { roomCode: currentRoomCode });
+      socket.emit("startGame", {
+        roomCode: currentRoomCode
+      });
 
       document.getElementById("scanResult").textContent =
         "▶ Partie démarrée";
     }
 
-    updateWaitingMessage();
+    function resetWebGame() {
+      socket.emit("resetGame", {
+        roomCode:
+          currentRoomCode ||
+          localStorage.getItem("bibiperoRoomCode") ||
+          ""
+      });
+    }
 
-    setInterval(updateWaitingMessage, 10000);
+    function copyInviteLink() {
+      const code =
+        currentRoomCode ||
+        localStorage.getItem("bibiperoRoomCode") ||
+        "";
 
+      if (!code) {
+        document.getElementById("success").textContent =
+          "⛔ Crée d'abord une partie";
+        return;
+      }
 
-    socket.emit("getState", { roomCode: currentRoomCode || localStorage.getItem("bibiperoRoomCode") || "" });
+      const inviteLink =
+        `${window.location.origin}/join.html?room=${code}`;
 
-    socket.on("gameReset", () => {
+      navigator.clipboard.writeText(inviteLink);
 
-  localStorage.removeItem("bibiperoPlayer");
-  localStorage.removeItem("bibiperoJoined");
-  localStorage.removeItem("bibiperoRoomCode");
+      document.getElementById("success").textContent =
+        "✅ Lien d'invitation copié !";
+    }
 
-  window.location.href = "/join.html";
-});
+    function openTvRoom() {
+      const code =
+        currentRoomCode ||
+        localStorage.getItem("bibiperoRoomCode") ||
+        "";
 
-function resetWebGame() {
-  socket.emit("resetGame", { roomCode: currentRoomCode || localStorage.getItem("bibiperoRoomCode") || "" });
-}
-    window.addEventListener("load", () => {
+      if (!code) {
+        document.getElementById("success").textContent =
+          "⛔ Crée d'abord une partie";
+        return;
+      }
 
-  const params = new URLSearchParams(window.location.search);
-  const roomFromLink = params.get("room");
+      window.open(
+        `${window.location.origin}/tv.html?room=${code}`,
+        "_blank"
+      );
+    }
 
-  // Si on arrive avec un lien d’invitation, on NE reconnecte PAS l’ancien joueur.
-  // Sinon l’invité peut garder le prénom du maître ou envoyer un mauvais salon.
-  if (roomFromLink) {
-    currentRoomCode = roomFromLink.toUpperCase();
-    localStorage.setItem("bibiperoRoomCode", currentRoomCode);
-    localStorage.setItem("bibiperoRoomCode", currentRoomCode);
-    socket.emit("getState", { roomCode: currentRoomCode });
-    return;
-  }
+    function disconnectPlayer() {
+      localStorage.removeItem("bibiperoPlayer");
+      localStorage.removeItem("bibiperoJoined");
+      localStorage.removeItem("bibiperoRoomCode");
 
-  const savedName =
-    localStorage.getItem("bibiperoPlayer");
+      window.location.href = "/join.html";
+    }
 
-  const savedRoom =
-    localStorage.getItem("bibiperoRoomCode");
+    function initPage() {
+      updateWaitingMessage();
+      setInterval(updateWaitingMessage, 10000);
 
-  if (savedName && savedRoom) {
-    currentRoomCode = savedRoom;
+      const params = new URLSearchParams(window.location.search);
+      const roomFromLink = params.get("room");
 
-    document.getElementById("playerName").value = savedName;
+      if (roomFromLink) {
+        currentRoomCode = roomFromLink.toUpperCase();
 
-    socket.emit("joinPlayer", {
-      playerName: savedName,
-      roomCode: savedRoom
-    });
+        localStorage.setItem("bibiperoRoomCode", currentRoomCode);
+        localStorage.removeItem("bibiperoPlayer");
+        localStorage.removeItem("bibiperoJoined");
 
-    document.getElementById("success").textContent =
-      `✅ ${savedName} est reconnecté`;
-  }
+        showRoomCode(currentRoomCode);
 
-  setTimeout(() => {
-    socket.emit("getState", { roomCode: currentRoomCode || savedRoom || "" });
-  }, 300);
-});
+        document.getElementById("joinSection").style.display = "block";
+        document.getElementById("roomInput").value = currentRoomCode;
+        document.getElementById("roomInput").readOnly = true;
 
-socket.on("joinError", (data) => {
-  const joinBtn = document.getElementById("joinRoomBtn");
-  joinBtn.disabled = false;
-  joinBtn.textContent = "✅ Entrer dans le salon";
+        document.getElementById("playerName").value = "";
+        document.getElementById("createGameBtn").style.display = "none";
+        document.getElementById("showJoinBtn").style.display = "none";
+        document.getElementById("joinRoomBtn").style.display = "block";
 
-  document.getElementById("success").textContent =
-    `⛔ ${data.message}`;
-});
+        document.getElementById("success").textContent =
+          "🎟️ Code salon reçu, entre ton prénom";
 
-socket.on("joinSuccess", (data) => {
-  localStorage.setItem("bibiperoPlayer", data.playerName);
-  localStorage.setItem("bibiperoRoomCode", data.roomCode);
-  localStorage.setItem("bibiperoJoined", "true");
-  localStorage.setItem("bibiperoRoomCode", data.roomCode);
+        socket.emit("getState", { roomCode: currentRoomCode });
+        return;
+      }
 
-  const joinBtn = document.getElementById("joinRoomBtn");
-  joinBtn.disabled = true;
-  joinBtn.textContent = "✅ Salon rejoint";
+      const savedName =
+        localStorage.getItem("bibiperoPlayer");
 
-  document.getElementById("success").textContent =
-    `✅ ${data.playerName} a rejoint la partie`;
-});
+      const savedRoom =
+        localStorage.getItem("bibiperoRoomCode");
 
-socket.on("playerJoined", (data) => {
-  const myName = localStorage.getItem("bibiperoPlayer");
+      if (savedName && savedRoom) {
+        currentRoomCode = savedRoom.toUpperCase();
 
-  if (myName && data.playerName !== myName) {
-    document.getElementById("success").textContent =
-      `✅ ${data.playerName} a rejoint le salon`;
-  }
-});
+        document.getElementById("playerName").value = savedName;
+        showRoomCode(currentRoomCode);
 
-function disconnectPlayer() {
+        socket.emit("joinPlayer", {
+          playerName: savedName,
+          roomCode: currentRoomCode
+        });
 
-  localStorage.removeItem("bibiperoPlayer");
-  localStorage.removeItem("bibiperoJoined");
-  localStorage.removeItem("bibiperoRoomCode");
+        document.getElementById("success").textContent =
+          `✅ ${savedName} est reconnecté`;
 
-  location.reload();
-}
+        setTimeout(() => {
+          socket.emit("getState", { roomCode: currentRoomCode });
+        }, 300);
 
-function showJoinMode() {
-  document.getElementById("joinSection").style.display = "block";
-  document.getElementById("joinRoomBtn").style.display = "block";
-  document.getElementById("showJoinBtn").style.display = "none";
-}
+        return;
+      }
 
-function createGame() {
+      socket.emit("getState", { roomCode: "" });
+    }
 
-  const playerName =
-    document.getElementById("playerName").value.trim();
-
-  if (!playerName) {
-    document.getElementById("success").textContent =
-      "⛔ Entre ton prénom d'abord";
-    return;
-  }
-
-  socket.emit("createRoom", {
-    playerName: playerName
-  });
-
-}
-
-socket.on("roomCreated", (data) => {
-
-  currentRoomCode = data.roomCode;
-
-  localStorage.setItem("bibiperoPlayer", data.playerName);
-  localStorage.setItem("bibiperoRoomCode", data.roomCode);
-
-  document.getElementById("roomCodeDisplay").textContent =
-    `🎟️ Salon : ${data.roomCode}`;
-
-  document.getElementById("success").textContent =
-    `✅ Partie créée ! Code : ${data.roomCode}`;
-
-  document.getElementById("roomCodeDisplay").style.display = "block";
-document.getElementById("roomCodeDisplay").textContent =
-  `🎟️ Salon : ${data.roomCode}`;  
-
-  document.getElementById("inviteBtn").style.display = "block";
-  document.getElementById("openTvBtn").style.display = "block";
-
- 
-
-  setTimeout(() => {
-    socket.emit("getState", { roomCode: currentRoomCode });
-  }, 200);
-
-});
-
-
-
-function copyInviteLink() {
-
-  const inviteLink =
-    `${window.location.origin}/join.html?room=${currentRoomCode}`;
-
-  navigator.clipboard.writeText(inviteLink);
-
-  document.getElementById("success").textContent =
-    "✅ Lien d'invitation copié !";
-}
-
-window.addEventListener("load", () => {
-  const params = new URLSearchParams(window.location.search);
-  const roomFromLink = params.get("room");
-
-  if (roomFromLink) {
-    currentRoomCode = roomFromLink.toUpperCase();
-    localStorage.setItem("bibiperoRoomCode", currentRoomCode);
-
-    
-
-    document.getElementById("joinSection").style.display = "block";
-    document.getElementById("roomInput").value = currentRoomCode;
-    document.getElementById("roomInput").readOnly = true;
-
-    document.getElementById("playerName").value = "";
-    document.getElementById("createGameBtn").style.display = "none";
-    document.getElementById("showJoinBtn").style.display = "none";
-    document.getElementById("joinRoomBtn").style.display = "block";
-
-    document.getElementById("success").textContent =
-      "🎟️ Code salon reçu, entre ton prénom";
-
-    localStorage.removeItem("bibiperoPlayer");
-    localStorage.removeItem("bibiperoJoined");
-    socket.emit("getState", { roomCode: currentRoomCode });
-  }
-});
-
-function openTvRoom() {
-  if (!currentRoomCode) {
-    document.getElementById("success").textContent =
-      "⛔ Crée d'abord une partie";
-    return;
-  }
-
-  window.open(
-  `${window.location.origin}/tv.html?room=${currentRoomCode}`,
-  "_blank"
-);
-}
-
+    window.addEventListener("load", initPage);
   </script>
-
 </body>
 </html>
