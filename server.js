@@ -422,30 +422,48 @@ socket.on("joinPlayerRoom", (data = {}) => {
 socket.emit("playersUpdated", room.players);
   });
 
-  socket.on("nextPlayer", (data = {}) => {
-    const roomCode = (data.roomCode || socket.data.roomCode || "").toString().toUpperCase();
-    const room = getRoom(roomCode);
-    if (!room || room.players.length === 0) return;
+  socket.on("nextPlayer", (data = {}, callback) => {
+  const roomCode =
+    (data.roomCode || socket.data.roomCode || "")
+      .toString()
+      .toUpperCase();
 
-    room.currentPlayerIndex = (room.currentPlayerIndex + 1) % room.players.length;
-    room.state = {
-      ...room.state,
-      roomCode,
-      playerName: "",
-      currentPlayer: room.players[room.currentPlayerIndex].name,
-      category: "",
-      title: "",
-      text: "",
-      powerLevel: 0,
-      isLegendary: false,
+  const room = getRoom(roomCode);
+
+  if (!room || room.players.length === 0) {
+    if (callback) callback({ ok: false });
+    return;
+  }
+
+  room.currentPlayerIndex =
+    (room.currentPlayerIndex + 1) % room.players.length;
+
+  room.state = {
+    ...room.state,
+    roomCode,
+    playerName: "",
+    currentPlayer: room.players[room.currentPlayerIndex].name,
+    category: "",
+    title: "",
+    text: "",
+    powerLevel: 0,
+    isLegendary: false,
+    players: room.players
+  };
+
+  emitRoom(roomCode);
+
+  socket.emit("stateUpdated", room.state);
+  socket.emit("playersUpdated", room.players);
+
+  if (callback) {
+    callback({
+      ok: true,
+      state: room.state,
       players: room.players
-    };
-
-    emitRoom(roomCode);
-
-socket.emit("stateUpdated", room.state);
-socket.emit("playersUpdated", room.players);
-  });
+    });
+  }
+});
 
   socket.on("resetGame", (data = {}) => {
     const roomCode = (data.roomCode || socket.data.roomCode || "").toString().toUpperCase();

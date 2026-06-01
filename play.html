@@ -382,14 +382,20 @@ console.log("Ouverture caméra...");
         return;
       }
 
-      socket.emit("nextPlayer", { roomCode: savedRoomCode });
+      socket.emit(
+  "nextPlayer",
+  { roomCode: savedRoomCode },
+  (response) => {
+    if (!response || !response.ok) {
+      document.getElementById("scanResult").textContent =
+        "⛔ Impossible de passer le tour";
+      return;
+    }
 
-        setTimeout(() => {
-  socket.emit("getState", { roomCode: savedRoomCode });
-}, 300);
-
-document.getElementById("scanResult").textContent =
-  "✅ Tour terminé";
+    document.getElementById("scanResult").textContent =
+      `⏳ En attente de ${response.state.currentPlayer}`;
+  }
+);
     }
 
     function resetGame() {
