@@ -163,6 +163,10 @@
 
   <script>
     const socket = io();
+    
+    socket.emit("joinPlayerRoom", {
+  roomCode: savedRoomCode
+});
 
     const params = new URLSearchParams(window.location.search);
     const roomFromUrl = params.get("room");

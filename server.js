@@ -178,6 +178,25 @@ io.on("connection", (socket) => {
   socket.emit("stateUpdated", room.state);
   socket.emit("playersUpdated", room.players);
 });
+socket.on("joinPlayerRoom", (data = {}) => {
+  const roomCode = (data.roomCode || "").toString().toUpperCase();
+
+  if (!roomCode) return;
+
+  socket.join(roomCode);
+  socket.data.roomCode = roomCode;
+
+  const room = getRoom(roomCode);
+
+  if (!room) {
+    socket.emit("stateUpdated", createEmptyState(roomCode));
+    socket.emit("playersUpdated", []);
+    return;
+  }
+
+  socket.emit("stateUpdated", room.state);
+  socket.emit("playersUpdated", room.players);
+});
 
   socket.on("getState", (data = {}) => {
     const roomCode = (data.roomCode || socket.data.roomCode || "").toString().toUpperCase();
