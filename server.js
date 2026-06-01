@@ -346,22 +346,23 @@ socket.on("joinPlayerRoom", (data = {}) => {
     room.currentPlayerIndex = 0;
     room.gameMode = "web";
     room.state = {
-      source: "web",
-      roomCode,
-      playerName: "",
-      currentPlayer: room.players[0].name,
-      caseNumber: 0,
-      category: "",
-      title: "",
-      text: "",
-      powerLevel: 0,
-      isLegendary: false,
-      totalActions: 0,
-      isLastRound: false,
-      gameStarted: true,
-      gameMode: "web",
-      players: room.players
-    };
+  source: "web",
+  roomCode,
+  playerName: "",
+  currentPlayer: room.players[0].name,
+  caseNumber: 0,
+  category: "",
+  title: "",
+  text: "",
+  powerLevel: 0,
+  isLegendary: false,
+  totalActions: 0,
+  isLastRound: false,
+  isNewRound: false,
+  gameStarted: true,
+  gameMode: "web",
+  players: room.players
+};
 
     emitRoom(roomCode);
     console.log("Partie démarrée", roomCode, ":", room.state.currentPlayer);
@@ -411,6 +412,7 @@ socket.on("joinPlayerRoom", (data = {}) => {
       text: action.text,
       powerLevel: action.powerLevel,
       isLegendary: action.isLegendary || false,
+      isNewRound: false,
       totalActions: (room.state.totalActions || 0) + 1,
       gameMode: "web",
       players: room.players
@@ -448,6 +450,7 @@ socket.emit("playersUpdated", room.players);
     text: "",
     powerLevel: 0,
     isLegendary: false,
+    isNewRound: false,
     players: room.players
   };
 
