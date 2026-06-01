@@ -51,7 +51,7 @@
 .board-image {
   display: block;
   width: 100%;
- max-width: 850px;
+ max-width: 1050px;
   max-height: 78vh;
   object-fit: contain;
   border-radius: 30px;
@@ -59,7 +59,7 @@
 }
    .main {
   display: grid;
-  grid-template-columns: 1.6fr 0.4fr;
+  grid-template-columns: 1.8fr 0.2fr;
   gap: 10px;
   align-items: center;
 }
@@ -110,7 +110,7 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  width: 500px;
+  width: 550px;
 }
     .panel {
   background: rgba(255,255,255,0.08);
@@ -118,7 +118,7 @@
   border-radius: 20px;
   padding: 14px 18px;
   backdrop-filter: blur(8px);
-  max-width: 380px;
+  max-width: 450px;
   width: 100%;
 }
 
@@ -130,10 +130,15 @@
 
     .ranking {
   list-style: none;
-  font-size: 22px;
-  line-height: 1.8;
+  font-size: 26px;
+  line-height: 2;
 }
-
+.ranking li{
+  padding:8px 12px;
+  border-radius:12px;
+  background:rgba(255,255,255,.05);
+  margin-bottom:6px;
+}
     .status {
       font-size: 16px;
       line-height: 1.3;
@@ -290,7 +295,7 @@
 
   color: #ffcc4d;
 
-  font-size: 34px;
+  font-size: 42px;
   font-weight: bold;
 
   box-shadow: 0 0 20px rgba(255,179,0,0.25);
@@ -615,7 +620,7 @@ margin: 0 auto 25px auto;
 }
 
 .history-list li {
-  padding: 8px 0;
+  padding: 12px 8;
   border-bottom: 1px solid rgba(255,255,255,0.08);
   font-size: 18px;
 }
@@ -654,7 +659,7 @@ margin: 0 auto 25px auto;
 </div>
 
     <div id="turnBanner" class="turn-banner">
-        🎮 Tour de joueur
+        🎮 TOUR DE JOUEUR
     </div>
 
 </header>
