@@ -499,8 +499,8 @@ socket.on("newRound", (data = {}) => {
     isLegendary: false,
     totalActions: 0,
     isLastRound: false,
-    isNewRound: true,
-    gameStarted: false,
+    isNewRound: false,
+gameStarted: true,
     gameMode: "web",
     players: room.players
   };
