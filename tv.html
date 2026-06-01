@@ -639,9 +639,13 @@ margin: 0 auto 25px auto;
 }
 
 .history-list li {
-  padding: 12px 8;
+  padding: 10px 8px;
   border-bottom: 1px solid rgba(255,255,255,0.08);
   font-size: 18px;
+  background: rgba(255,255,255,.04);
+border-radius: 10px;
+margin-bottom: 6px;
+padding: 10px 12px;
 }
 
 
@@ -1040,22 +1044,35 @@ function addHistory(data) {
   const list = document.getElementById("historyList");
   if (!list) return;
 
-  const style =
-    categoryStyles[data.category] || categoryStyles["boire"];
+  const categoryIcons = {
+    "boire": "🍺",
+    "malus": "💀",
+    "bonus": "⭐",
+    "de": "🎲",
+    "relance": "🔄",
+    "designation": "🎯",
+    "gage-social": "🎭",
+    "retour": "↩️",
+    "devant-derriere": "🔀",
+    "reveil": "⏰",
+    "final-boire": "👑",
+    "legendary": "👑"
+  };
+
+  const icon =
+    categoryIcons[data.category] || "🎲";
 
   const playerName =
     data.playerName || data.currentPlayer || "Joueur";
 
   const itemText =
-    `${style.emoji} ${playerName} → ${data.title}`;
+    `${icon} ${playerName} → ${data.title}`;
 
-  if (actionHistory[0] === itemText) {
-    return;
-  }
+  if (actionHistory[0] === itemText) return;
 
   actionHistory.unshift(itemText);
 
-  if (actionHistory.length > 5) {
+  if (actionHistory.length > 8) {
     actionHistory.pop();
   }
 
