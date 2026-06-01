@@ -831,6 +831,17 @@ socket.on("playersUpdated", (players) => {
 
 socket.on("stateUpdated", (data) => {
 
+  if (data.totalActions === 0) {
+  actionHistory.length = 0;
+
+  const historyList =
+    document.getElementById("historyList");
+
+  if (historyList) {
+    historyList.innerHTML = "";
+  }
+}
+
   if (!data.gameStarted) {
   closeTvCard();
 

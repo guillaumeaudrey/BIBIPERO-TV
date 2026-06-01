@@ -476,6 +476,14 @@ function resetSalon() {
     roomCode: savedRoomCode
   });
 }
+
+socket.on("gameReset", () => {
+  localStorage.removeItem("bibiperoPlayer");
+  localStorage.removeItem("bibiperoJoined");
+  localStorage.removeItem("bibiperoRoomCode");
+
+  window.location.href = "/join.html";
+});
   </script>
 
 </body>
