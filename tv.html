@@ -63,11 +63,10 @@
     0 20px 60px rgba(0,0,0,.7);
 }
    .main {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 420px;
-  gap: 8px;
-  align-items: center;
-  margin-top: 18px;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 420px;
+  gap:40px;
+  padding-right:40px;
 }
     .card {
       min-height: 520px;
@@ -176,6 +175,7 @@
       }
     }
     .board-container{
+    margin-top: 30px;
   position:relative;
   width:fit-content;
   max-width:none;
@@ -636,6 +636,8 @@ margin: 0 auto 25px auto;
   list-style: none;
   padding: 0;
   margin: 0;
+  max-height: 220px;
+  overflow-y: auto;
 }
 
 .history-list li {
