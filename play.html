@@ -361,12 +361,21 @@ console.log("Ouverture caméra...");
 );
     }
 
-    function nextPlayer() {
+    async function nextPlayer() {
 
       if (html5QrCode) {
-        html5QrCode.stop().catch(() => {});
-        html5QrCode = null;
-      }
+  try {
+    await html5QrCode.stop();
+  } catch (e) {
+    console.log("Scanner déjà arrêté");
+  }
+
+  try {
+    await html5QrCode.clear();
+  } catch (e) {}
+
+  html5QrCode = null;
+}
 
       const reader = document.getElementById("reader");
       if (reader) {
