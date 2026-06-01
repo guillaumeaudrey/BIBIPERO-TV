@@ -219,6 +219,10 @@ socket.emit("rejoinPlayer", { playerName: savedPlayer, roomCode: savedRoomCode }
         card.classList.remove("active-turn");
         card.classList.add("inactive-turn");
       }
+      if (!isMyTurn) {
+  document.getElementById("scanResult").textContent =
+    `⏳ En attente de ${currentPlayer}`;
+}
     });
 
     socket.on("playersUpdated", (players) => {
@@ -367,8 +371,12 @@ console.log("Ouverture caméra...");
 
       socket.emit("nextPlayer", { roomCode: savedRoomCode });
 
-      document.getElementById("scanResult").textContent =
-        "✅ Tour terminé";
+setTimeout(() => {
+  socket.emit("getState", { roomCode: savedRoomCode });
+}, 200);
+
+document.getElementById("scanResult").textContent =
+  "✅ Tour terminé";
     }
 
     function resetGame() {
