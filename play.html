@@ -211,12 +211,31 @@ socket.emit("rejoinPlayer", { playerName: savedPlayer, roomCode: savedRoomCode }
     socket.on("stateUpdated", (data) => {
 
       if (!data.gameStarted) {
-        window.location.href = savedRoomCode ? `/join.html?room=${savedRoomCode}` : "/join.html";
-        return;
-      }
 
-      currentPlayer = data.currentPlayer || "";
+  if (data.isNewRound) {
+
+    currentPlayer = data.currentPlayer || "";
       gameStarted = data.gameStarted || false;
+
+    document.getElementById("turnInfo").textContent =
+      "🔄 Nouvelle manche prête";
+
+    document.getElementById("scanBtn").disabled = true;
+    document.getElementById("nextBtn").disabled = true;
+
+    document.getElementById("scanResult").textContent =
+      "⏳ En attente du démarrage";
+
+    return;
+  }
+
+  window.location.href =
+    savedRoomCode
+      ? `/join.html?room=${savedRoomCode}`
+      : "/join.html";
+
+  return;
+}
 
       const myName =
         localStorage.getItem("bibiperoPlayer");
@@ -430,6 +449,8 @@ console.log("Ouverture caméra...");
   socket.emit("getState", { roomCode: savedRoomCode });
 
 function newRound() {
+
+  
   socket.emit("newRound", {
     roomCode: savedRoomCode
   });
