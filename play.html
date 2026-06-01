@@ -163,17 +163,26 @@
 
   <script>
     const socket = io();
-    
-    socket.emit("joinPlayerRoom", {
+
+const params = new URLSearchParams(window.location.search);
+
+const roomFromUrl = params.get("room");
+
+const savedRoomCode =
+  (roomFromUrl ||
+   localStorage.getItem("bibiperoRoomCode") ||
+   "").toUpperCase();
+
+if (savedRoomCode) {
+  localStorage.setItem(
+    "bibiperoRoomCode",
+    savedRoomCode
+  );
+}
+
+socket.emit("joinPlayerRoom", {
   roomCode: savedRoomCode
 });
-
-    const params = new URLSearchParams(window.location.search);
-    const roomFromUrl = params.get("room");
-    const savedRoomCode = (roomFromUrl || localStorage.getItem("bibiperoRoomCode") || "").toUpperCase();
-    if (savedRoomCode) {
-      localStorage.setItem("bibiperoRoomCode", savedRoomCode);
-    }
 
     const savedPlayer =
   localStorage.getItem("bibiperoPlayer");
@@ -375,9 +384,7 @@ console.log("Ouverture caméra...");
 
       socket.emit("nextPlayer", { roomCode: savedRoomCode });
 
-setTimeout(() => {
-  socket.emit("getState", { roomCode: savedRoomCode });
-}, 200);
+
 
 document.getElementById("scanResult").textContent =
   "✅ Tour terminé";
