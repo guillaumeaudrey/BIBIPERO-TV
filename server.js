@@ -464,7 +464,49 @@ socket.emit("playersUpdated", room.players);
     });
   }
 });
+socket.on("newRound", (data = {}) => {
+  const roomCode =
+    (data.roomCode || socket.data.roomCode || "")
+      .toString()
+      .toUpperCase();
 
+  const room = getRoom(roomCode);
+  if (!room) return;
+
+  room.players.forEach(p => {
+    p.position = 0;
+    p.totalActions = 0;
+    p.totalDrinks = 0;
+  });
+
+  room.currentPlayerIndex = 0;
+  room.gameMode = "web";
+
+  room.state = {
+    ...room.state,
+    source: "web",
+    roomCode,
+    playerName: "",
+    currentPlayer: room.players[0]?.name || "En attente",
+    caseNumber: 0,
+    category: "",
+    title: "",
+    text: "",
+    powerLevel: 0,
+    isLegendary: false,
+    totalActions: 0,
+    isLastRound: false,
+    gameStarted: false,
+    gameMode: "web",
+    players: room.players
+  };
+
+  emitRoom(roomCode);
+
+  io.to(roomCode).emit("newRoundReady", {
+    roomCode
+  });
+});
   socket.on("resetGame", (data = {}) => {
     const roomCode = (data.roomCode || socket.data.roomCode || "").toString().toUpperCase();
     const room = getRoom(roomCode);

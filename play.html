@@ -47,12 +47,12 @@
     }
 
     .scan-btn {
-      background: #4caf50;
+      background:linear-gradient(135deg,#4caf50,#2e7d32);
       color: white;
     }
 
     .next-btn {
-      background: #2196f3;
+      background:linear-gradient(135deg,#42a5f5,#1976d2);
       color: white;
     }
 
@@ -60,7 +60,10 @@
       background: #d32f2f;
       color: white;
     }
-
+.new-round-btn{
+  background:linear-gradient(135deg,#d18a00,#ffb300);
+  color: white;
+}
     button:disabled {
       opacity: 0.45;
       cursor: not-allowed;
@@ -155,9 +158,17 @@
       ✅ Fin de mon tour
     </button>
 
-    <button id="resetBtn" class="reset-btn" onclick="resetGame()">
-      🔄 Nouvelle partie
-    </button>
+    <button id="newRoundBtn"
+        class="reset-btn"
+        onclick="newRound()">
+  🔄 Nouvelle manche
+</button>
+
+<button id="resetBtn"
+        class="danger-btn"
+        onclick="resetSalon()">
+  🧹 Réinitialiser salon
+</button>
 
   </div>
 
@@ -408,15 +419,35 @@ console.log("Ouverture caméra...");
     }
 
     function resetGame() {
-      socket.emit("resetGame", { roomCode: savedRoomCode });
+  socket.emit("newRound", {
+    roomCode: savedRoomCode
+  });
 
-      document.getElementById("scanResult").textContent =
-        "🔄 Nouvelle partie lancée";
-    }
+  document.getElementById("scanResult").textContent =
+    "🔄 Nouvelle manche lancée";
+}
 
   socket.emit("getState", { roomCode: savedRoomCode });
 
+function newRound() {
+  socket.emit("newRound", {
+    roomCode: savedRoomCode
+  });
 
+  document.getElementById("scanResult").textContent =
+    "🔄 Nouvelle manche lancée";
+}
+
+function resetSalon() {
+
+  if (!confirm("Réinitialiser complètement le salon ?")) {
+    return;
+  }
+
+  socket.emit("resetGame", {
+    roomCode: savedRoomCode
+  });
+}
   </script>
 
 </body>
