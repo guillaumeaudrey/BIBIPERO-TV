@@ -384,7 +384,9 @@ console.log("Ouverture caméra...");
 
       socket.emit("nextPlayer", { roomCode: savedRoomCode });
 
-
+        setTimeout(() => {
+  socket.emit("getState", { roomCode: savedRoomCode });
+}, 300);
 
 document.getElementById("scanResult").textContent =
   "✅ Tour terminé";

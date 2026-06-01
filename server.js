@@ -439,6 +439,9 @@ socket.on("joinPlayerRoom", (data = {}) => {
     };
 
     emitRoom(roomCode);
+
+socket.emit("stateUpdated", room.state);
+socket.emit("playersUpdated", room.players);
   });
 
   socket.on("resetGame", (data = {}) => {
