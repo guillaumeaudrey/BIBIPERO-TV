@@ -159,13 +159,13 @@
     </button>
 
     <button id="newRoundBtn"
-        class="reset-btn"
+        class="new-round-btn"
         onclick="newRound()">
   🔄 Nouvelle manche
 </button>
 
 <button id="resetBtn"
-        class="danger-btn"
+        class="reset-btn"
         onclick="resetSalon()">
   🧹 Réinitialiser salon
 </button>
@@ -210,32 +210,37 @@ socket.emit("rejoinPlayer", { playerName: savedPlayer, roomCode: savedRoomCode }
 
     socket.on("stateUpdated", (data) => {
 
+      console.log("PLAY STATE =", data);
+
       if (!data.gameStarted) {
 
-  if (data.isNewRound) {
+        if (data.isNewRound) {
 
-    currentPlayer = data.currentPlayer || "";
-      gameStarted = data.gameStarted || false;
+          currentPlayer = data.currentPlayer || "";
+          gameStarted = false;
 
-    document.getElementById("turnInfo").textContent =
-      "🔄 Nouvelle manche prête";
+          document.getElementById("turnInfo").textContent =
+            "🔄 Nouvelle manche prête";
 
-    document.getElementById("scanBtn").disabled = true;
-    document.getElementById("nextBtn").disabled = true;
+          document.getElementById("scanBtn").disabled = true;
+          document.getElementById("nextBtn").disabled = true;
 
-    document.getElementById("scanResult").textContent =
-      "⏳ En attente du démarrage";
+          document.getElementById("scanResult").textContent =
+            "⏳ En attente du démarrage";
 
-    return;
-  }
+          return;
+        }
 
-  window.location.href =
-    savedRoomCode
-      ? `/join.html?room=${savedRoomCode}`
-      : "/join.html";
+        window.location.href =
+          savedRoomCode
+            ? `/join.html?room=${savedRoomCode}`
+            : "/join.html";
 
-  return;
-}
+        return;
+      }
+
+      currentPlayer = data.currentPlayer || "";
+      gameStarted = true;
 
       const myName =
         localStorage.getItem("bibiperoPlayer");
@@ -258,14 +263,13 @@ socket.emit("rejoinPlayer", { playerName: savedPlayer, roomCode: savedRoomCode }
       if (isMyTurn) {
         card.classList.remove("inactive-turn");
         card.classList.add("active-turn");
+        document.getElementById("scanResult").textContent = "";
       } else {
         card.classList.remove("active-turn");
         card.classList.add("inactive-turn");
+        document.getElementById("scanResult").textContent =
+          `⏳ En attente de ${currentPlayer}`;
       }
-      if (!isMyTurn) {
-  document.getElementById("scanResult").textContent =
-    `⏳ En attente de ${currentPlayer}`;
-}
     });
 
     socket.on("playersUpdated", (players) => {
@@ -302,6 +306,9 @@ socket.emit("rejoinPlayer", { playerName: savedPlayer, roomCode: savedRoomCode }
 
       document.getElementById("masterInfo").textContent =
         `👑 Maître : ${masterName || "-"}`;
+
+      document.getElementById("newRoundBtn").style.display =
+        isMaster ? "block" : "none";
 
       document.getElementById("resetBtn").style.display =
         isMaster ? "block" : "none";

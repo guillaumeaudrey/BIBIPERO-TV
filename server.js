@@ -500,7 +500,7 @@ socket.on("newRound", (data = {}) => {
     totalActions: 0,
     isLastRound: false,
     isNewRound: false,
-gameStarted: true,
+    gameStarted: true,
     gameMode: "web",
     players: room.players
   };
