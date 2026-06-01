@@ -65,7 +65,7 @@
    .main {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 420px;
-  gap: 28px;
+  gap: 8px;
   align-items: center;
 }
     .card {
@@ -165,11 +165,15 @@
         opacity: 1;
       }
     }
-    .board-container {
-  position: relative;
-  width: fit-content;
-  max-width: 100%;
-  margin: auto;
+    .board-container{
+  position:relative;
+  width:fit-content;
+  max-width:none;
+
+  margin:auto;
+
+  transform:scale(1.15);
+  transform-origin:center;
 }
 
 
