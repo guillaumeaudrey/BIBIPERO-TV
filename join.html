@@ -925,11 +925,26 @@ function cancelJoinMode() {
       const playerName =
         document.getElementById("playerName").value.trim();
 
-      const roomInput =
-        document.getElementById("roomInput")
-          .value
-          .trim()
-          .toUpperCase();
+      let roomInput =
+  document.getElementById("roomInput")
+    .value
+    .trim()
+    .toUpperCase();
+
+roomInput = roomInput.replace(/\s/g, "");
+
+if (!roomInput.includes("-")) {
+  const index = roomInput.length - 2;
+
+  if (index > 0) {
+    roomInput =
+      roomInput.slice(0, index) +
+      "-" +
+      roomInput.slice(index);
+  }
+}
+
+document.getElementById("roomInput").value = roomInput;
 
       if (!playerName) {
         document.getElementById("success").textContent =
