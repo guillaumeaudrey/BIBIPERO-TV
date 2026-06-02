@@ -48,7 +48,7 @@
 
     .card {
       width: 100%;
-      max-width: 500px;
+      max-width: 460px;
       padding: 24px;
 
       background:
@@ -96,7 +96,7 @@
   border: 1px solid var(--gold-border);
 
   color: var(--gold);
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 900;
   letter-spacing: 1px;
 
@@ -351,6 +351,27 @@
       display: none !important;
     }
 
+.connected-info{
+  display:none;
+  margin-bottom:18px;
+  padding:14px;
+  border-radius:18px;
+
+  background:linear-gradient(
+    135deg,
+    rgba(76,255,136,.15),
+    rgba(76,255,136,.05)
+  );
+
+  border:1px solid rgba(76,255,136,.25);
+
+  color:#4cff88;
+  font-size:20px;
+  font-weight:900;
+  text-align:center;
+}
+
+
     @media (max-width: 480px) {
       body {
         padding: 12px;
@@ -476,6 +497,10 @@
 
     <div id="roomCodeDisplay" class="room-code">
       🎟️ Salon : ----
+    </div>
+
+    <div id="connectedInfo" class="connected-info">
+      ✅ Connecté
     </div>
 
     <div class="section" id="identitySection">
@@ -654,6 +679,35 @@
 
     }
 
+
+    function showConnectedInfo(playerName) {
+      const identity = document.getElementById("identitySection");
+      const info = document.getElementById("connectedInfo");
+
+      if (identity) {
+        identity.style.display = "none";
+      }
+
+      if (info) {
+        info.style.display = "block";
+        info.textContent = `✅ Connecté : ${playerName}`;
+      }
+    }
+
+    function hideConnectedInfo() {
+      const identity = document.getElementById("identitySection");
+      const info = document.getElementById("connectedInfo");
+
+      if (identity) {
+        identity.style.display = "block";
+      }
+
+      if (info) {
+        info.style.display = "none";
+        info.textContent = "✅ Connecté";
+      }
+    }
+
     function showMasterButtons() {
       document.getElementById("masterPanel").style.display = "block";
       document.getElementById("inviteBtn").style.display = "grid";
@@ -771,6 +825,7 @@
       localStorage.setItem("bibiperoJoined", "true");
 
       showRoomCode(data.roomCode);
+      showConnectedInfo(data.playerName);
 
       const joinBtn = document.getElementById("joinRoomBtn");
       joinBtn.disabled = true;
@@ -833,6 +888,7 @@
       localStorage.setItem("bibiperoJoined", "true");
 
       showRoomCode(data.roomCode);
+      showConnectedInfo(data.playerName);
       showMasterButtons();
 
       document.getElementById("createGameBtn").style.display = "none";
@@ -1007,8 +1063,6 @@ function cancelJoinMode() {
 
         showRoomCode(currentRoomCode);
 
-        document.getElementById("openTvPlayerBtn").style.display = "grid";
-
         document.getElementById("joinSection").style.display = "block";
         document.getElementById("roomInput").value = currentRoomCode;
         document.getElementById("roomInput").readOnly = true;
@@ -1036,6 +1090,7 @@ function cancelJoinMode() {
 
         document.getElementById("playerName").value = savedName;
         showRoomCode(currentRoomCode);
+        showConnectedInfo(savedName);
         document.getElementById("openTvPlayerBtn").style.display = "grid";
 
         socket.emit("joinPlayer", {
