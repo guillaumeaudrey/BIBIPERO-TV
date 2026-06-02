@@ -515,6 +515,13 @@
   <span class="btn-icon">⬅</span>
   <span>Retour</span>
 </button>
+      <button id="openTvPlayerBtn"
+  class="invite-btn"
+  onclick="openTvRoom()"
+  style="display:none;">
+  <span class="btn-icon">📺</span>
+  <span>Ouvrir la TV</span>
+</button>
 
       <div id="success"></div>
     </div>
@@ -772,6 +779,7 @@
 
       document.getElementById("success").textContent =
         `✅ ${data.playerName} a rejoint la partie`;
+        document.getElementById("openTvPlayerBtn").style.display = "grid";
     });
 
     socket.on("playerJoined", (data) => {
@@ -999,6 +1007,8 @@ function cancelJoinMode() {
 
         showRoomCode(currentRoomCode);
 
+        document.getElementById("openTvPlayerBtn").style.display = "grid";
+
         document.getElementById("joinSection").style.display = "block";
         document.getElementById("roomInput").value = currentRoomCode;
         document.getElementById("roomInput").readOnly = true;
@@ -1026,6 +1036,7 @@ function cancelJoinMode() {
 
         document.getElementById("playerName").value = savedName;
         showRoomCode(currentRoomCode);
+        document.getElementById("openTvPlayerBtn").style.display = "grid";
 
         socket.emit("joinPlayer", {
           playerName: savedName,
