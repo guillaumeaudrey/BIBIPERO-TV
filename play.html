@@ -571,6 +571,13 @@ console.log("Ouverture caméra...");
 }
 
   socket.emit("getState", { roomCode: savedRoomCode });
+  setInterval(() => {
+  if (!savedRoomCode) return;
+
+  socket.emit("getState", {
+    roomCode: savedRoomCode
+  });
+}, 2000);
 
 function newRound() {
 
