@@ -179,6 +179,96 @@ app.post("/join-player", (req, res) => {
   });
 });
 
+app.post("/scan-case", (req, res) => {
+  const roomCode =
+    (req.body.roomCode || "").toString().toUpperCase();
+
+  const playerName =
+    (req.body.playerName || "").toString().trim();
+
+  const qr =
+    (req.body.qr || req.body.qrValue || "").toString();
+
+  const room = getRoom(roomCode);
+
+  if (!room) {
+    return res.status(404).json({
+      ok: false,
+      message: "Salon introuvable"
+    });
+  }
+
+  if (!room.state.gameStarted) {
+    return res.status(400).json({
+      ok: false,
+      message: "La partie n’a pas encore démarré"
+    });
+  }
+
+  const player = room.players.find(
+    p => p.name === playerName
+  );
+
+  if (!player) {
+    return res.status(404).json({
+      ok: false,
+      message: "Joueur introuvable"
+    });
+  }
+
+  const currentPlayer =
+    room.players[room.currentPlayerIndex];
+
+  if (currentPlayer && currentPlayer.name !== player.name) {
+    return res.status(403).json({
+      ok: false,
+      message: `Ce n'est pas ton tour. C'est le tour de ${currentPlayer.name}`
+    });
+  }
+
+  const parts = qr.split("/");
+  const caseNumber = Number(parts[1]);
+  const category = parts[2] || "boire";
+
+  const action = getRandomAction(category);
+
+  player.position = caseNumber;
+  player.totalActions += 1;
+
+  if (["boire", "malus", "final-boire"].includes(action.category)) {
+    player.totalDrinks += 1;
+  }
+
+  room.gameMode = "web";
+
+  room.state = {
+    ...room.state,
+    roomCode,
+    playerName: player.name,
+    currentPlayer: player.name,
+    caseNumber,
+    category: action.category,
+    title: action.title,
+    text: action.text,
+    powerLevel: action.powerLevel,
+    isLegendary: action.isLegendary || false,
+    isNewRound: false,
+    totalActions: (room.state.totalActions || 0) + 1,
+    gameMode: "web",
+    players: room.players
+  };
+
+  emitRoom(roomCode);
+
+  return res.json({
+    ok: true,
+    category: action.category,
+    title: action.title,
+    text: action.text,
+    caseNumber
+  });
+});
+
 app.post("/speak", async (req, res) => {
   try {
     const text = req.body.text;
