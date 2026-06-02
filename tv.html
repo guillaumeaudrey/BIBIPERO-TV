@@ -64,9 +64,9 @@
 }
    .main {
   display:grid;
-  grid-template-columns:minmax(0,1fr) 420px;
-  gap:15px;
-  padding-right:10px;
+  grid-template-columns:auto 380px;
+  gap:8px;
+  justify-content:center;
 }
 
     .card {
@@ -113,15 +113,13 @@
     }
 
     .side {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  width: 420px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  width:380px;
 }
 
-.side-panel {
-  margin-top: -20px;
-}
+
     .panel {
   background:
     linear-gradient(
@@ -180,14 +178,13 @@
       }
     }
     .board-container{
-    margin-top: 0px;
   position:relative;
   width:fit-content;
   max-width:none;
 
   margin:auto;
 
-  transform:scale(1.15);
+  transform:scale(1.05);
   transform-origin:center;
 }
 
