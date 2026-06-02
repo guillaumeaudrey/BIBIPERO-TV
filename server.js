@@ -305,6 +305,47 @@ socket.on("joinPlayerRoom", (data = {}) => {
 
     console.log(playerName + " a rejoint", roomCode);
   });
+  socket.on("leaveRoom", (data = {}) => {
+  const roomCode =
+    (data.roomCode || socket.data.roomCode || "")
+      .toString()
+      .toUpperCase();
+
+  const playerName =
+    (data.playerName || "")
+      .toString()
+      .trim();
+
+  const room = getRoom(roomCode);
+
+  if (!room || !playerName) return;
+
+  room.players = room.players.filter(
+    p => p.name !== playerName
+  );
+
+  room.appPlayers = room.appPlayers.filter(
+    p => p.name !== playerName
+  );
+
+  if (room.currentPlayerIndex >= room.players.length) {
+    room.currentPlayerIndex = 0;
+  }
+
+  room.state.players = room.players;
+
+  if (room.players.length > 0) {
+    room.state.currentPlayer =
+      room.players[room.currentPlayerIndex]?.name || "";
+  } else {
+    room.state.currentPlayer = "";
+    room.state.gameStarted = false;
+  }
+
+  emitRoom(roomCode);
+
+  console.log(`${playerName} a quitté le salon ${roomCode}`);
+});
 
   socket.on("rejoinPlayer", (data = {}) => {
     const playerName = (typeof data === "string" ? data : data.playerName || "").trim();

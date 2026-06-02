@@ -493,30 +493,18 @@
     </div>
 
     <div class="join-tagline">
-      👑 Entre dans l'arène BIBIPERO
-    </div>
-
-    <div id="roomCodeDisplay" class="room-code">
-      🎟️ Salon : ----
-      <div id="connectedInfo"
-     style="
-       display:none;
-       margin-bottom:16px;
-       padding:14px;
-       border-radius:18px;
-       background:rgba(76,255,136,.12);
-       border:1px solid rgba(76,255,136,.25);
-       color:#4cff88;
-       font-size:18px;
-       font-weight:900;
-       text-align:center;
-     ">
+  👑 Entre dans l'arène BIBIPERO
 </div>
-    </div>
-    <div id="connectedInfo" style="display:none;" class="connected-info">
+
+<div id="roomCodeDisplay" class="room-code">
+  🎟️ Salon : ----
+</div>
+
+<div id="connectedInfo" style="display:none;" class="connected-info">
   ✅ Connecté
 </div>
-    <div class="section" id="identitySection">
+
+<div class="section" id="identitySection">
       <div class="section-title">👤 Joueur</div>
 
       <div class="input-group">
@@ -638,7 +626,7 @@
 
       <div class="bottom-nav">
 
-  <a class="fake-button dark-btn" href="/">
+  <a class="fake-button dark-btn" href="/index.html">
     <span class="btn-icon">🏠</span>
     <span>Accueil</span>
   </a>
@@ -1041,12 +1029,18 @@ function cancelJoinMode() {
     }
 
     function disconnectPlayer() {
-      localStorage.removeItem("bibiperoPlayer");
-      localStorage.removeItem("bibiperoJoined");
-      localStorage.removeItem("bibiperoRoomCode");
 
-      window.location.href = "/join.html";
-    }
+  socket.emit("leaveRoom", {
+    playerName: localStorage.getItem("bibiperoPlayer"),
+    roomCode: localStorage.getItem("bibiperoRoomCode")
+  });
+
+  localStorage.removeItem("bibiperoPlayer");
+  localStorage.removeItem("bibiperoJoined");
+  localStorage.removeItem("bibiperoRoomCode");
+
+  window.location.href = "/index.html";
+}
 
     function initPage() {
       updateWaitingMessage();
