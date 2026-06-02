@@ -118,6 +118,67 @@ app.post("/state", (req, res) => {
   res.json({ ok: true, roomCode });
 });
 
+app.post("/join-player", (req, res) => {
+  const playerName =
+    (req.body.playerName || "").toString().trim();
+
+  const roomCode =
+    (req.body.roomCode || "").toString().toUpperCase();
+
+  const room = getRoom(roomCode);
+
+  if (!room) {
+    return res.status(404).json({
+      ok: false,
+      message: "Salon introuvable"
+    });
+  }
+
+  if (room.state.gameStarted) {
+    return res.status(400).json({
+      ok: false,
+      message: "La partie est déjà commencée"
+    });
+  }
+
+  let player = room.players.find(
+    p => p.name.toLowerCase() === playerName.toLowerCase()
+  );
+
+  if (!player) {
+    player = {
+      id: "app-" + playerName,
+      name: playerName,
+      position: 0,
+      totalActions: 0,
+      totalDrinks: 0,
+      isMaster: room.players.length === 0,
+      source: "app"
+    };
+
+    room.players.push(player);
+  }
+
+  room.state.source = "web";
+  room.state.roomCode = roomCode;
+  room.state.players = room.players;
+
+  if (!room.state.currentPlayer || room.state.currentPlayer === "En attente") {
+    room.state.currentPlayer =
+      room.players[room.currentPlayerIndex]?.name || playerName;
+  }
+
+  emitRoom(roomCode);
+
+  return res.json({
+    ok: true,
+    roomCode,
+    playerName,
+    isMaster: player.isMaster,
+    players: room.players
+  });
+});
+
 app.post("/speak", async (req, res) => {
   try {
     const text = req.body.text;
