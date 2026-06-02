@@ -48,7 +48,7 @@
 
     .card {
       width: 100%;
-      max-width: 460px;
+      max-width: 450px;
       padding: 24px;
 
       background:
@@ -83,7 +83,7 @@
   display: none;
   margin: 0 0 18px;
   padding: 16px 18px;
-
+ font-size:28px;
   border-radius: 22px;
 
   background:
@@ -96,7 +96,7 @@
   border: 1px solid var(--gold-border);
 
   color: var(--gold);
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 900;
   letter-spacing: 1px;
 
@@ -351,27 +351,6 @@
       display: none !important;
     }
 
-.connected-info{
-  display:none;
-  margin-bottom:18px;
-  padding:14px;
-  border-radius:18px;
-
-  background:linear-gradient(
-    135deg,
-    rgba(76,255,136,.15),
-    rgba(76,255,136,.05)
-  );
-
-  border:1px solid rgba(76,255,136,.25);
-
-  color:#4cff88;
-  font-size:20px;
-  font-weight:900;
-  text-align:center;
-}
-
-
     @media (max-width: 480px) {
       body {
         padding: 12px;
@@ -477,7 +456,29 @@
   color:#ffb300;
 }
 
+.connected-info{
+  margin-bottom:18px;
 
+  padding:14px;
+
+  border-radius:18px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(76,255,136,.15),
+      rgba(76,255,136,.05)
+    );
+
+  border:1px solid rgba(76,255,136,.25);
+
+  color:#4cff88;
+
+  font-size:20px;
+  font-weight:900;
+
+  text-align:center;
+}
 
   </style>
 </head>
@@ -497,12 +498,24 @@
 
     <div id="roomCodeDisplay" class="room-code">
       🎟️ Salon : ----
+      <div id="connectedInfo"
+     style="
+       display:none;
+       margin-bottom:16px;
+       padding:14px;
+       border-radius:18px;
+       background:rgba(76,255,136,.12);
+       border:1px solid rgba(76,255,136,.25);
+       color:#4cff88;
+       font-size:18px;
+       font-weight:900;
+       text-align:center;
+     ">
+</div>
     </div>
-
-    <div id="connectedInfo" class="connected-info">
-      ✅ Connecté
-    </div>
-
+    <div id="connectedInfo" style="display:none;" class="connected-info">
+  ✅ Connecté
+</div>
     <div class="section" id="identitySection">
       <div class="section-title">👤 Joueur</div>
 
@@ -679,35 +692,6 @@
 
     }
 
-
-    function showConnectedInfo(playerName) {
-      const identity = document.getElementById("identitySection");
-      const info = document.getElementById("connectedInfo");
-
-      if (identity) {
-        identity.style.display = "none";
-      }
-
-      if (info) {
-        info.style.display = "block";
-        info.textContent = `✅ Connecté : ${playerName}`;
-      }
-    }
-
-    function hideConnectedInfo() {
-      const identity = document.getElementById("identitySection");
-      const info = document.getElementById("connectedInfo");
-
-      if (identity) {
-        identity.style.display = "block";
-      }
-
-      if (info) {
-        info.style.display = "none";
-        info.textContent = "✅ Connecté";
-      }
-    }
-
     function showMasterButtons() {
       document.getElementById("masterPanel").style.display = "block";
       document.getElementById("inviteBtn").style.display = "grid";
@@ -820,22 +804,40 @@
     });
 
     socket.on("joinSuccess", (data) => {
-      localStorage.setItem("bibiperoPlayer", data.playerName);
-      localStorage.setItem("bibiperoRoomCode", data.roomCode);
-      localStorage.setItem("bibiperoJoined", "true");
 
-      showRoomCode(data.roomCode);
-      showConnectedInfo(data.playerName);
+  localStorage.setItem("bibiperoPlayer", data.playerName);
+  localStorage.setItem("bibiperoRoomCode", data.roomCode);
+  localStorage.setItem("bibiperoJoined", "true");
 
-      const joinBtn = document.getElementById("joinRoomBtn");
-      joinBtn.disabled = true;
-      joinBtn.innerHTML =
-        `<span class="btn-icon">✅</span><span>Salon rejoint</span>`;
+  showRoomCode(data.roomCode);
 
-      document.getElementById("success").textContent =
-        `✅ ${data.playerName} a rejoint la partie`;
-        document.getElementById("openTvPlayerBtn").style.display = "grid";
-    });
+  // Cache les éléments de connexion
+  document.getElementById("createGameBtn").style.display = "none";
+  document.getElementById("showJoinBtn").style.display = "none";
+  document.getElementById("joinRoomBtn").style.display = "none";
+  document.getElementById("cancelJoinBtn").style.display = "none";
+  document.getElementById("joinSection").style.display = "none";
+
+  // Désactive le prénom
+  document.getElementById("playerName").disabled = true;
+
+  // Affiche le bloc connecté
+  const info =
+    document.getElementById("connectedInfo");
+
+  if (info) {
+    info.style.display = "block";
+    info.textContent =
+      `✅ Connecté : ${data.playerName}`;
+  }
+
+  // Affiche le bouton TV
+  document.getElementById("openTvPlayerBtn").style.display = "grid";
+
+  document.getElementById("success").textContent =
+    `✅ ${data.playerName} a rejoint la partie`;
+
+});
 
     socket.on("playerJoined", (data) => {
 
@@ -888,7 +890,6 @@
       localStorage.setItem("bibiperoJoined", "true");
 
       showRoomCode(data.roomCode);
-      showConnectedInfo(data.playerName);
       showMasterButtons();
 
       document.getElementById("createGameBtn").style.display = "none";
@@ -1063,6 +1064,8 @@ function cancelJoinMode() {
 
         showRoomCode(currentRoomCode);
 
+        document.getElementById("openTvPlayerBtn").style.display = "grid";
+
         document.getElementById("joinSection").style.display = "block";
         document.getElementById("roomInput").value = currentRoomCode;
         document.getElementById("roomInput").readOnly = true;
@@ -1090,7 +1093,6 @@ function cancelJoinMode() {
 
         document.getElementById("playerName").value = savedName;
         showRoomCode(currentRoomCode);
-        showConnectedInfo(savedName);
         document.getElementById("openTvPlayerBtn").style.display = "grid";
 
         socket.emit("joinPlayer", {
