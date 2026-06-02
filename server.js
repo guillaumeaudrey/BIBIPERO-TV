@@ -261,12 +261,14 @@ app.post("/scan-case", (req, res) => {
   emitRoom(roomCode);
 
   return res.json({
-    ok: true,
-    category: action.category,
-    title: action.title,
-    text: action.text,
-    caseNumber
-  });
+  ok: true,
+  category: action.category,
+  title: action.title,
+  text: action.text,
+  caseNumber,
+  powerLevel: action.powerLevel,
+  isLegendary: action.isLegendary || false
+});
 });
 
 app.post("/next-player", (req, res) => {
