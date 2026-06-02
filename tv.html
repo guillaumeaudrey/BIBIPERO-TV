@@ -201,30 +201,36 @@
 
 .player-pawn {
   position: absolute;
-  width: 28px;
-  height: 28px;
+  width: 40px;
+  height: 40px;
+
   border-radius: 50%;
-  border: 2px solid white;
+  border: 3px solid white;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   font-weight: bold;
-  font-size: 11px;
+  font-size: 14px;
+
   color: white;
-  box-shadow: 0 0 12px rgba(0,0,0,0.5);
+
+  box-shadow: 0 0 15px rgba(0,0,0,0.6);
+
   transition: all 0.4s ease;
   animation: pawnFloat 2s infinite ease-in-out;
 }
 
 .player-pawn.current {
-  transform: scale(1.2);
+  transform: scale(1.35);
   z-index: 999;
-  box-shadow: 0 0 20px gold;
+  box-shadow: 0 0 25px gold;
 }
 .player-pawn::after {
   content: attr(data-name);
   position: absolute;
-  top: 30px;
+  top: 42px;
   background: rgba(0,0,0,0.75);
   color: white;
   padding: 2px 6px;
