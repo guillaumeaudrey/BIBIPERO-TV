@@ -269,6 +269,58 @@ app.post("/scan-case", (req, res) => {
   });
 });
 
+app.post("/next-player", (req, res) => {
+  const roomCode =
+    (req.body.roomCode || "").toString().toUpperCase();
+
+  const playerName =
+    (req.body.playerName || "").toString().trim();
+
+  const room = getRoom(roomCode);
+
+  if (!room) {
+    return res.status(404).json({
+      ok: false,
+      message: "Salon introuvable"
+    });
+  }
+
+  const currentPlayer =
+    room.players[room.currentPlayerIndex];
+
+  if (currentPlayer && currentPlayer.name !== playerName) {
+    return res.status(403).json({
+      ok: false,
+      message: "Ce n'est pas ton tour"
+    });
+  }
+
+  room.currentPlayerIndex =
+    (room.currentPlayerIndex + 1) % room.players.length;
+
+  room.state = {
+    ...room.state,
+    roomCode,
+    playerName: "",
+    currentPlayer: room.players[room.currentPlayerIndex].name,
+    category: "",
+    title: "",
+    text: "",
+    powerLevel: 0,
+    isLegendary: false,
+    isNewRound: false,
+    players: room.players
+  };
+
+  emitRoom(roomCode);
+
+  return res.json({
+    ok: true,
+    currentPlayer: room.state.currentPlayer,
+    players: room.players
+  });
+});
+
 app.post("/speak", async (req, res) => {
   try {
     const text = req.body.text;
