@@ -404,6 +404,60 @@ const room = rooms[roomCode];
   });
 });
 
+app.post("/new-round", (req, res) => {
+  const roomCode = (req.body.roomCode || "").toString().toUpperCase();
+  const playerName = (req.body.playerName || "").toString().trim();
+
+  const room = getRoom(roomCode);
+
+  if (!room) {
+    return res.status(404).json({ ok: false, message: "Salon introuvable" });
+  }
+
+  const player = room.players.find(p => p.name === playerName);
+
+  if (!player || !player.isMaster) {
+    return res.status(403).json({ ok: false, message: "Seul le maître peut relancer" });
+  }
+
+  room.players.forEach(p => {
+    p.position = 0;
+    p.totalActions = 0;
+    p.totalDrinks = 0;
+  });
+
+  room.currentPlayerIndex = 0;
+  room.gameMode = "web";
+
+  room.state = {
+    ...room.state,
+    source: "web",
+    roomCode,
+    playerName: "",
+    currentPlayer: room.players[0]?.name || "En attente",
+    caseNumber: 0,
+    category: "",
+    title: "",
+    text: "",
+    powerLevel: 0,
+    isLegendary: false,
+    totalActions: 0,
+    isLastRound: false,
+    isNewRound: false,
+    gameStarted: true,
+    gameMode: "web",
+    players: room.players
+  };
+
+  emitRoom(roomCode);
+
+  return res.json({
+    ok: true,
+    currentPlayer: room.state.currentPlayer,
+    players: room.players
+  });
+});
+
 app.post("/speak", async (req, res) => {
   try {
     const text = req.body.text;
