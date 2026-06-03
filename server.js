@@ -353,6 +353,50 @@ app.post("/start-game", (req, res) => {
     players: room.players
   });
 });
+app.post("/create-room", (req, res) => {
+
+  const playerName =
+    (req.body.playerName || "").toString().trim();
+
+  if (!playerName) {
+    return res.status(400).json({
+      ok: false,
+      message: "Nom manquant"
+    });
+  }
+
+  const roomCode = generateRoomCode();
+
+  rooms[roomCode] = createRoom(roomCode);
+
+  const room = rooms[roomCode];
+
+  const player = {
+    id: "app-" + playerName,
+    name: playerName,
+    position: 0,
+    totalActions: 0,
+    totalDrinks: 0,
+    isMaster: true,
+    source: "app"
+  };
+
+  room.players.push(player);
+
+  room.state.roomCode = roomCode;
+  room.state.currentPlayer = playerName;
+  room.state.players = room.players;
+
+  emitRoom(roomCode);
+
+  return res.json({
+    ok: true,
+    roomCode,
+    playerName,
+    isMaster: true,
+    players: room.players
+  });
+});
 
 app.post("/speak", async (req, res) => {
   try {
