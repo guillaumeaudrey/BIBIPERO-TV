@@ -782,14 +782,33 @@
     });
 
     socket.on("joinError", (data) => {
-      const joinBtn = document.getElementById("joinRoomBtn");
-      joinBtn.disabled = false;
-      joinBtn.style.display = "grid";
-      joinBtn.textContent = "✅ Entrer dans le salon";
+  localStorage.removeItem("bibiperoPlayer");
+  localStorage.removeItem("bibiperoJoined");
+  localStorage.removeItem("bibiperoRoomCode");
 
-      document.getElementById("success").textContent =
-        `⛔ ${data.message}`;
-    });
+  currentRoomCode = "";
+
+  const joinBtn = document.getElementById("joinRoomBtn");
+
+  joinBtn.disabled = false;
+  joinBtn.style.display = "none";
+  joinBtn.innerHTML =
+    `<span class="btn-icon">✅</span><span>Rejoindre le salon</span>`;
+
+  document.getElementById("createGameBtn").style.display = "grid";
+  document.getElementById("showJoinBtn").style.display = "grid";
+  document.getElementById("joinSection").style.display = "none";
+  document.getElementById("cancelJoinBtn").style.display = "none";
+  document.getElementById("openTvPlayerBtn").style.display = "none";
+
+  document.getElementById("playerName").disabled = false;
+
+  document.getElementById("roomCodeDisplay").style.display = "none";
+  document.getElementById("connectedInfo").style.display = "none";
+
+  document.getElementById("success").textContent =
+    `⛔ ${data.message || "Mauvais code salon"}`;
+});
 
     socket.on("joinSuccess", (data) => {
 
