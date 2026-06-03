@@ -228,7 +228,14 @@ app.post("/scan-case", (req, res) => {
 
   const parts = qr.split("/");
   const caseNumber = Number(parts[1]);
-  const category = parts[2] || "boire";
+
+let category = parts[2] || "boire";
+
+if (caseNumber >= 30) {
+  category = "final-boire";
+}
+
+
 
   const action = getRandomAction(category);
 
