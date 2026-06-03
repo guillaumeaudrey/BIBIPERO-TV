@@ -64,10 +64,31 @@ function getRoom(roomCode) {
 function emitRoom(roomCode) {
   const room = getRoom(roomCode);
   if (!room) return;
-  room.state.roomCode = roomCode;
-  room.state.players = room.players;
-  io.to(roomCode).emit("playersUpdated", room.players);
-  io.to(roomCode).emit("stateUpdated", room.state);
+
+  room.state = {
+    ...room.state,
+    roomCode,
+    players: [...room.players]
+  };
+
+  console.log(
+    "EMIT ROOM =>",
+    roomCode,
+    room.players.map(p => ({
+      name: p.name,
+      isMaster: p.isMaster
+    }))
+  );
+
+  io.to(roomCode).emit(
+    "playersUpdated",
+    [...room.players]
+  );
+
+  io.to(roomCode).emit(
+    "stateUpdated",
+    room.state
+  );
 }
 
 const rooms = {};
