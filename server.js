@@ -1012,6 +1012,47 @@ socket.on("newRound", (data = {}) => {
   });
 
   socket.on("disconnect", () => {
-    console.log("Socket déconnecté :", socket.id);
-  });
+  console.log("Socket déconnecté :", socket.id);
+
+  const roomCode =
+    (socket.data.roomCode || "")
+      .toString()
+      .toUpperCase();
+
+  const room = getRoom(roomCode);
+
+  if (!room) return;
+
+  const leavingPlayer =
+    room.players.find(p => p.id === socket.id);
+
+  if (!leavingPlayer) return;
+
+  room.players = room.players.filter(
+    p => p.id !== socket.id
+  );
+
+  if (room.players.length === 0) {
+    room.currentPlayerIndex = 0;
+    room.gameMode = "none";
+    room.state = createEmptyState(roomCode);
+
+    emitRoom(roomCode);
+    return;
+  }
+
+  if (!room.players.some(p => p.isMaster)) {
+    room.players[0].isMaster = true;
+  }
+
+  if (room.currentPlayerIndex >= room.players.length) {
+    room.currentPlayerIndex = 0;
+  }
+
+  room.state.players = room.players;
+  room.state.currentPlayer =
+    room.players[room.currentPlayerIndex]?.name || "En attente";
+
+  emitRoom(roomCode);
+});
 });
