@@ -1026,57 +1026,119 @@ socket.on("newRound", (data = {}) => {
   });
 
   socket.on("playerScanned", (data = {}) => {
-    const roomCode = (data.roomCode || appRoomCode).toString().toUpperCase();
-    if (!rooms[roomCode]) {
-      rooms[roomCode] = {
-        players: [],
-        appPlayers: [],
-        currentPlayerIndex: 0,
-        gameMode: "app",
-        state: createEmptyState(roomCode)
-      };
-    }
-    const room = rooms[roomCode];
+  const roomCode =
+    (data.roomCode || socket.data.roomCode || "")
+      .toString()
+      .toUpperCase();
 
-    const qr = data.qr || data.qrValue || "";
-    const parts = qr.split("/");
-    const caseNumber = Number(parts[1]);
-    const category = parts[2] || "boire";
-    const playerName = data.playerName || data.currentPlayer || "Joueur appli";
+  const room = getRoom(roomCode);
 
-    let player = room.appPlayers.find(p => p.name === playerName);
-    if (!player) {
-      player = { id: "app-" + playerName, name: playerName, position: 0, totalActions: 0, totalDrinks: 0 };
-      room.appPlayers.push(player);
-    }
+  if (!room) {
+    socket.emit("scanError", {
+      message: "Salon introuvable"
+    });
+    return;
+  }
 
-    const action = getRandomAction(category);
-    player.position = caseNumber;
-    player.totalActions += 1;
-    if (["boire", "malus", "final-boire"].includes(action.category)) player.totalDrinks += 1;
+  if (!room.state.gameStarted) {
+    socket.emit("scanError", {
+      message: "La partie n’a pas encore démarré"
+    });
+    return;
+  }
 
-    room.gameMode = "app";
-    room.state = {
-      ...room.state,
-      eventId: Date.now(),
-      roomCode,
-      gameMode: "app",
-      gameStarted: true,
-      playerName: player.name,
-      currentPlayer: player.name,
-      caseNumber,
-      category: action.category,
-      title: action.title,
-      text: action.text,
-      powerLevel: action.powerLevel,
-      isLegendary: action.isLegendary || false,
-      totalActions: (room.state.totalActions || 0) + 1,
-      players: room.appPlayers
-    };
+  const qr = data.qr || data.qrValue || "";
+  const parts = qr.split("/");
+  const caseNumber = Number(parts[1]);
 
-    io.to(roomCode).emit("stateUpdated", room.state);
-    io.to(roomCode).emit("playersUpdated", room.appPlayers);
-  });
+  let category = parts[2] || "boire";
+
+  if (caseNumber >= 30) {
+    category = "final-boire";
+  }
+
+  const playerName =
+    data.playerName ||
+    data.currentPlayer ||
+    room.state.currentPlayer ||
+    "";
+
+  let player = room.players.find(
+    p => p.name === playerName
+  );
+
+  if (!player) {
+    socket.emit("scanError", {
+      message: "Joueur introuvable dans le salon"
+    });
+    return;
+  }
+
+  const currentPlayer =
+    room.players[room.currentPlayerIndex];
+
+  if (currentPlayer && currentPlayer.name !== player.name) {
+    socket.emit("notYourTurn", {
+      currentPlayer: currentPlayer.name
+    });
+    return;
+  }
+
+  const action = getRandomAction(category);
+
+  player.position = caseNumber;
+  player.totalActions += 1;
+
+  if (["boire", "malus", "final-boire"].includes(action.category)) {
+    player.totalDrinks += 1;
+  }
+
+  const newHistoryItem = {
+    playerName: player.name,
+    title: action.title,
+    text: action.text,
+    category: action.category,
+    caseNumber,
+    time: Date.now()
+  };
+
+  const history =
+    [newHistoryItem, ...(room.state.history || [])]
+      .slice(0, 10);
+
+  room.gameMode = "web";
+
+  room.state = {
+    ...room.state,
+    roomCode,
+    playerName: player.name,
+    currentPlayer: player.name,
+    caseNumber,
+    category: action.category,
+    title: action.title,
+    text: action.text,
+    history,
+    powerLevel: action.powerLevel,
+    isLegendary: action.isLegendary || false,
+    isNewRound: false,
+    totalActions: (room.state.totalActions || 0) + 1,
+    gameMode: "web",
+    players: room.players
+  };
+
+  emitRoom(roomCode);
+
+  socket.emit("stateUpdated", room.state);
+  socket.emit("playersUpdated", room.players);
+
+  console.log(
+    "SCAN APP SOCKET =>",
+    roomCode,
+    player.name,
+    action.category,
+    action.title
+  );
+});
 
   socket.on("disconnect", () => {
   console.log("Socket déconnecté :", socket.id);
