@@ -1057,7 +1057,6 @@ socket.on("newRound", (data = {}) => {
       .toUpperCase();
 
   const room = getRoom(roomCode);
-
   if (!room) return;
 
   const leavingPlayer =
@@ -1065,31 +1064,46 @@ socket.on("newRound", (data = {}) => {
 
   if (!leavingPlayer) return;
 
-  room.players = room.players.filter(
-    p => p.id !== socket.id
-  );
+  const leavingName = leavingPlayer.name;
 
-  if (room.players.length === 0) {
-    room.currentPlayerIndex = 0;
-    room.gameMode = "none";
-    room.state = createEmptyState(roomCode);
+  setTimeout(() => {
+    const latestRoom = getRoom(roomCode);
+    if (!latestRoom) return;
+
+    const samePlayer =
+      latestRoom.players.find(p => p.name === leavingName);
+
+    // Si le joueur est revenu avec un nouveau socket, on ne le supprime pas
+    if (!samePlayer || samePlayer.id !== socket.id) {
+      return;
+    }
+
+    latestRoom.players = latestRoom.players.filter(
+      p => p.id !== socket.id
+    );
+
+    if (latestRoom.players.length === 0) {
+      latestRoom.currentPlayerIndex = 0;
+      latestRoom.gameMode = "none";
+      latestRoom.state = createEmptyState(roomCode);
+      emitRoom(roomCode);
+      return;
+    }
+
+    if (!latestRoom.players.some(p => p.isMaster)) {
+      latestRoom.players[0].isMaster = true;
+    }
+
+    if (latestRoom.currentPlayerIndex >= latestRoom.players.length) {
+      latestRoom.currentPlayerIndex = 0;
+    }
+
+    latestRoom.state.players = latestRoom.players;
+    latestRoom.state.currentPlayer =
+      latestRoom.players[latestRoom.currentPlayerIndex]?.name || "En attente";
 
     emitRoom(roomCode);
-    return;
-  }
 
-  if (!room.players.some(p => p.isMaster)) {
-    room.players[0].isMaster = true;
-  }
-
-  if (room.currentPlayerIndex >= room.players.length) {
-    room.currentPlayerIndex = 0;
-  }
-
-  room.state.players = room.players;
-  room.state.currentPlayer =
-    room.players[room.currentPlayerIndex]?.name || "En attente";
-
-  emitRoom(roomCode);
+  }, 5000);
 });
 });
