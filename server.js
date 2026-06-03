@@ -490,6 +490,43 @@ app.post("/new-round", (req, res) => {
   });
 });
 
+app.post("/leave-room", (req, res) => {
+  const roomCode = (req.body.roomCode || "").toString().toUpperCase();
+  const playerName = (req.body.playerName || "").toString().trim();
+
+  const room = getRoom(roomCode);
+
+  if (!room) {
+    return res.json({ ok: true });
+  }
+
+  room.players = room.players.filter(p => p.name !== playerName);
+
+  if (room.players.length === 0) {
+    room.currentPlayerIndex = 0;
+    room.gameMode = "none";
+    room.state = createEmptyState(roomCode);
+    emitRoom(roomCode);
+    return res.json({ ok: true });
+  }
+
+  if (!room.players.some(p => p.isMaster)) {
+    room.players[0].isMaster = true;
+  }
+
+  if (room.currentPlayerIndex >= room.players.length) {
+    room.currentPlayerIndex = 0;
+  }
+
+  room.state.players = room.players;
+  room.state.currentPlayer =
+    room.players[room.currentPlayerIndex]?.name || "En attente";
+
+  emitRoom(roomCode);
+
+  return res.json({ ok: true });
+});
+
 app.post("/speak", async (req, res) => {
   try {
     const text = req.body.text;
