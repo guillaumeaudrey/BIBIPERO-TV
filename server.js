@@ -238,7 +238,18 @@ app.post("/scan-case", (req, res) => {
   if (["boire", "malus", "final-boire"].includes(action.category)) {
     player.totalDrinks += 1;
   }
+const newHistoryItem = {
+  playerName: player.name,
+  title: action.title,
+  text: action.text,
+  category: action.category,
+  caseNumber,
+  time: Date.now()
+};
 
+const history =
+  [newHistoryItem, ...(room.state.history || [])]
+    .slice(0, 10);
   room.gameMode = "web";
 
   room.state = {
@@ -250,6 +261,7 @@ app.post("/scan-case", (req, res) => {
     category: action.category,
     title: action.title,
     text: action.text,
+    history,
     powerLevel: action.powerLevel,
     isLegendary: action.isLegendary || false,
     isNewRound: false,
@@ -780,6 +792,18 @@ socket.on("joinPlayerRoom", (data = {}) => {
     if (["boire", "malus", "final-boire"].includes(action.category)) {
       player.totalDrinks += 1;
     }
+   const newHistoryItem = {
+  playerName: player.name,
+  title: action.title,
+  text: action.text,
+  category: action.category,
+  caseNumber,
+  time: Date.now()
+};
+
+const history =
+  [newHistoryItem, ...(room.state.history || [])]
+    .slice(0, 10);
 
     room.gameMode = "web";
     room.state = {
@@ -791,6 +815,7 @@ socket.on("joinPlayerRoom", (data = {}) => {
       category: action.category,
       title: action.title,
       text: action.text,
+      history,
       powerLevel: action.powerLevel,
       isLegendary: action.isLegendary || false,
       isNewRound: false,
