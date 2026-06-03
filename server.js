@@ -323,6 +323,37 @@ app.post("/next-player", (req, res) => {
   });
 });
 
+app.post("/start-game", (req, res) => {
+  const roomCode = (req.body.roomCode || "").toString().toUpperCase();
+  const playerName = (req.body.playerName || "").toString().trim();
+
+  const room = getRoom(roomCode);
+
+  if (!room) {
+    return res.status(404).json({ ok: false, message: "Salon introuvable" });
+  }
+
+  const player = room.players.find(p => p.name === playerName);
+
+  if (!player || !player.isMaster) {
+    return res.status(403).json({ ok: false, message: "Seul le maître peut démarrer" });
+  }
+
+  room.state.gameStarted = true;
+  room.currentPlayerIndex = 0;
+  room.state.currentPlayer = room.players[0]?.name || playerName;
+  room.state.players = room.players;
+  room.state.roomCode = roomCode;
+
+  emitRoom(roomCode);
+
+  return res.json({
+    ok: true,
+    currentPlayer: room.state.currentPlayer,
+    players: room.players
+  });
+});
+
 app.post("/speak", async (req, res) => {
   try {
     const text = req.body.text;
