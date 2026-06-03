@@ -344,6 +344,12 @@ app.post("/start-game", (req, res) => {
   if (!room) {
     return res.status(404).json({ ok: false, message: "Salon introuvable" });
   }
+  if (room.players.length < 2) {
+  return res.status(400).json({
+    ok: false,
+    message: "Il faut au moins 2 joueurs pour démarrer"
+  });
+}
 
   const player = room.players.find(p => p.name === playerName);
 
