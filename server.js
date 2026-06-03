@@ -518,7 +518,16 @@ app.post("/leave-room", (req, res) => {
     room.currentPlayerIndex = 0;
   }
 
-  room.state.players = room.players;
+  room.state.players = [...room.players];
+
+console.log(
+  "LEAVE ROOM =>",
+  roomCode,
+  room.players.map(p => p.name)
+);
+
+emitRoom(roomCode);
+
   room.state.currentPlayer =
     room.players[room.currentPlayerIndex]?.name || "En attente";
 
