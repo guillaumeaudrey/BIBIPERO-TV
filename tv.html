@@ -1096,6 +1096,11 @@ if (player.position === maxPosition && maxPosition > 0) {
     };
 
 function showTvCard(data) {
+  console.log(
+  "TV CARD =",
+  data.category,
+  data.title
+);
 
   if (!data.gameStarted) {
   closeTvCard();
