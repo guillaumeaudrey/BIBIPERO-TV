@@ -279,6 +279,13 @@ const history =
 
   emitRoom(roomCode);
 
+  console.log(
+  "SCAN APP =>",
+  roomCode,
+  action.category,
+  action.title
+);
+
   return res.json({
   ok: true,
   category: action.category,
