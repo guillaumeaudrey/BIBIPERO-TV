@@ -934,10 +934,16 @@ socket.on("playersUpdated", (players) => {
     const li =
       document.createElement("li");
 
-    li.textContent = p.name;
+    li.textContent =
+      `${p.isMaster ? "👑 " : "👤 "}${p.name}`;
 
     list.appendChild(li);
   });
+
+  if (currentState) {
+    currentState.players = players;
+    updateTv(currentState);
+  }
 });
 
 socket.on("stateUpdated", (data) => {
