@@ -367,9 +367,15 @@ app.post("/create-room", (req, res) => {
 
   const roomCode = generateRoomCode();
 
-  rooms[roomCode] = createRoom(roomCode);
+ rooms[roomCode] = {
+  players: [],
+  appPlayers: [],
+  currentPlayerIndex: 0,
+  gameMode: "web",
+  state: createEmptyState(roomCode)
+};
 
-  const room = rooms[roomCode];
+const room = rooms[roomCode];
 
   const player = {
     id: "app-" + playerName,
