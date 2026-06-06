@@ -1150,9 +1150,12 @@ function showTvCard(data) {
   card.offsetHeight;
   card.style.animation = "tvCardPop 0.45s ease-out";
 
-  setTimeout(() => {
-    overlay.classList.add("hidden");
-  }, 15000);
+  const duration =
+  data.text.length > 80 ? 8000 : 6000;
+
+setTimeout(() => {
+  overlay.classList.add("hidden");
+}, duration);
 }
 
 function addHistory(data) {
