@@ -327,7 +327,10 @@ const history =
   text: action.text,
   caseNumber,
   powerLevel: action.powerLevel,
-  isLegendary: action.isLegendary || false
+  isLegendary: action.isLegendary || false,
+  drinkMode: action.drinkMode || "none",
+drinksTaken: action.drinksTaken || 0,
+drinksGiven: action.drinksGiven || 0,
 });
 });
 
