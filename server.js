@@ -104,8 +104,21 @@ rooms[appRoomCode] = {
 app.get("/", (req, res) => res.redirect("/tv.html"));
 
 app.get("/state", (req, res) => {
-  const roomCode = (req.query.roomCode || appRoomCode).toString().toUpperCase();
-  const room = getRoom(roomCode) || rooms[appRoomCode];
+
+  const roomCode =
+    (req.query.roomCode || "")
+      .toString()
+      .toUpperCase();
+
+  const room = getRoom(roomCode);
+
+  if (!room) {
+    return res.status(404).json({
+      ok: false,
+      message: "Salon introuvable"
+    });
+  }
+
   res.json(room.state);
 });
 
