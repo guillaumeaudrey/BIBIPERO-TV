@@ -1,5 +1,6 @@
 const actions = [
-  { category: "boire", title: "Le Patron T’offre Un Verre", text: "Bois avec le proprio du jeu.", powerLevel: 1, drinkMode: "manual" },
+
+{ category: "boire", title: "Le Patron T’offre Un Verre", text: "Bois avec le proprio du jeu.", powerLevel: 1, drinkMode: "manual" },
 
 { category: "boire", title: "Tout le monde boit", text: "Tous les joueurs boivent 1 gorgée.", powerLevel: 1, drinkMode: "all", drinksTaken: 1 },
 
@@ -491,7 +492,7 @@ const actions = [
 { category: "depart", title: "Départ", text: "Bois 1 gorgée puis lance le dé.", powerLevel: 1, drinkMode: "dice", drinksTaken: 1 },
 { category: "depart", title: "Départ explosif", text: "Bois puis lance le dé.", powerLevel: 2, drinkMode: "dice", drinksTaken: 1 },
 { category: "depart", title: "Apéro time", text: "Tout le monde boit avant le premier lancer puis lance le dé.", powerLevel: 2, drinkMode: "dice", drinksTaken: 1 },
-{ category: "depart", title: "La chauffe", text: "Bois 2 gorgées avant de jouer puis lance le dé.", powerLevel: 2, drinkMode: "auto", drinksTaken: 2 },
+{ category: "depart", title: "La chauffe", text: "Bois 2 gorgées avant de jouer puis lance le dé.", powerLevel: 2, drinkMode: "dice", drinksTaken: 2 },
 { category: "depart", title: "Départ sauvage", text: "Tout le monde crie APÉRO puis boit et lance le dé", powerLevel: 2, drinkMode: "dice", drinksTaken: 1 },
 { category: "depart", title: "Tournée générale", text: "Tout le monde boit avec toi puis lance le dé.", powerLevel: 2, drinkMode: "dice", drinksTaken: 1 },
 { category: "depart", title: "Le lancement", text: "Lance le dé, bois le résultat et avance.", powerLevel: 2, drinkMode: "dice" },
