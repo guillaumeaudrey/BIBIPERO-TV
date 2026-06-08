@@ -415,6 +415,58 @@ app.post("/give-drinks", (req, res) => {
   });
 });
 
+app.post("/move-player", (req, res) => {
+
+  const roomCode =
+    (req.body.roomCode || "")
+      .toString()
+      .toUpperCase();
+
+  const playerName =
+    (req.body.playerName || "")
+      .toString()
+      .trim();
+
+  const offset =
+    Number(req.body.offset || 0);
+
+  const room = getRoom(roomCode);
+
+  if (!room)
+  {
+    return res.status(404).json({
+      ok: false
+    });
+  }
+
+  const player =
+    room.players.find(
+      p => p.name === playerName);
+
+  if (!player)
+  {
+    return res.status(404).json({
+      ok: false
+    });
+  }
+
+  player.position =
+    Math.max(
+      1,
+      Math.min(
+        30,
+        (player.position || 1) + offset));
+
+  room.state.players = room.players;
+
+  emitRoom(roomCode);
+
+  return res.json({
+    ok: true,
+    position: player.position
+  });
+});
+
 app.post("/add-immunity", (req, res) => {
   const roomCode = (req.body.roomCode || "").toString().toUpperCase();
   const playerName = (req.body.playerName || "").toString().trim();
