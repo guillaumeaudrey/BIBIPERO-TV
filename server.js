@@ -391,6 +391,30 @@ app.post("/give-drinks", (req, res) => {
 });
 
 
+app.post("/skip-turn", (req, res) => {
+  const roomCode = (req.body.roomCode || "").toString().toUpperCase();
+  const playerName = (req.body.playerName || "").toString().trim();
+  const turns = Number(req.body.turns || 1);
+
+  const room = getRoom(roomCode);
+
+  if (!room) {
+    return res.status(404).json({ ok: false });
+  }
+
+  const player = room.players.find(p => p.name === playerName);
+
+  if (!player) {
+    return res.status(404).json({ ok: false });
+  }
+
+  player.turnsToSkip = (player.turnsToSkip || 0) + turns;
+
+  emitRoom(roomCode);
+
+  return res.json({ ok: true });
+});
+
 app.post("/next-player", (req, res) => {
   const roomCode =
     (req.body.roomCode || "").toString().toUpperCase();
@@ -417,8 +441,19 @@ app.post("/next-player", (req, res) => {
     });
   }
 
+  do {
   room.currentPlayerIndex =
     (room.currentPlayerIndex + 1) % room.players.length;
+
+  const nextPlayer = room.players[room.currentPlayerIndex];
+
+  if ((nextPlayer.turnsToSkip || 0) > 0) {
+    nextPlayer.turnsToSkip -= 1;
+    continue;
+  }
+
+  break;
+} while (true);
 
   room.state = {
     ...room.state,
