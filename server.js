@@ -336,6 +336,61 @@ replay: action.replay || false
 });
 });
 
+app.post("/give-drinks", (req, res) => {
+  const roomCode = (req.body.roomCode || "").toString().toUpperCase();
+  const fromPlayer = (req.body.fromPlayer || "").toString().trim();
+  const toPlayer = (req.body.toPlayer || "").toString().trim();
+  const drinks = Number(req.body.drinks || 0);
+
+  const room = getRoom(roomCode);
+
+  if (!room) {
+    return res.status(404).json({
+      ok: false,
+      message: "Salon introuvable"
+    });
+  }
+
+  const target = room.players.find(p => p.name === toPlayer);
+  const giver = room.players.find(p => p.name === fromPlayer);
+
+  if (!target) {
+    return res.status(404).json({
+      ok: false,
+      message: "Joueur cible introuvable"
+    });
+  }
+
+  target.totalDrinks = (target.totalDrinks || 0) + drinks;
+
+  if (giver) {
+    giver.totalDrinksGiven = (giver.totalDrinksGiven || 0) + drinks;
+  }
+
+  const newHistoryItem = {
+    playerName: fromPlayer,
+    title: "🍺 Distribution",
+    text: `${fromPlayer} donne ${drinks} gorgée(s) à ${toPlayer}`,
+    category: "boire",
+    caseNumber: room.state.caseNumber || 0,
+    time: Date.now()
+  };
+
+  room.state.history =
+    [newHistoryItem, ...(room.state.history || [])]
+      .slice(0, 10);
+
+  room.state.players = room.players;
+
+  emitRoom(roomCode);
+
+  return res.json({
+    ok: true,
+    players: room.players
+  });
+});
+
+
 app.post("/next-player", (req, res) => {
   const roomCode =
     (req.body.roomCode || "").toString().toUpperCase();
