@@ -185,7 +185,7 @@ const actions = [
 
 { category: "de", title: "Dé du roi", text: "Si tu fais 6, distribue 10 gorgées.", powerLevel: 4, drinkMode: "dice" },
 
-{ category: "de", title: "Dé x2", text: "Le résultat du dé est doublé.", powerLevel: 4, drinkMode: "dice" },
+{ category: "de", title: "Dé x2", text: "Le résultat du dé est doublé.", powerLevel: 4, drinkMode: "double-dice" },
 
 { category: "de", title: "Dé apocalypse", text: "Si tu fais 6, tout le monde boit 3 gorgées.", powerLevel: 5, drinkMode: "dice" },
 
@@ -488,13 +488,12 @@ const actions = [
 // DÉPART
 // =========================
 
-{ category: "depart", title: "Départ", text: "Bois 1 gorgée puis lance le dé.", powerLevel: 1, drinkMode: "auto", drinksTaken: 1 },
-{ category: "depart", title: "Départ explosif", text: "Bois puis lance le dé.", powerLevel: 2, drinkMode: "auto", drinksTaken: 1 },
-{ category: "depart", title: "Apéro time", text: "Tout le monde boit avant le premier lancer puis lance le dé.", powerLevel: 2, drinkMode: "all", drinksTaken: 1 },
+{ category: "depart", title: "Départ", text: "Bois 1 gorgée puis lance le dé.", powerLevel: 1, drinkMode: "dice", drinksTaken: 1 },
+{ category: "depart", title: "Départ explosif", text: "Bois puis lance le dé.", powerLevel: 2, drinkMode: "dice", drinksTaken: 1 },
+{ category: "depart", title: "Apéro time", text: "Tout le monde boit avant le premier lancer puis lance le dé.", powerLevel: 2, drinkMode: "dice", drinksTaken: 1 },
 { category: "depart", title: "La chauffe", text: "Bois 2 gorgées avant de jouer puis lance le dé.", powerLevel: 2, drinkMode: "auto", drinksTaken: 2 },
-{ category: "depart", title: "Départ sauvage", text: "Tout le monde crie APÉRO puis boit et lance le dé", powerLevel: 2, drinkMode: "all", drinksTaken: 1 },
-{ category: "depart", title: "Tournée générale", text: "Tout le monde boit avec toi puis lance le dé.", powerLevel: 2, drinkMode: "all", drinksTaken: 1 },
-{ category: "depart", title: "Première erreur", text: "Le premier qui rigole boit.", powerLevel: 2, drinkMode: "manual" },
+{ category: "depart", title: "Départ sauvage", text: "Tout le monde crie APÉRO puis boit et lance le dé", powerLevel: 2, drinkMode: "dice", drinksTaken: 1 },
+{ category: "depart", title: "Tournée générale", text: "Tout le monde boit avec toi puis lance le dé.", powerLevel: 2, drinkMode: "dice", drinksTaken: 1 },
 { category: "depart", title: "Le lancement", text: "Lance le dé, bois le résultat et avance.", powerLevel: 2, drinkMode: "dice" },
 
 ];
