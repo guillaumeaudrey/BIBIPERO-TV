@@ -331,6 +331,8 @@ const history =
   drinkMode: action.drinkMode || "none",
 drinksTaken: action.drinksTaken || 0,
 drinksGiven: action.drinksGiven || 0,
+turnsToSkip: action.turnsToSkip || 0,
+replay: action.replay || false
 });
 });
 
