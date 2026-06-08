@@ -361,6 +361,31 @@ app.post("/give-drinks", (req, res) => {
     });
   }
 
+  if ((target.immunityTurns || 0) > 0) {
+
+  target.immunityTurns -= 1;
+
+  const newHistoryItem = {
+    playerName: target.name,
+    title: "🛡️ Immunité",
+    text: `${target.name} bloque ${drinks} gorgée(s) grâce à son immunité`,
+    category: "bonus",
+    caseNumber: room.state.caseNumber || 0,
+    time: Date.now()
+  };
+
+  room.state.history =
+    [newHistoryItem, ...(room.state.history || [])]
+      .slice(0, 10);
+
+  emitRoom(roomCode);
+
+  return res.json({
+    ok: true,
+    immunityUsed: true
+  });
+}
+
   target.totalDrinks = (target.totalDrinks || 0) + drinks;
 
   if (giver) {
@@ -390,6 +415,23 @@ app.post("/give-drinks", (req, res) => {
   });
 });
 
+app.post("/add-immunity", (req, res) => {
+  const roomCode = (req.body.roomCode || "").toString().toUpperCase();
+  const playerName = (req.body.playerName || "").toString().trim();
+  const turns = Number(req.body.turns || 1);
+
+  const room = getRoom(roomCode);
+  if (!room) return res.status(404).json({ ok: false });
+
+  const player = room.players.find(p => p.name === playerName);
+  if (!player) return res.status(404).json({ ok: false });
+
+  player.immunityTurns = (player.immunityTurns || 0) + turns;
+
+  emitRoom(roomCode);
+
+  return res.json({ ok: true });
+});
 
 app.post("/skip-turn", (req, res) => {
   const roomCode = (req.body.roomCode || "").toString().toUpperCase();
