@@ -137,7 +137,14 @@ const actions = [
 // MALUS
 // =========================
 
-{ category: "malus", title: "Piégé", text: "Bois 2 gorgées immédiatement.", powerLevel: 2 },
+{
+  category: "malus",
+  title: "Piégé",
+  text: "Bois 2 gorgées immédiatement.",
+  powerLevel: 2,
+  drinkMode: "auto",
+  drinksTaken: 2
+},
 { category: "malus", title: "Chaos", text: "Tout le monde choisit une règle contre toi.", powerLevel: 4 },
 { category: "malus", title: "La punition", text: "Bois 3 gorgées.", powerLevel: 3 },
 { category: "malus", title: "Le fragile", text: "Tu bois pendant 5 secondes.", powerLevel: 3 },
@@ -231,7 +238,14 @@ const actions = [
 { category: "bonus", title: "Sauve-toi", text: "Tu ne bois pas. Tous les autres boivent.", powerLevel: 4 },
 { category: "bonus", title: "Protection", text: "Tu peux annuler une action contre toi.", powerLevel: 2 },
 { category: "bonus", title: "Immunité", text: "Tu ne bois pas pendant 1 tour.", powerLevel: 2 },
-{ category: "bonus", title: "Distribue", text: "Distribue 3 gorgées aux joueurs de ton choix.", powerLevel: 2 },
+{
+  category: "bonus",
+  title: "Distribue",
+  text: "Distribue 3 gorgées aux joueurs de ton choix.",
+  powerLevel: 2,
+  drinkMode: "choice",
+  drinksGiven: 3
+},
 { category: "bonus", title: "Roi de la table", text: "Personne ne peut te faire boire avant ton prochain tour.", powerLevel: 3 },
 { category: "bonus", title: "Vol", text: "Donne tes gorgées à quelqu’un d’autre.", powerLevel: 3 },
 { category: "bonus", title: "Le boss", text: "Distribue 10 gorgées.", powerLevel: 4 },
