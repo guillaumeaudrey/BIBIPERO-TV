@@ -213,6 +213,148 @@ app.post("/join-player", (req, res) => {
   });
 });
 
+app.post("/play-turn", (req, res) => {
+  const roomCode = (req.body.roomCode || "").toString().toUpperCase();
+  const playerName = (req.body.playerName || "").toString().trim();
+
+  const room = getRoom(roomCode);
+
+  if (!room) {
+    return res.status(404).json({
+      ok: false,
+      message: "Salon introuvable"
+    });
+  }
+
+  if (!room.state.gameStarted) {
+    return res.status(400).json({
+      ok: false,
+      message: "La partie n’a pas encore démarré"
+    });
+  }
+
+  const player = room.players.find(p => p.name === playerName);
+
+  if (!player) {
+    return res.status(404).json({
+      ok: false,
+      message: "Joueur introuvable"
+    });
+  }
+
+  const currentPlayer = room.players[room.currentPlayerIndex];
+
+  if (currentPlayer && currentPlayer.name !== player.name) {
+    return res.status(403).json({
+      ok: false,
+      message: `Ce n'est pas ton tour. C'est le tour de ${currentPlayer.name}`
+    });
+  }
+
+  const dice = Math.floor(Math.random() * 6) + 1;
+
+  let caseNumber = (player.position || 0) + dice;
+
+  if (caseNumber >= 30) {
+    caseNumber = 30;
+  }
+
+  const boardCategories = {
+    1: "depart",
+    2: "designation",
+    3: "relance",
+    4: "boire",
+    5: "de",
+    6: "bonus",
+    7: "boire",
+    8: "bonus",
+    9: "malus",
+    10: "boire",
+    11: "gage-social",
+    12: "bonus",
+    13: "relance",
+    14: "devant-derriere",
+    15: "de",
+    16: "designation",
+    17: "reveil",
+    18: "gage-social",
+    19: "relance",
+    20: "designation",
+    21: "retour",
+    22: "de",
+    23: "malus",
+    24: "designation",
+    25: "boire",
+    26: "malus",
+    27: "de",
+    28: "designation",
+    29: "bonus",
+    30: "final-boire"
+  };
+
+  const category = boardCategories[caseNumber] || "boire";
+  const action = getRandomAction(category);
+
+  player.position = caseNumber;
+  player.totalActions = (player.totalActions || 0) + 1;
+
+  if (["boire", "malus", "final-boire"].includes(action.category)) {
+    player.totalDrinks = (player.totalDrinks || 0) + 1;
+  }
+
+  const newHistoryItem = {
+    playerName: player.name,
+    title: `🎲 Dé ${dice} — ${action.title}`,
+    text: action.text,
+    category: action.category,
+    caseNumber,
+    time: Date.now()
+  };
+
+  const history =
+    [newHistoryItem, ...(room.state.history || [])]
+      .slice(0, 10);
+
+  room.gameMode = "online";
+
+  room.state = {
+    ...room.state,
+    roomCode,
+    playerName: player.name,
+    currentPlayer: player.name,
+    caseNumber,
+    category: action.category,
+    title: action.title,
+    text: action.text,
+    history,
+    powerLevel: action.powerLevel,
+    isLegendary: action.isLegendary || false,
+    isNewRound: false,
+    totalActions: (room.state.totalActions || 0) + 1,
+    gameMode: "online",
+    dice,
+    players: room.players
+  };
+
+  emitRoom(roomCode);
+
+  return res.json({
+    ok: true,
+    dice,
+    category: action.category,
+    title: action.title,
+    text: action.text,
+    caseNumber,
+    powerLevel: action.powerLevel,
+    isLegendary: action.isLegendary || false,
+    drinkMode: action.drinkMode || "none",
+    drinksTaken: action.drinksTaken || 0,
+    drinksGiven: action.drinksGiven || 0,
+    turnsToSkip: action.turnsToSkip || 0,
+    replay: action.replay || false
+  });
+});
+
 app.post("/scan-case", (req, res) => {
   const roomCode =
     (req.body.roomCode || "").toString().toUpperCase();
