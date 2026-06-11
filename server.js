@@ -251,7 +251,12 @@ app.post("/play-turn", (req, res) => {
     });
   }
 
-  const dice = Math.floor(Math.random() * 6) + 1;
+  const diceFromApp = Number(req.body.dice || 0);
+
+const dice =
+  diceFromApp >= 1 && diceFromApp <= 6
+    ? diceFromApp
+    : Math.floor(Math.random() * 6) + 1;
 
   let caseNumber = (player.position || 0) + dice;
 
