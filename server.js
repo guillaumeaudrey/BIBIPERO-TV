@@ -119,7 +119,10 @@ app.get("/state", (req, res) => {
     });
   }
 
-  res.json(room.state);
+  res.json({
+  ...room.state,
+  gameMode: room.gameMode || room.state.gameMode || "physical"
+});
 });
 
 app.post("/state", (req, res) => {
@@ -745,7 +748,7 @@ app.post("/start-game", (req, res) => {
   room.currentPlayerIndex = 0;
   room.state.currentPlayer = room.players[0]?.name || playerName;
   room.state.players = room.players;
-  room.state.roomCode = roomCode;
+  
 
   emitRoom(roomCode);
 
@@ -760,6 +763,10 @@ app.post("/create-room", (req, res) => {
   const playerName =
     (req.body.playerName || "").toString().trim();
 
+    const gameMode =
+    (req.body.gameMode || "physical")
+        .toString();
+
   if (!playerName) {
     return res.status(400).json({
       ok: false,
@@ -773,7 +780,7 @@ app.post("/create-room", (req, res) => {
   players: [],
   appPlayers: [],
   currentPlayerIndex: 0,
-  gameMode: "web",
+  gameMode: gameMode,
   state: createEmptyState(roomCode)
 };
 
@@ -794,6 +801,8 @@ const room = rooms[roomCode];
   room.state.roomCode = roomCode;
   room.state.currentPlayer = playerName;
   room.state.players = room.players;
+  room.state.gameMode = gameMode;
+
 
   emitRoom(roomCode);
 
