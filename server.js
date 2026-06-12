@@ -323,7 +323,7 @@ const dice =
     [newHistoryItem, ...(room.state.history || [])]
       .slice(0, 10);
 
-  room.gameMode = "online";
+  room.gameMode = room.gameMode || "online";
 
   room.state = {
     ...room.state,
@@ -339,7 +339,7 @@ const dice =
     isLegendary: action.isLegendary || false,
     isNewRound: false,
     totalActions: (room.state.totalActions || 0) + 1,
-    gameMode: "online",
+    gameMode: room.gameMode,
     dice,
     players: room.players
   };
@@ -441,7 +441,7 @@ const newHistoryItem = {
 const history =
   [newHistoryItem, ...(room.state.history || [])]
     .slice(0, 10);
-  room.gameMode = "web";
+  room.gameMode = room.gameMode || "physical";
 
   room.state = {
     ...room.state,
@@ -457,7 +457,7 @@ const history =
     isLegendary: action.isLegendary || false,
     isNewRound: false,
     totalActions: (room.state.totalActions || 0) + 1,
-    gameMode: "web",
+    gameMode: room.gameMode,
     players: room.players
   };
 
@@ -748,6 +748,7 @@ app.post("/start-game", (req, res) => {
   room.currentPlayerIndex = 0;
   room.state.currentPlayer = room.players[0]?.name || playerName;
   room.state.players = room.players;
+  room.state.gameMode = room.gameMode;
   
 
   emitRoom(roomCode);
@@ -838,7 +839,7 @@ app.post("/new-round", (req, res) => {
   });
 
   room.currentPlayerIndex = 0;
-  room.gameMode = "web";
+  room.gameMode = room.gameMode || "physical";
 
   room.state = {
     ...room.state,
@@ -856,7 +857,7 @@ app.post("/new-round", (req, res) => {
     isLastRound: false,
     isNewRound: false,
     gameStarted: true,
-    gameMode: "web",
+    gameMode: room.gameMode,
     players: room.players
   };
 
