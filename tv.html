@@ -1276,13 +1276,28 @@ if (connectedPanel) {
 
   if (data.category === "physical-dice") {
 
-  showTvCard({
+  const promptData = {
     gameStarted: true,
     category: "de",
     playerName: data.currentPlayer,
+    currentPlayer: data.currentPlayer,
     title: "🎲 Lance le dé",
-    text: `${data.currentPlayer} doit lancer le dé puis scanner sa case.`
-  });
+    text: `${data.currentPlayer} doit lancer le dé physique puis scanner sa case.`
+  };
+
+  showTvCard(promptData);
+
+  const sound = document.getElementById("scanSound");
+  if (sound) {
+    sound.currentTime = 0;
+    sound.play().catch(() => {});
+  }
+
+  try {
+    speakOnTv(promptData);
+  } catch (err) {
+    console.error("Erreur speakOnTv :", err);
+  }
 
   return;
 }
