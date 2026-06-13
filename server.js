@@ -834,11 +834,32 @@ do {
   break;
 } while (true);
 
+  const nextPlayerName =
+  room.players[room.currentPlayerIndex].name;
+
+if (room.gameMode === "physical") {
+
   room.state = {
     ...room.state,
     roomCode,
     playerName: "",
-    currentPlayer: room.players[room.currentPlayerIndex].name,
+    currentPlayer: nextPlayerName,
+    category: "physical-dice",
+    title: "🎲 Lance le dé",
+    text: `${nextPlayerName} doit lancer le dé puis scanner sa case.`,
+    powerLevel: 1,
+    isLegendary: false,
+    isNewRound: false,
+    players: room.players
+  };
+
+} else {
+
+  room.state = {
+    ...room.state,
+    roomCode,
+    playerName: "",
+    currentPlayer: nextPlayerName,
     category: "",
     title: "",
     text: "",
@@ -847,6 +868,8 @@ do {
     isNewRound: false,
     players: room.players
   };
+
+}
 
   emitRoom(roomCode);
 
@@ -1076,6 +1099,41 @@ app.post("/speak", async (req, res) => {
         }
       }
     });
+
+    app.post("/physical-dice-prompt", (req, res) => {
+
+  const roomCode =
+    (req.body.roomCode || "").toString().toUpperCase();
+
+  const playerName =
+    (req.body.playerName || "").toString().trim();
+
+  const room = getRoom(roomCode);
+
+  if (!room) {
+    return res.status(404).json({
+      ok: false,
+      message: "Salon introuvable"
+    });
+  }
+
+  room.state = {
+    ...room.state,
+    roomCode,
+    playerName,
+    currentPlayer: playerName,
+    category: "physical-dice",
+    title: "🎲 Lance le dé",
+    text: `${playerName} doit lancer le dé physique puis scanner sa case.`,
+    powerLevel: 1
+  };
+
+  emitRoom(roomCode);
+
+  return res.json({
+    ok: true
+  });
+});
 
     res.set("Content-Type", "audio/mpeg");
     res.send(response.data);

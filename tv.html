@@ -1274,6 +1274,19 @@ if (connectedPanel) {
 
   const isNewEvent = cardId !== lastCardId;
 
+  if (data.category === "physical-dice") {
+
+  showTvCard({
+    gameStarted: true,
+    category: "de",
+    playerName: data.currentPlayer,
+    title: "🎲 Lance le dé",
+    text: `${data.currentPlayer} doit lancer le dé puis scanner sa case.`
+  });
+
+  return;
+}
+
   if (data.gameEnded === true) {
     hideAttract();
     showWinner(data);
