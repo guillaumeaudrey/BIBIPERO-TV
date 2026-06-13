@@ -489,6 +489,7 @@ app.post("/apply-case", (req, res) => {
   return res.json(result);
 });
 
+
 app.post("/scan-case", (req, res) => {
   const roomCode =
     (req.body.roomCode || "").toString().toUpperCase();
