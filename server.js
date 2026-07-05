@@ -12,12 +12,12 @@ const roomNames = [
 const http = require("http");
 const { Server } = require("socket.io");
 const { getRandomAction } = require("./ActionService");
-const { createBibiAI } = require("./ai/BibiAI");
+const { createBibineAI } = require("./ai");
 require("dotenv").config();
 const express = require("express");
 const app = express();
 const axios = require("axios");
-const bibiAI = createBibiAI();
+const bibineAI = createBibineAI();
 
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
 const ELEVENLABS_VOICE_ID = "HPuvhU1J8dCjaKv9q7bM";
@@ -40,8 +40,8 @@ function createEmptyState(roomCode = "") {
     category: "",
     title: "",
     text: "",
-    bibiSpeech: "",
-    bibiStatus: "idle",
+    bibineSpeech: "",
+    bibineStatus: "idle",
     powerLevel: 0,
     isLegendary: false,
     totalActions: 0,
@@ -95,11 +95,11 @@ function emitRoom(roomCode) {
   );
 }
 
-async function addBibiSpeech(roomCode, player, action, caseNumber, dice = 0) {
+async function addBibineSpeech(roomCode, player, action, caseNumber, dice = 0) {
   const room = getRoom(roomCode);
   if (!room) return;
 
-  const speech = await bibiAI.announce({
+  const speech = await bibineAI.announce({
     roomCode,
     gameMode: room.gameMode,
     player,
@@ -107,11 +107,13 @@ async function addBibiSpeech(roomCode, player, action, caseNumber, dice = 0) {
     caseNumber,
     dice,
     state: room.state,
-    players: room.players
-  });
+    players: room.players,
+    totalPlayers: room.players.length,
+    totalActions: room.state.totalActions || 0
+});
 
-  room.state.bibiSpeech = speech;
-  room.state.bibiStatus = "ready";
+  room.state.bibineSpeech = speech;
+  room.state.bibineStatus = "ready";
 }
 
 const rooms = {};
@@ -319,7 +321,7 @@ async function applyCase(roomCode, player, dice = 0) {
     players: room.players
   };
 
-  await addBibiSpeech(roomCode, player, action, caseNumber, dice);
+  await addBibineSpeech(roomCode, player, action, caseNumber, dice);
   emitRoom(roomCode);
 
   return {
@@ -467,7 +469,7 @@ const dice =
     players: room.players
   };
 
-  await addBibiSpeech(roomCode, player, action, caseNumber, dice);
+  await addBibineSpeech(roomCode, player, action, caseNumber, dice);
   emitRoom(roomCode);
 
   return res.json({
@@ -613,7 +615,7 @@ const history =
     players: room.players
   };
 
-  await addBibiSpeech(roomCode, player, action, caseNumber, 0);
+  await addBibineSpeech(roomCode, player, action, caseNumber, 0);
   emitRoom(roomCode);
 
   console.log(
@@ -873,8 +875,8 @@ if (room.gameMode === "physical") {
     category: "physical-dice",
     title: "🎲 Lance le dé",
     text: `${nextPlayerName} doit lancer le dé puis scanner sa case.`,
-    bibiSpeech: "",
-    bibiStatus: "idle",
+    bibineSpeech: "",
+    bibineStatus: "idle",
     powerLevel: 1,
     isLegendary: false,
     isNewRound: false,
@@ -891,8 +893,8 @@ if (room.gameMode === "physical") {
     category: "",
     title: "",
     text: "",
-    bibiSpeech: "",
-    bibiStatus: "idle",
+    bibineSpeech: "",
+    bibineStatus: "idle",
     powerLevel: 0,
     isLegendary: false,
     isNewRound: false,
@@ -1039,8 +1041,8 @@ app.post("/new-round", (req, res) => {
     category: "",
     title: "",
     text: "",
-    bibiSpeech: "",
-    bibiStatus: "idle",
+    bibineSpeech: "",
+    bibineStatus: "idle",
     powerLevel: 0,
     isLegendary: false,
     totalActions: 0,
@@ -1495,7 +1497,7 @@ const history =
       players: room.players
     };
 
-    await addBibiSpeech(roomCode, player, action, caseNumber, 0);
+    await addBibineSpeech(roomCode, player, action, caseNumber, 0);
     emitRoom(roomCode);
 
     socket.emit("stateUpdated", room.state);
@@ -1526,8 +1528,8 @@ socket.emit("playersUpdated", room.players);
     category: "",
     title: "",
     text: "",
-    bibiSpeech: "",
-    bibiStatus: "idle",
+    bibineSpeech: "",
+    bibineStatus: "idle",
     powerLevel: 0,
     isLegendary: false,
     isNewRound: false,
@@ -1575,8 +1577,8 @@ socket.on("newRound", (data = {}) => {
     category: "",
     title: "",
     text: "",
-    bibiSpeech: "",
-    bibiStatus: "idle",
+    bibineSpeech: "",
+    bibineStatus: "idle",
     powerLevel: 0,
     isLegendary: false,
     totalActions: 0,
@@ -1715,7 +1717,7 @@ socket.on("newRound", (data = {}) => {
     players: room.players
   };
 
-  await addBibiSpeech(roomCode, player, action, caseNumber, 0);
+  await addBibineSpeech(roomCode, player, action, caseNumber, 0);
   emitRoom(roomCode);
 
   socket.emit("stateUpdated", room.state);

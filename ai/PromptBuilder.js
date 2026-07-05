@@ -1,75 +1,99 @@
-const { BIBI_PERSONALITY } = require("./Personality");
+const { BIBINE_PERSONALITY } = require("./Personality");
 
-function getLeader(players = []) {
-  return [...players].sort((a, b) => (b.position || 0) - (a.position || 0))[0]?.name || "personne";
+function leader(players = []) {
+
+    if (!players.length) return "personne";
+
+    return [...players]
+        .sort((a, b) => (b.position || 0) - (a.position || 0))[0].name;
+
 }
 
-function getLast(players = []) {
-  return [...players].sort((a, b) => (a.position || 0) - (b.position || 0))[0]?.name || "personne";
+function last(players = []) {
+
+    if (!players.length) return "personne";
+
+    return [...players]
+        .sort((a, b) => (a.position || 0) - (b.position || 0))[0].name;
+
 }
 
-function memoryLines(memory) {
-  if (!memory) return "Aucune mémoire.";
-  const stats = memory.currentPlayerStats;
-  const lines = [];
+function buildAnnouncementPrompt(ctx = {}) {
 
-  lines.push(`Cartes jouées dans ce salon : ${memory.totalCards || 0}`);
+    const history = (ctx.state?.history || [])
+        .slice(-5)
+        .map(h => `• ${h.playerName} : ${h.title}`)
+        .join("\n");
 
-  if (stats) {
-    lines.push(`Stats du joueur actuel : ${stats.cards} carte(s), ${stats.bonus} bonus, ${stats.malus} malus, ${stats.boire} boire, ${stats.legendary} légendaire(s).`);
-    if (stats.streakCount >= 2) {
-      lines.push(`Série actuelle : ${stats.streakCount} cartes de type ${stats.streakCategory}.`);
-    }
-  }
+    return `
+${BIBINE_PERSONALITY}
 
-  if (memory.topDrink?.count > 0) lines.push(`Celui qui tombe le plus sur Boire : ${memory.topDrink.name} (${memory.topDrink.count}).`);
-  if (memory.topBonus?.count > 0) lines.push(`Celui qui a le plus de Bonus : ${memory.topBonus.name} (${memory.topBonus.count}).`);
-  if (memory.topMalus?.count > 0) lines.push(`Celui qui a le plus de Malus : ${memory.topMalus.name} (${memory.topMalus.count}).`);
+CONTEXTE
 
-  return lines.join("\n");
-}
+Salon : ${ctx.roomCode || "?"}
 
-function buildAnnouncementPrompt({ roomCode, gameMode, player, action, caseNumber, dice, state, players, memory }) {
-  const safePlayers = players || [];
-  const history = (state?.history || [])
-    .slice(0, 5)
-    .map(h => `- ${h.playerName}: ${h.title} (${h.category})`)
-    .join("\n");
+Mode : ${ctx.gameMode || "?"}
 
-  return `${BIBI_PERSONALITY}
+Joueurs :
+${(ctx.players || []).map(p => "- " + p.name).join("\n")}
 
-Contexte de la partie :
-- Salon : ${roomCode || "inconnu"}
-- Mode : ${gameMode || "inconnu"}
-- Joueurs : ${safePlayers.map(p => p.name).join(", ") || "inconnus"}
-- Premier au plateau : ${getLeader(safePlayers)}
-- Dernier au plateau : ${getLast(safePlayers)}
-- Actions jouées : ${state?.totalActions || 0}
-- Dé lancé : ${dice || "aucun"}
-- Historique récent :
-${history || "Aucun historique."}
+Premier :
+${leader(ctx.players)}
 
-Mémoire Bibi :
-${memoryLines(memory)}
+Dernier :
+${last(ctx.players)}
 
-Carte à présenter sans répéter son effet :
-- Joueur : ${player?.name || state?.playerName || "joueur"}
-- Case : ${caseNumber || state?.caseNumber || 0}
-- Catégorie : ${action?.category || state?.category || "inconnue"}
-- Titre : ${action?.title || state?.title || "Carte"}
-- Effet exact à ne pas répéter : ${action?.text || state?.text || ""}
-- Puissance : ${action?.powerLevel || state?.powerLevel || 1}
-- Légendaire : ${(action?.isLegendary || state?.isLegendary) ? "oui" : "non"}
+Historique :
+${history || "Aucun"}
 
-Écris uniquement une introduction de Bibi.
+JOUEUR
+
+Nom :
+${ctx.player?.name || "Joueur"}
+
+Case :
+${ctx.caseNumber || 0}
+
+CARTE
+
+Catégorie :
+${ctx.action?.category || ""}
+
+Titre :
+${ctx.action?.title || ""}
+
+Effet :
+${ctx.action?.text || ""}
+
+Puissance :
+${ctx.action?.powerLevel || 1}
+
+Légendaire :
+${ctx.action?.isLegendary ? "Oui" : "Non"}
+
+MISSION
+
+Fais UNE annonce de Bibine.
+
 Maximum 2 phrases.
-Ne répète jamais l'effet exact de la carte.
+
 Ne répète jamais le texte de la carte.
-Ne dis jamais au joueur quoi faire.
-Ne redis jamais "Avance de", "Bois", "Recule", "Passe ton tour", "Relance", ni l'action exacte.
-Tu dois uniquement créer de l'ambiance, du suspense ou une petite blague.
-La carte affichera elle-même l'effet.
+
+Ne répète jamais son effet.
+
+Ne dis jamais quoi faire.
+
+Ne change jamais les règles.
+
+Fais uniquement monter l'ambiance.
+
+Réponds uniquement par l'annonce.
 `;
+
 }
 
-module.exports = { buildAnnouncementPrompt };
+module.exports = {
+
+    buildAnnouncementPrompt
+
+};
