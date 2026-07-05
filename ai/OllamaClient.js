@@ -16,6 +16,7 @@ class OllamaClient {
 
   async generate(prompt) {
     const { controller, timer } = withTimeout(this.timeoutMs);
+
     try {
       const response = await fetch(this.url, {
         method: "POST",
@@ -26,14 +27,17 @@ class OllamaClient {
           prompt,
           stream: false,
           options: {
-            temperature: 0.9,
+            temperature: 0.85,
             top_p: 0.9,
-            num_predict: 80,
-            repeat_penalty: 1.15
+            num_predict: 120
           }
         })
       });
-      if (!response.ok) throw new Error(`Ollama HTTP ${response.status}`);
+
+      if (!response.ok) {
+        throw new Error(`Ollama HTTP ${response.status}`);
+      }
+
       const data = await response.json();
       return (data.response || "").trim();
     } finally {

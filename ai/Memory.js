@@ -6,79 +6,89 @@ class BibiMemory {
   getRoom(roomCode = "default") {
     if (!this.rooms.has(roomCode)) {
       this.rooms.set(roomCode, {
-        startedAt: Date.now(),
-        totalAnnouncements: 0,
-        players: {},
+        totalCards: 0,
         categories: {},
-        legendaryCount: 0,
-        lastPlayer: null,
-        lastCategory: null
+        players: {},
+        lastEvents: [],
+        startedAt: Date.now()
       });
     }
     return this.rooms.get(roomCode);
   }
 
-  remember(context = {}) {
+  update(context = {}) {
     const roomCode = context.roomCode || "default";
     const room = this.getRoom(roomCode);
     const playerName = context.player?.name || context.state?.playerName || "joueur";
     const category = context.action?.category || context.state?.category || "inconnue";
+    const title = context.action?.title || context.state?.title || "Carte";
+    const isLegendary = Boolean(context.action?.isLegendary || context.state?.isLegendary);
+
+    room.totalCards += 1;
+    room.categories[category] = (room.categories[category] || 0) + 1;
 
     if (!room.players[playerName]) {
       room.players[playerName] = {
-        actions: 0,
-        drinks: 0,
+        cards: 0,
         bonus: 0,
         malus: 0,
+        boire: 0,
         legendary: 0,
-        streak: 0,
-        lastCategory: null
+        lastCategory: null,
+        streakCategory: null,
+        streakCount: 0
       };
     }
 
-    const p = room.players[playerName];
-    p.actions += 1;
+    const stats = room.players[playerName];
+    stats.cards += 1;
 
-    if (["boire", "final-boire"].includes(category)) p.drinks += 1;
-    if (category === "bonus") p.bonus += 1;
-    if (category === "malus") p.malus += 1;
-    if (context.action?.isLegendary || context.state?.isLegendary) {
-      p.legendary += 1;
-      room.legendaryCount += 1;
+    const key = String(category).toLowerCase();
+    if (key.includes("bonus")) stats.bonus += 1;
+    if (key.includes("malus")) stats.malus += 1;
+    if (key.includes("boire")) stats.boire += 1;
+    if (isLegendary) stats.legendary += 1;
+
+    if (stats.lastCategory === category) {
+      stats.streakCategory = category;
+      stats.streakCount += 1;
+    } else {
+      stats.streakCategory = category;
+      stats.streakCount = 1;
     }
 
-    p.streak = p.lastCategory === category ? p.streak + 1 : 1;
-    p.lastCategory = category;
+    stats.lastCategory = category;
 
-    room.categories[category] = (room.categories[category] || 0) + 1;
-    room.totalAnnouncements += 1;
-    room.lastPlayer = playerName;
-    room.lastCategory = category;
+    room.lastEvents.unshift({
+      playerName,
+      category,
+      title,
+      isLegendary,
+      at: Date.now()
+    });
+    room.lastEvents = room.lastEvents.slice(0, 8);
 
-    return this.snapshot(roomCode, playerName);
+    return this.summary(roomCode, playerName);
   }
 
-  snapshot(roomCode = "default", playerName = "joueur") {
+  summary(roomCode = "default", playerName = null) {
     const room = this.getRoom(roomCode);
-    const p = room.players[playerName] || {};
-    const durationMin = Math.max(1, Math.round((Date.now() - room.startedAt) / 60000));
+    const current = playerName ? room.players[playerName] : null;
+    const topDrink = Object.entries(room.players)
+      .sort((a, b) => (b[1].boire || 0) - (a[1].boire || 0))[0];
+    const topBonus = Object.entries(room.players)
+      .sort((a, b) => (b[1].bonus || 0) - (a[1].bonus || 0))[0];
+    const topMalus = Object.entries(room.players)
+      .sort((a, b) => (b[1].malus || 0) - (a[1].malus || 0))[0];
 
     return {
-      room: {
-        durationMin,
-        totalAnnouncements: room.totalAnnouncements,
-        legendaryCount: room.legendaryCount,
-        mostUsedCategory: Object.entries(room.categories).sort((a, b) => b[1] - a[1])[0]?.[0] || "aucune"
-      },
-      player: {
-        actions: p.actions || 0,
-        drinks: p.drinks || 0,
-        bonus: p.bonus || 0,
-        malus: p.malus || 0,
-        legendary: p.legendary || 0,
-        streak: p.streak || 0,
-        lastCategory: p.lastCategory || "aucune"
-      }
+      totalCards: room.totalCards,
+      categories: room.categories,
+      currentPlayerStats: current,
+      topDrink: topDrink ? { name: topDrink[0], count: topDrink[1].boire } : null,
+      topBonus: topBonus ? { name: topBonus[0], count: topBonus[1].bonus } : null,
+      topMalus: topMalus ? { name: topMalus[0], count: topMalus[1].malus } : null,
+      lastEvents: room.lastEvents
     };
   }
 }
