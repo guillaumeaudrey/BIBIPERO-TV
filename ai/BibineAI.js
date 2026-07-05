@@ -1,16 +1,19 @@
 const { OllamaClient } = require("./OllamaClient");
 const { buildAnnouncementPrompt } = require("./PromptBuilder");
 const config = require("./config");
+const { BibineMemory } = require("./memory/BibineMemory");
 
 class BibineAI {
 
     constructor(options = {}) {
 
-        this.client = options.client || new OllamaClient();
+    this.client = options.client || new OllamaClient();
 
-        this.enabled = options.enabled ?? config.enabled;
+    this.enabled = options.enabled ?? config.enabled;
 
-    }
+    this.memory = new BibineMemory();
+
+}
 
     fallback(context) {
 
@@ -36,6 +39,10 @@ class BibineAI {
             return this.fallback(context);
 
         try {
+
+           const stats = this.memory.update(context.player.name,context.action);
+
+            context.playerStats = stats;
 
             const prompt = buildAnnouncementPrompt(context);
 

@@ -51,6 +51,20 @@ JOUEUR
 Nom :
 ${ctx.player?.name || "Joueur"}
 
+Statistiques du joueur :
+
+Bonus : ${ctx.playerStats?.bonuses || 0}
+
+Malus : ${ctx.playerStats?.maluses || 0}
+
+Boissons : ${ctx.playerStats?.drinks || 0}
+
+Légendaires : ${ctx.playerStats?.legendary || 0}
+
+Série bonus : ${ctx.playerStats?.streakBonus || 0}
+
+Série malus : ${ctx.playerStats?.streakMalus || 0}
+
 Case :
 ${ctx.caseNumber || 0}
 
@@ -88,6 +102,16 @@ Ne change jamais les règles.
 Fais uniquement monter l'ambiance.
 
 Réponds uniquement par l'annonce.
+
+Si un joueur enchaîne plusieurs bonus,
+tu peux le faire remarquer.
+
+Si un joueur enchaîne plusieurs malus,
+tu peux le taquiner gentiment.
+
+Utilise les statistiques quand elles sont intéressantes.
+
+Ne les cite pas systématiquement.
 `;
 
 }
