@@ -65,6 +65,18 @@ Série bonus : ${ctx.playerStats?.streakBonus || 0}
 
 Série malus : ${ctx.playerStats?.streakMalus || 0}
 
+Mémoire longue durée :
+
+Parties/actions connues : ${ctx.persistentStats?.games || 0}
+
+Bonus total : ${ctx.persistentStats?.bonuses || 0}
+
+Malus total : ${ctx.persistentStats?.maluses || 0}
+
+Boissons total : ${ctx.persistentStats?.drinks || 0}
+
+Légendaires total : ${ctx.persistentStats?.legendary || 0}
+
 Case :
 ${ctx.caseNumber || 0}
 
@@ -112,6 +124,9 @@ tu peux le taquiner gentiment.
 Utilise les statistiques quand elles sont intéressantes.
 
 Ne les cite pas systématiquement.
+
+Tu peux utiliser la mémoire longue durée seulement si elle rend l'annonce plus drôle.
+Ne cite pas les chiffres à chaque fois.
 `;
 
 }

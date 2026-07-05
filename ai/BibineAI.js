@@ -2,6 +2,7 @@ const { OllamaClient } = require("./OllamaClient");
 const { buildAnnouncementPrompt } = require("./PromptBuilder");
 const config = require("./config");
 const { BibineMemory } = require("./memory/BibineMemory");
+const { GameMemory } = require("./memory/GameMemory");
 
 class BibineAI {
 
@@ -12,6 +13,8 @@ class BibineAI {
     this.enabled = options.enabled ?? config.enabled;
 
     this.memory = new BibineMemory();
+
+    this.gameMemory = new GameMemory();
 
 }
 
@@ -46,6 +49,12 @@ class BibineAI {
 );
 
             context.playerStats = stats;
+            const persistentStats = this.gameMemory.update(
+    context.player?.name || "Joueur",
+    context.action || {}
+);
+
+context.persistentStats = persistentStats;
 
             context.gameStats = {
 
