@@ -40,9 +40,22 @@ class BibineAI {
 
         try {
 
-           const stats = this.memory.update(context.player.name,context.action);
+           const stats = this.memory.update(
+    context.player?.name || "Joueur",
+    context.action || {}
+);
 
             context.playerStats = stats;
+
+            context.gameStats = {
+
+    totalPlayers: context.players?.length || 0,
+
+    totalActions: context.totalActions || 0,
+
+    roomCode: context.roomCode || ""
+
+};
 
             const prompt = buildAnnouncementPrompt(context);
 
