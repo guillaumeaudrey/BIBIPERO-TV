@@ -12,10 +12,12 @@ const roomNames = [
 const http = require("http");
 const { Server } = require("socket.io");
 const { getRandomAction } = require("./ActionService");
+const { createBibiAI } = require("./ai/BibiAI");
 require("dotenv").config();
 const express = require("express");
 const app = express();
 const axios = require("axios");
+const bibiAI = createBibiAI();
 
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
 const ELEVENLABS_VOICE_ID = "HPuvhU1J8dCjaKv9q7bM";
@@ -38,6 +40,8 @@ function createEmptyState(roomCode = "") {
     category: "",
     title: "",
     text: "",
+    bibiSpeech: "",
+    bibiStatus: "idle",
     powerLevel: 0,
     isLegendary: false,
     totalActions: 0,
@@ -89,6 +93,25 @@ function emitRoom(roomCode) {
     "stateUpdated",
     room.state
   );
+}
+
+async function addBibiSpeech(roomCode, player, action, caseNumber, dice = 0) {
+  const room = getRoom(roomCode);
+  if (!room) return;
+
+  const speech = await bibiAI.announce({
+    roomCode,
+    gameMode: room.gameMode,
+    player,
+    action,
+    caseNumber,
+    dice,
+    state: room.state,
+    players: room.players
+  });
+
+  room.state.bibiSpeech = speech;
+  room.state.bibiStatus = "ready";
 }
 
 const rooms = {};
@@ -249,7 +272,7 @@ const boardCategories = {
   30: "final-boire"
 };
 
-function applyCase(roomCode, player, dice = 0) {
+async function applyCase(roomCode, player, dice = 0) {
   const room = getRoom(roomCode);
 
   const caseNumber = Math.max(1, Math.min(30, player.position || 1));
@@ -296,6 +319,7 @@ function applyCase(roomCode, player, dice = 0) {
     players: room.players
   };
 
+  await addBibiSpeech(roomCode, player, action, caseNumber, dice);
   emitRoom(roomCode);
 
   return {
@@ -315,7 +339,7 @@ function applyCase(roomCode, player, dice = 0) {
   };
 }
 
-app.post("/play-turn", (req, res) => {
+app.post("/play-turn", async (req, res) => {
   const roomCode = (req.body.roomCode || "").toString().toUpperCase();
   const playerName = (req.body.playerName || "").toString().trim();
 
@@ -443,6 +467,7 @@ const dice =
     players: room.players
   };
 
+  await addBibiSpeech(roomCode, player, action, caseNumber, dice);
   emitRoom(roomCode);
 
   return res.json({
@@ -462,7 +487,7 @@ const dice =
   });
 });
 
-app.post("/apply-case", (req, res) => {
+app.post("/apply-case", async (req, res) => {
   const roomCode = (req.body.roomCode || "").toString().toUpperCase();
   const playerName = (req.body.playerName || "").toString().trim();
 
@@ -484,13 +509,13 @@ app.post("/apply-case", (req, res) => {
     });
   }
 
-  const result = applyCase(roomCode, player, 0);
+  const result = await applyCase(roomCode, player, 0);
 
   return res.json(result);
 });
 
 
-app.post("/scan-case", (req, res) => {
+app.post("/scan-case", async (req, res) => {
   const roomCode =
     (req.body.roomCode || "").toString().toUpperCase();
 
@@ -588,6 +613,7 @@ const history =
     players: room.players
   };
 
+  await addBibiSpeech(roomCode, player, action, caseNumber, 0);
   emitRoom(roomCode);
 
   console.log(
@@ -847,6 +873,8 @@ if (room.gameMode === "physical") {
     category: "physical-dice",
     title: "🎲 Lance le dé",
     text: `${nextPlayerName} doit lancer le dé puis scanner sa case.`,
+    bibiSpeech: "",
+    bibiStatus: "idle",
     powerLevel: 1,
     isLegendary: false,
     isNewRound: false,
@@ -863,6 +891,8 @@ if (room.gameMode === "physical") {
     category: "",
     title: "",
     text: "",
+    bibiSpeech: "",
+    bibiStatus: "idle",
     powerLevel: 0,
     isLegendary: false,
     isNewRound: false,
@@ -1009,6 +1039,8 @@ app.post("/new-round", (req, res) => {
     category: "",
     title: "",
     text: "",
+    bibiSpeech: "",
+    bibiStatus: "idle",
     powerLevel: 0,
     isLegendary: false,
     totalActions: 0,
@@ -1400,7 +1432,7 @@ socket.on("joinPlayerRoom", (data = {}) => {
     console.log("Partie démarrée", roomCode, ":", room.state.currentPlayer);
   });
 
-  socket.on("playerScannedCase", (data = {}) => {
+  socket.on("playerScannedCase", async (data = {}) => {
     const roomCode = (data.roomCode || socket.data.roomCode || "").toString().toUpperCase();
     const room = getRoom(roomCode);
     if (!room) return socket.emit("scanError", { message: "Salon introuvable" });
@@ -1463,6 +1495,7 @@ const history =
       players: room.players
     };
 
+    await addBibiSpeech(roomCode, player, action, caseNumber, 0);
     emitRoom(roomCode);
 
     socket.emit("stateUpdated", room.state);
@@ -1493,6 +1526,8 @@ socket.emit("playersUpdated", room.players);
     category: "",
     title: "",
     text: "",
+    bibiSpeech: "",
+    bibiStatus: "idle",
     powerLevel: 0,
     isLegendary: false,
     isNewRound: false,
@@ -1540,6 +1575,8 @@ socket.on("newRound", (data = {}) => {
     category: "",
     title: "",
     text: "",
+    bibiSpeech: "",
+    bibiStatus: "idle",
     powerLevel: 0,
     isLegendary: false,
     totalActions: 0,
@@ -1577,7 +1614,7 @@ socket.on("newRound", (data = {}) => {
     console.log("Salon reset :", roomCode);
   });
 
-  socket.on("playerScanned", (data = {}) => {
+  socket.on("playerScanned", async (data = {}) => {
   const roomCode =
     (data.roomCode || socket.data.roomCode || "")
       .toString()
@@ -1678,6 +1715,7 @@ socket.on("newRound", (data = {}) => {
     players: room.players
   };
 
+  await addBibiSpeech(roomCode, player, action, caseNumber, 0);
   emitRoom(roomCode);
 
   socket.emit("stateUpdated", room.state);

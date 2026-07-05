@@ -1136,8 +1136,14 @@ function showTvCard(data) {
   document.getElementById("tvCardTitle").textContent =
     data.title;
 
+  const displayedText = data.bibiSpeech
+    ? `${data.bibiSpeech}
+
+🎯 ${data.text}`
+    : data.text;
+
   document.getElementById("tvCardText").textContent =
-    data.text;
+    displayedText;
 
     addHistory(data);
 
@@ -1768,8 +1774,9 @@ async function speakOnTv(data) {
       data.text
     );
 
-  const finalText =
-    `${sentence}. ${data.title}. ${data.text}`;
+  const finalText = data.bibiSpeech
+    ? `${data.bibiSpeech}. ${data.title}. ${data.text}`
+    : `${sentence}. ${data.title}. ${data.text}`;
 
   try {
     const response = await fetch("/speak", {
