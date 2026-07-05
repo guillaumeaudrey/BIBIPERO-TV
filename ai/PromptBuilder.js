@@ -49,6 +49,16 @@ ${history || "Aucun"}
 Humeur actuelle de Bibine :
 ${ctx.mood || "animateur"}
 
+Analyse de la partie :
+
+Premier : ${ctx.gameAnalysis?.leader || "inconnu"} case ${ctx.gameAnalysis?.leaderPosition || 0}
+
+Dernier : ${ctx.gameAnalysis?.last || "inconnu"} case ${ctx.gameAnalysis?.lastPosition || 0}
+
+Cases restantes avant victoire : ${ctx.gameAnalysis?.closestToFinish ?? "?"}
+
+Position moyenne : ${ctx.gameAnalysis?.averagePosition || 0}
+
 JOUEUR
 
 Nom :
@@ -138,6 +148,10 @@ tavernier : style taverne chaleureuse.
 pirate : style pirate drôle.
 roi : style royal et théâtral.
 chaos : style complètement fou mais compréhensible.
+
+Tu peux commenter le classement seulement si c'est intéressant.
+Si un joueur est proche de la case 30, crée du suspense.
+Ne donne jamais de stratégie.
 
 `;
 
