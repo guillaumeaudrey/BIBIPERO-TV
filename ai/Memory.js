@@ -1,4 +1,4 @@
-class BibiMemory {
+class BibineMemory {
   constructor() {
     this.rooms = new Map();
   }
@@ -93,4 +93,4 @@ class BibiMemory {
   }
 }
 
-module.exports = { BibiMemory };
+module.exports = { BibineMemory };

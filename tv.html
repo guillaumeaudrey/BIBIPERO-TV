@@ -873,6 +873,8 @@ padding: 10px 12px;
     let currentState = {};
     let lastCardId = "";
     let attractTimer;
+    let speechQueue = [];
+    let isSpeaking = false;
 
     const actionHistory = [];
 
@@ -1136,8 +1138,8 @@ function showTvCard(data) {
   document.getElementById("tvCardTitle").textContent =
     data.title;
 
-  const displayedText = data.bibiSpeech
-    ? `${data.bibiSpeech}
+  const displayedText = data.bibineSpeech
+    ? `${data.bibineSpeech}
 
 🎯 ${data.text}`
     : data.text;
@@ -1739,20 +1741,51 @@ function getFunnySentence(playerName, category, title, text) {
   }
 }
 
+function speakQueue(text) {
+
+    if (!text) return;
+
+    speechQueue.push(text);
+
+    if (!isSpeaking)
+        playNextSpeech();
+
+}
+
+function playNextSpeech() {
+
+    if (speechQueue.length === 0) {
+
+        isSpeaking = false;
+        return;
+
+    }
+
+    isSpeaking = true;
+
+    const utterance = new SpeechSynthesisUtterance(speechQueue.shift());
+
+    utterance.lang = "fr-FR";
+    utterance.rate = 1.0;
+    utterance.pitch = 1.0;
+    utterance.volume = 1.0;
+
+    utterance.onend = () => {
+
+        playNextSpeech();
+
+    };
+
+    speechSynthesis.speak(utterance);
+
+}
+
 function speakBrowser(text) {
 
-  speechSynthesis.cancel();
+    console.log("VOIX NAVIGATEUR :", text);
 
-  const utterance =
-    new SpeechSynthesisUtterance(text);
+    speakQueue(text);
 
-  utterance.lang = "fr-FR";
-  utterance.rate = 1.45;
-  utterance.pitch = 1;
-  
-  console.log("VOIX NAVIGATEUR :", text);
-
-  speechSynthesis.speak(utterance);
 }
 
 async function speakOnTv(data) {
@@ -1774,9 +1807,9 @@ async function speakOnTv(data) {
       data.text
     );
 
-  const finalText = data.bibiSpeech
-    ? `${data.bibiSpeech}. ${data.title}. ${data.text}`
-    : `${sentence}. ${data.title}. ${data.text}`;
+  const finalText = data.bibineSpeech
+    ? data.bibineSpeech
+    : sentence;
 
   try {
     const response = await fetch("/speak", {
