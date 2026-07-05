@@ -5,6 +5,7 @@ const { BibineMemory } = require("./memory/BibineMemory");
 const { GameMemory } = require("./memory/GameMemory");
 const { MoodManager } = require("./mood/MoodManager");
 const { GameAnalyzer } = require("./game/GameAnalyzer");
+const { EventManager } = require("./events/EventManager");
 
 class BibineAI {
 
@@ -21,6 +22,8 @@ class BibineAI {
     this.mood = new MoodManager();
 
     this.gameAnalyzer = new GameAnalyzer();
+
+    this.events = new EventManager();
 
 }
 
@@ -76,6 +79,8 @@ context.persistentStats = persistentStats;
             context.mood = this.mood.update(context.gameStats);
 
             context.gameAnalysis = this.gameAnalyzer.analyze(context);
+
+            context.activeEvent = this.events.update(context);
 
             const prompt = buildAnnouncementPrompt(context);
 

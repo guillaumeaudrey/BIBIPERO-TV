@@ -59,6 +59,9 @@ Cases restantes avant victoire : ${ctx.gameAnalysis?.closestToFinish ?? "?"}
 
 Position moyenne : ${ctx.gameAnalysis?.averagePosition || 0}
 
+Événement actif :
+${ctx.activeEvent || "aucun"}
+
 JOUEUR
 
 Nom :
@@ -152,6 +155,11 @@ chaos : style complètement fou mais compréhensible.
 Tu peux commenter le classement seulement si c'est intéressant.
 Si un joueur est proche de la case 30, crée du suspense.
 Ne donne jamais de stratégie.
+
+Si événement actif = legendary, rends l'annonce spectaculaire.
+Si événement actif = happy-hour, donne une ambiance tournée générale.
+Si événement actif = chaos, donne une ambiance très folle.
+Si événement actif = final, donne une ambiance finale épique.
 
 `;
 
