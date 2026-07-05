@@ -1,38 +1,13 @@
 class MoodManager {
-
-    constructor() {
-
-        this.current = "animateur";
-
-    }
-
-    update(game) {
-
-        const actions = game.totalActions || 0;
-
-        if (actions < 10)
-            this.current = "animateur";
-
-        else if (actions < 20)
-            this.current = "tavernier";
-
-        else if (actions < 35)
-            this.current = "pirate";
-
-        else if (actions < 50)
-            this.current = "roi";
-
-        else
-            this.current = "chaos";
-
-        return this.current;
-
-    }
-
+  constructor() { this.current = 'animateur'; }
+  update(gameStats = {}, action = {}) {
+    const n = gameStats.totalActions || 0;
+    if (action.isLegendary) return (this.current = 'epique');
+    if (n < 10) return (this.current = 'animateur');
+    if (n < 20) return (this.current = 'tavernier');
+    if (n < 35) return (this.current = 'taquin');
+    if (n < 50) return (this.current = 'roi');
+    return (this.current = 'chaos');
+  }
 }
-
-module.exports = {
-
-    MoodManager
-
-};
+module.exports = { MoodManager };
