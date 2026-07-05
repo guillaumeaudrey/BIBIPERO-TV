@@ -37,9 +37,16 @@ Carte à annoncer :
 - Puissance : ${action?.powerLevel || state?.powerLevel || 1}
 - Légendaire : ${(action?.isLegendary || state?.isLegendary) ? "oui" : "non"}
 
-Écris uniquement l'annonce de Bibi.
-Maximum 3 phrases.
-Ne rajoute pas de règle, ne change pas l'effet.
+Écris uniquement une introduction de Bibi.
+Maximum 2 phrases.
+
+Ne répète jamais l'effet exact de la carte.
+Ne répète jamais le texte de la carte.
+Ne dis jamais au joueur quoi faire.
+Ne redis jamais "Avance de...", "Bois...", "Recule...", etc.
+
+Tu dois uniquement créer de l'ambiance, du suspense ou une petite blague.
+La carte affichera elle-même l'effet.
 `;
 }
 
