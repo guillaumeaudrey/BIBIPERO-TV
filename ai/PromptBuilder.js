@@ -46,6 +46,9 @@ ${last(ctx.players)}
 Historique :
 ${history || "Aucun"}
 
+Humeur actuelle de Bibine :
+${ctx.mood || "animateur"}
+
 JOUEUR
 
 Nom :
@@ -127,6 +130,15 @@ Ne les cite pas systématiquement.
 
 Tu peux utiliser la mémoire longue durée seulement si elle rend l'annonce plus drôle.
 Ne cite pas les chiffres à chaque fois.
+
+Adapte ton style à l'humeur actuelle.
+
+animateur : style présentateur TV.
+tavernier : style taverne chaleureuse.
+pirate : style pirate drôle.
+roi : style royal et théâtral.
+chaos : style complètement fou mais compréhensible.
+
 `;
 
 }

@@ -3,6 +3,7 @@ const { buildAnnouncementPrompt } = require("./PromptBuilder");
 const config = require("./config");
 const { BibineMemory } = require("./memory/BibineMemory");
 const { GameMemory } = require("./memory/GameMemory");
+const { MoodManager } = require("./mood/MoodManager");
 
 class BibineAI {
 
@@ -15,6 +16,8 @@ class BibineAI {
     this.memory = new BibineMemory();
 
     this.gameMemory = new GameMemory();
+
+    this.mood = new MoodManager();
 
 }
 
@@ -65,6 +68,9 @@ context.persistentStats = persistentStats;
     roomCode: context.roomCode || ""
 
 };
+
+            
+            context.mood = this.mood.update(context.gameStats);
 
             const prompt = buildAnnouncementPrompt(context);
 
