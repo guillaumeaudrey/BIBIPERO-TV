@@ -28,7 +28,16 @@ const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
 
 app.use(express.json());
-app.use(express.static(__dirname));
+const path = require("path");
+const fs = require("fs");
+const publicDir = path.join(__dirname, "public");
+
+if (fs.existsSync(publicDir)) {
+  app.use(express.static(publicDir));
+} else {
+  console.warn("⚠️ Dossier 'public' introuvable : tout le dossier du serveur est exposé. Lance deplacer-vers-public.bat.");
+  app.use(express.static(__dirname));
+}
 
 function createEmptyState(roomCode = "") {
   return {
@@ -99,21 +108,31 @@ async function addBibineSpeech(roomCode, player, action, caseNumber, dice = 0) {
   const room = getRoom(roomCode);
   if (!room) return;
 
-  const speech = await bibineAI.announce({
-    roomCode,
-    gameMode: room.gameMode,
-    player,
-    action,
-    caseNumber,
-    dice,
-    state: room.state,
-    players: room.players,
-    totalPlayers: room.players.length,
-    totalActions: room.state.totalActions || 0
-});
+  try {
+    const speech = await Promise.race([
+      bibineAI.announce({
+        roomCode,
+        gameMode: room.gameMode,
+        player,
+        action,
+        caseNumber,
+        dice,
+        state: room.state,
+        players: room.players,
+        totalPlayers: room.players.length,
+        totalActions: room.state.totalActions || 0
+      }),
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Timeout IA")), 5000))
+    ]);
 
-  room.state.bibineSpeech = speech;
-  room.state.bibineStatus = "ready";
+    room.state.bibineSpeech = speech;
+    room.state.bibineStatus = "ready";
+  } catch (err) {
+    console.error("Erreur Bibine IA :", err.message);
+    room.state.bibineSpeech = "";
+    room.state.bibineStatus = "idle";
+  }
 }
 
 const rooms = {};
@@ -181,31 +200,29 @@ app.post("/state", (req, res) => {
 });
 
 app.post("/join-player", (req, res) => {
-  const playerName =
-    (req.body.playerName || "").toString().trim();
+  const playerName = (req.body.playerName || "").toString().trim();
+  const roomCode = (req.body.roomCode || "").toString().toUpperCase();
 
-  const roomCode =
-    (req.body.roomCode || "").toString().toUpperCase();
+  if (!playerName) {
+    return res.status(400).json({ ok: false, message: "Prénom manquant" });
+  }
 
   const room = getRoom(roomCode);
 
   if (!room) {
-    return res.status(404).json({
-      ok: false,
-      message: "Salon introuvable"
-    });
-  }
-
-  if (room.state.gameStarted) {
-    return res.status(400).json({
-      ok: false,
-      message: "La partie est déjà commencée"
-    });
+    return res.status(404).json({ ok: false, message: "Salon introuvable" });
   }
 
   let player = room.players.find(
     p => p.name.toLowerCase() === playerName.toLowerCase()
   );
+
+  if (!player && room.state.gameStarted) {
+    return res.status(400).json({
+      ok: false,
+      message: "La partie est déjà commencée"
+    });
+  }
 
   if (!player) {
     player = {
@@ -227,7 +244,7 @@ app.post("/join-player", (req, res) => {
 
   if (!room.state.currentPlayer || room.state.currentPlayer === "En attente") {
     room.state.currentPlayer =
-      room.players[room.currentPlayerIndex]?.name || playerName;
+      room.players[room.currentPlayerIndex]?.name || player.name;
   }
 
   emitRoom(roomCode);
@@ -235,7 +252,7 @@ app.post("/join-player", (req, res) => {
   return res.json({
     ok: true,
     roomCode,
-    playerName,
+    playerName: player.name,
     isMaster: player.isMaster,
     players: room.players
   });
@@ -566,6 +583,10 @@ app.post("/scan-case", async (req, res) => {
 
   const parts = qr.split("/");
   const caseNumber = Number(parts[1]);
+
+  if (!Number.isInteger(caseNumber) || caseNumber < 1 || caseNumber > 30) {
+    return res.status(400).json({ ok: false, message: "QR code invalide" });
+  }
 
 let category = parts[2] || "boire";
 
@@ -1112,6 +1133,7 @@ app.post("/speak", async (req, res) => {
   try {
     const text = req.body.text;
     if (!text) return res.status(400).send("Texte manquant");
+    if (String(text).length > 600) return res.status(400).send("Texte trop long");
     if (!ELEVENLABS_API_KEY) return res.status(500).send("Clé ElevenLabs manquante");
 
     const response = await axios({
@@ -1134,21 +1156,25 @@ app.post("/speak", async (req, res) => {
       }
     });
 
-    app.post("/physical-dice-prompt", (req, res) => {
 
-  const roomCode =
-    (req.body.roomCode || "").toString().toUpperCase();
 
-  const playerName =
-    (req.body.playerName || "").toString().trim();
+    res.set("Content-Type", "audio/mpeg");
+    res.send(response.data);
+  } catch (err) {
+    if (err.response?.data) console.error("Erreur ElevenLabs :", err.response.data.toString());
+    else console.error("Erreur ElevenLabs :", err.message);
+    res.status(500).send("Erreur voix");
+  }
+});
+
+app.post("/physical-dice-prompt", (req, res) => {
+  const roomCode = (req.body.roomCode || "").toString().toUpperCase();
+  const playerName = (req.body.playerName || "").toString().trim();
 
   const room = getRoom(roomCode);
 
   if (!room) {
-    return res.status(404).json({
-      ok: false,
-      message: "Salon introuvable"
-    });
+    return res.status(404).json({ ok: false, message: "Salon introuvable" });
   }
 
   room.state = {
@@ -1164,18 +1190,7 @@ app.post("/speak", async (req, res) => {
 
   emitRoom(roomCode);
 
-  return res.json({
-    ok: true
-  });
-});
-
-    res.set("Content-Type", "audio/mpeg");
-    res.send(response.data);
-  } catch (err) {
-    if (err.response?.data) console.error("Erreur ElevenLabs :", err.response.data.toString());
-    else console.error("Erreur ElevenLabs :", err.message);
-    res.status(500).send("Erreur voix");
-  }
+  return res.json({ ok: true });
 });
 
 const PORT = process.env.PORT || 3000;
